@@ -1,0 +1,11 @@
+Additional information for IDE users:
+
+During one of the challenges we’ll use a real-time data plot to keep track of our simulation using the matplotlib package. Both Spyder and PyCharm “helpfully” displays plots with their built-in image renderer by default, which prevents animations from playing. We can disable this and enable the proper display of animations using the settings of the IDEs.
+
+Spyder:
+Tools > Preferences > IPython Console > Graphics > Backend: change it from "Inline" to "Automatic"
+
+PyCharm:
+File->Settings->Tools->Python Scientific: untic
+
+Also, some matplotlib backends behave better with animations than others, “QtAgg” seems to be working well. If you run the “hello_ssnr.py” script in the welcome folder, that should select this backend for you.
