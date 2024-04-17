@@ -1,4 +1,4 @@
-name: ssnr23
+name: ssnr_sim
 channels:
   - conda-forge
 dependencies:
@@ -6,6 +6,8 @@ dependencies:
   - matplotlib
   - scipy
   - pip
+  - scikit-learn
+  - PyQt5
   - pip:
     - mujoco
 
