@@ -1,6 +1,0 @@
-Wed Apr 17 13:01:15 2024
-WARNING: mju_openResource: unknown file 'welcome.xml'
-
-Wed Apr 17 13:01:32 2024
-WARNING: mju_openResource: unknown file './welcome.xml'
-
