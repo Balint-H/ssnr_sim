@@ -7,7 +7,7 @@ dependencies:
   - scipy
   - pip
   - scikit-learn
-  - PyQt5
+  - pyqt
   - pip:
     - mujoco
 
