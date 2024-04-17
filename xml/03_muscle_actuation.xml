@@ -1,0 +1,163 @@
+<!--
+This is an example scene provided with MuJoCo of a muscle-actuated
+planar arm. When launched, You'll see that the both the shoulder and elbow
+have their own flexors (SF, EF) and extensors (SE, EE), as well as two
+biarticular muscles (BF, BE) that control movement over both joints.
+
+To control the activation of these muscles you can use the dropdown on the
+right-hand side of the visualization window.
+
+Things to note:
+  - The muscle-tendon units in MuJoCo are modeled as a single contractible
+    element with uniform properties. This basically makes the assumption that 
+    tendons are non-stretchable (infinite stiffness). This makes the computation
+    of muscle forces easier/faster. For a discussion on muscle actuation, and
+    its modelling, see:
+    https://mujoco.readthedocs.io/en/latest/modeling.html#muscle-actuators
+    
+   
+  - Muscle activation ranges from 0 to 1. You can't* push with a muscle, only
+    pull.
+    
+  - Pay attention to the path of the tendons. They are constricted by the
+    location of different sites. These always start at the origin, and end at
+    the insertion, but may involve other constrictions, such as the blue sites,
+    which represent retinacula (https://en.wikipedia.org/wiki/Retinaculum ).
+    The extensor muscles also involve wrapping around their joint(s). The green
+    markers indicate to them as reference which side of the geom they should 
+    adhere to. This wrapping is important as it determines the moment arm of
+    extension, and it can increase the length of a muscle to make it stronger.
+    
+  - Double left-click on the elbow, then apply forces in the horizontal
+    plane by pressing Ctrl+Shift and dragging a right-click. You should be able
+    to move the shoulder around. Now co-contract the shoulder (activate SE and
+    SF). Now repeat the process. What do you see?
+    
+Things to try:
+  - Play around with the size of "shoulder" and "elbow" geoms. This will change
+    how the tendons wrap.
+  
+  - What happens if you remove the "shoulder" and "s6" elements from the
+    BE muscle's path (starting line 145)?
+-->
+
+
+<!-- Copyright 2021 DeepMind Technologies Limited
+
+     Licensed under the Apache License, Version 2.0 (the "License");
+     you may not use this file except in compliance with the License.
+     You may obtain a copy of the License at
+
+         http://www.apache.org/licenses/LICENSE-2.0
+
+     Unless required by applicable law or agreed to in writing, software
+     distributed under the License is distributed on an "AS IS" BASIS,
+     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     See the License for the specific language governing permissions and
+     limitations under the License.
+-->
+
+<mujoco model="2-link 6-muscle arm">
+  <option timestep="0.005" iterations="50" solver="Newton" tolerance="1e-10"/>
+
+  <default>
+    <joint type="hinge" pos="0 0 0" axis="0 0 1" limited="true" range="0 120" damping="0.1"/>
+    <muscle ctrllimited="true" ctrlrange="0 1"/>
+  </default>
+
+  <worldbody>
+    <geom name="floor" pos="0 0 -0.5" size="0 0 1" type="plane" material="matplane"/>
+
+    <light directional="true" diffuse=".8 .8 .8" specular=".2 .2 .2" pos="0 0 5" dir="0 0 -1"/>
+
+    <site name="s0" pos="-0.15 0 0" size="0.02"/>
+    <site name="x0" pos="0 -0.15 0" size="0.02" rgba="0 .7 0 1" group="1"/>
+
+    <body pos="0 0 0">
+      <geom name="upper arm" type="capsule" size="0.045" fromto="0 0 0  0.5 0 0" rgba=".5 .1 .1 1"/>
+      <joint name="shoulder"/>
+      <geom name="shoulder" type="cylinder" pos="0 0 0" size=".1 .05" rgba=".5 .1 .8 .5" mass="0" group="1"/>
+
+      <site name="s1" pos="0.15 0.06 0" size="0.02"/>
+      <site name="s2" pos="0.15 -0.06 0" size="0.02"/>
+      <site name="s3" pos="0.4 0.06 0" size="0.02"/>
+      <site name="s4" pos="0.4 -0.06 0" size="0.02"/>
+      <site name="s5" pos="0.25 0.1 0" size="0.02" rgba="0.2 0.6 0.8 0.8"/>
+      <site name="s6" pos="0.25 -0.1 0" size="0.02" rgba="0.2 0.6 0.8 0.8"/>
+      <site name="x1" pos="0.5 -0.15 0" size="0.02" rgba="0 .7 0 1" group="1"/>
+
+      <body pos="0.5 0 0">
+        <geom name="forearm" type="capsule" size="0.035" fromto="0 0 0  0.5 0 0" rgba=".5 .1 .1 1"/>
+        <joint name="elbow"/>
+        <geom name="elbow" type="cylinder" pos="0 0 0" size=".08 .05" rgba=".5 .1 .8 .5" mass="0" group="1"/>
+
+        <site name="s7" pos="0.11 0.05 0" size="0.02"/>
+        <site name="s8" pos="0.11 -0.05 0" size="0.02"/>
+      </body>
+    </body>
+  </worldbody>
+
+  <tendon>
+    <spatial name="SF" width="0.01">
+      <site site="s0"/>
+      <geom geom="shoulder"/>
+      <site site="s1"/>
+    </spatial>
+
+    <spatial name="SE" width="0.01">
+      <site site="s0"/>
+      <geom geom="shoulder" sidesite="x0"/>
+      <site site="s2"/>
+    </spatial>
+
+    <spatial name="EF" width="0.01">
+      <site site="s3"/>
+      <geom geom="elbow"/>
+      <site site="s7"/>
+    </spatial>
+
+    <spatial name="EE" width="0.01">
+      <site site="s4"/>
+      <geom geom="elbow" sidesite="x1"/>
+      <site site="s8"/>
+    </spatial>
+
+    <spatial name="BF" width="0.009" rgba=".4 .6 .4 1">
+      <site site="s0"/>
+      <geom geom="shoulder"/>
+      <site site="s5"/>
+      <geom geom="elbow"/>
+      <site site="s7"/>
+    </spatial>
+
+    <spatial name="BE" width="0.009" rgba=".4 .6 .4 1">
+      <site site="s0"/>
+      <geom geom="shoulder" sidesite="x0"/>
+      <site site="s6"/>
+      <geom geom="elbow" sidesite="x1"/>
+      <site site="s8"/>
+    </spatial>
+  </tendon>
+
+  <actuator>
+    <muscle name="SF" tendon="SF"/>
+    <muscle name="SE" tendon="SE"/>
+    <muscle name="EF" tendon="EF"/>
+    <muscle name="EE" tendon="EE"/>
+    <muscle name="BF" tendon="BF"/>
+    <muscle name="BE" tendon="BE"/>
+  </actuator>
+  
+  <asset>
+    <texture type="skybox" builtin="gradient" rgb1="0.6 0.6 0.6" rgb2="0 0 0" width="512" height="512"/>
+
+    <texture name="texplane" type="2d" builtin="checker" rgb1=".25 .25 .25" rgb2=".3 .3 .3" width="512" height="512" mark="cross" markrgb=".8 .8 .8"/>
+
+    <material name="matplane" reflectance="0.3" texture="texplane" texrepeat="1 1" texuniform="true"/>
+  </asset>
+  
+  <visual>
+    <rgba haze=".3 .3 .3 1"/>
+  </visual>
+  
+</mujoco>

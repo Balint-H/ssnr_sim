@@ -1,0 +1,139 @@
+<!--
+This model is only used as a visual reference to illustrate a humanoid body in some of the xml files.
+-->
+
+<mujoco>
+  <worldbody>
+    <body pos="-0.2067787 -0.0002415101 0.1821983" quat="-8.659561E-17 0 0.7071068 0.7071068" mocap="true" name="Mocap_K_head_0" />
+    <body pos="-0.208 -0.004 -0.3789999" quat="-8.659561E-17 0 0.7071068 0.7071068" mocap="true" name="Mocap_K_lowerback_1" />
+    <body pos="0.5372286 0.00427828 0.00206387" quat="-0.7071068 -2.980232E-07 1.192093E-07 -0.7071068" mocap="true" name="Mocap_K_rhand_2" />
+    <body pos="-0.2085659 -0.012053 -0.2657869" quat="-8.659561E-17 0 0.7071068 0.7071068" mocap="true" name="Mocap_K_upperback_3" />
+    <body pos="-0.106063 0.04544622 -1.291445" quat="-6.123234E-17 6.123234E-17 0 1" mocap="true" name="Mocap_K_rfoot_4" />
+    <body pos="-0.309937 0.04544622 -1.291445" quat="-6.123234E-17 6.123234E-17 0 1" mocap="true" name="Mocap_K_lfoot_5" />
+    <body pos="-0.461662 0.004277938 -0.570159" quat="0.5230872 0.475794 -0.4757942 -0.5230867" mocap="true" name="Mocap_K_lhand_6" />
+    <body pos="-0.2090784 -0.01111618 -0.1522268" quat="-8.659561E-17 0 0.7071068 0.7071068" mocap="true" name="Mocap_K_thorax_7" />
+    <body pos="-0.208 -0.004 -0.3789999" quat="-1 0 0 0" mocap="true" name="Mocap_K_root_8" />
+    <body pos="-0.208 -0.004 -0.379" quat="-1 0 0 0" name="K_root_9">
+      <body pos="0 0 0" quat="0 0 0.7071068 0.7071068" name="K_lhipjoint_10">
+        <geom density="10" type="capsule" size="0.008000004 0.02187361" pos="0.05096854 -0.04590372 0.02472301" quat="0.5708001 -0.5666021 -0.5942641 0" priority="0" contype="0" conaffinity="0" group="2" condim="1" solmix="1" solref="0.015 1" solimp="0.99 0.99 0.003" margin="0" gap="0" friction="0.7 0.005 0.0001" name="K_lhipjoint_15" />
+        <body pos="0.1019371 -0.09180747 0.04944616" quat="-1 0 0 0" name="K_lfemur_16">
+          <joint type="ball" pos="0 0 0" armature="0.0225" springref="0" springdamper="0 0" damping="10" stiffness="1000" solreflimit="0.02 1" solimplimit="0.9 0.95 0.001 0.5 2" solreffriction="0.02 1" solimpfriction="0.9 0.95 0.001 0.5 2" frictionloss="100" limited="true" margin="0" range="0 137.51" name="K_lfemurr_22" />
+          <geom density="0" type="capsule" size="0.08500003 0.083" pos="0 -0.115473 3.61172E-08" quat="0.6963643 -0.6963643 -0.1227881 -0.1227881" priority="0" contype="0" conaffinity="0" group="2" condim="1" solmix="1" solref="0.015 1" solimp="0.99 0.99 0.003" margin="0" gap="0" friction="0.7 0.005 0.0001" name="K_lfemur_upper_23" />
+          <geom density="1000" type="capsule" size="0.07000002 0.182226" pos="0 -0.202473 4.648841E-08" quat="0.6963643 -0.6963643 -0.1227881 -0.1227881" priority="0" contype="0" conaffinity="0" group="2" condim="1" solmix="1" solref="0.015 1" solimp="0.99 0.99 0.003" margin="0" gap="0" friction="0.7 0.005 0.0001" name="K_lfemur_24" />
+          <body pos="0 -0.4049452 1.302296E-07" quat="-1 0 0 0" name="K_ltibia_25">
+            <joint type="hinge" pos="0 0 0" axis="1 0 0" ref="0" armature="0.0225" springref="0" springdamper="0 0" damping="10" stiffness="1000" solreflimit="0.02 1" solimplimit="0 0.99 0.01 0.5 2" solreffriction="0.02 1" solimpfriction="0.9 0.95 0.001 0.5 2" frictionloss="100" limited="true" margin="0" range="0.5729578 170" name="K_ltibiarx_34" />
+            <geom density="1000" type="capsule" size="0.04000001 0.182561" pos="0 -0.202846 2.418112E-08" quat="0.6963643 -0.6963643 -0.1227881 -0.1227881" priority="0" contype="0" conaffinity="0" group="2" condim="1" solmix="1" solref="0.015 1" solimp="0.99 0.99 0.003" margin="0" gap="0" friction="0.7 0.005 0.0001" name="K_ltibia_35" />
+            <body pos="0 -0.415693 1.091591E-07" quat="0.7071069 -0.7071069 0 0" name="K_lfoot_36">
+              <joint type="hinge" pos="0 0 0" axis="-4.768369E-07 0 1" ref="0" armature="0.0225" springref="0" springdamper="0 0" damping="10" stiffness="1000" solreflimit="0.02 1" solimplimit="0 0.99 0.01 0.5 2" solreffriction="0.02 1" solimpfriction="0.9 0.95 0.001 0.5 2" frictionloss="100" limited="true" margin="0" range="-69.99997 20.00001" name="K_lfootrz_45" />
+              <joint type="hinge" pos="0 0 0" axis="1 0 0" ref="0" armature="0.0225" springref="0" springdamper="0 0" damping="10" stiffness="1000" solreflimit="0.02 1" solimplimit="0 0.99 0.01 0.5 2" solreffriction="0.02 1" solimpfriction="0.9 0.95 0.001 0.5 2" frictionloss="100" limited="true" margin="0" range="-44.99999 45.83662" name="K_lfootrx_46" />
+              <geom density="1000" type="capsule" size="0.02500003 0.08000004" pos="-0.02700002 -0.04999997 -0.01138783" quat="0.7672563 -0.6405111 0.02306491 -0.02306581" priority="0" contype="0" conaffinity="1" group="2" condim="3" solmix="1" solref="0.015 1" solimp="0.98 0.98 0.001" margin="0" gap="0" friction="1 0.005 0.0001" name="K_lfoot_47" />
+              <geom density="1000" type="capsule" size="0.02500003 0.08000004" pos="0.02700002 -0.04999997 -0.01138783" quat="0.7288731 -0.5939951 -0.240743 -0.240743" priority="0" contype="0" conaffinity="1" group="2" condim="3" solmix="1" solref="0.015 1" solimp="0.98 0.98 0.001" margin="0" gap="0" friction="1 0.005 0.0001" name="K_lfoot_ch_48" />
+              <body pos="0 -0.1563721 -0.02277565" quat="-1 0 0 0" name="K_ltoes_49">
+                <joint type="hinge" pos="0 0 0" axis="1 0 0" ref="0" armature="0.0225" springref="0" springdamper="0 0" damping="10" stiffness="1000" solreflimit="0.02 1" solimplimit="0 0.99 0.01 0.5 2" solreffriction="0.02 1" solimpfriction="0.9 0.95 0.001 0.5 2" frictionloss="100" limited="true" margin="0" range="-90.00021 20.00001" name="K_ltoesrx_66" />
+                <geom density="1000" type="sphere" size="0.02500002" pos="0 -0.009999995 -0.00999999" quat="-1 0 0 0" priority="0" contype="0" conaffinity="1" group="2" condim="3" solmix="1" solref="0.015 1" solimp="0.98 0.98 0.001" margin="0" gap="0" friction="1 0.005 0.0001" name="K_ltoes0_67" />
+                <geom density="1000" type="sphere" size="0.02500002" pos="0.03000002 -0.009999995 -0.00999999" quat="-1 0 0 0" priority="0" contype="0" conaffinity="1" group="2" condim="3" solmix="1" solref="0.015 1" solimp="0.98 0.98 0.001" margin="0" gap="0" friction="1 0.005 0.0001" name="K_ltoes1_68" />
+                <geom density="1000" type="sphere" size="0.02500002" pos="-0.03000002 -0.009999995 -0.00999999" quat="-1 0 0 0" priority="0" contype="0" conaffinity="1" group="2" condim="3" solmix="1" solref="0.015 1" solimp="0.98 0.98 0.001" margin="0" gap="0" friction="1 0.005 0.0001" name="K_ltoes2_69" />
+              </body>
+            </body>
+          </body>
+        </body>
+      </body>
+      <body pos="0 0 0" quat="0 0 0.7071068 0.7071068" name="K_rhipjoint_11">
+        <geom density="10" type="capsule" size="0.008000002 0.02187361" pos="-0.05096852 -0.04590372 0.02472301" quat="0.5748562 -0.5475942 0.6080142 0" priority="0" contype="0" conaffinity="0" group="2" condim="1" solmix="1" solref="0.015 1" solimp="0.99 0.99 0.003" margin="0" gap="0" friction="0.7 0.005 0.0001" name="K_rhipjoint_17" />
+        <body pos="-0.1019371 -0.09180744 0.04944613" quat="-1 0 0 0" name="K_rfemur_18">
+          <joint type="ball" pos="0 0 0" armature="0.0225" springref="0" springdamper="0 0" damping="10" stiffness="1000" solreflimit="0.02 1" solimplimit="0.9 0.95 0.001 0.5 2" solreffriction="0.02 1" solimpfriction="0.9 0.95 0.001 0.5 2" frictionloss="100" limited="true" margin="0" range="0 137.51" name="K_rfemurr_26" />
+          <geom density="0" type="capsule" size="0.08500003 0.083" pos="0 -0.115473 3.61172E-08" quat="0.6963643 -0.6963643 0.1227881 0.1227881" priority="0" contype="0" conaffinity="0" group="2" condim="1" solmix="1" solref="0.015 1" solimp="0.99 0.99 0.003" margin="0" gap="0" friction="0.7 0.005 0.0001" name="K_rfemur_upper_27" />
+          <geom density="1000" type="capsule" size="0.07000002 0.182226" pos="0 -0.2024731 4.648841E-08" quat="0.6963643 -0.6963643 0.1227881 0.1227881" priority="0" contype="0" conaffinity="0" group="2" condim="1" solmix="1" solref="0.015 1" solimp="0.99 0.99 0.003" margin="0" gap="0" friction="0.7 0.005 0.0001" name="K_rfemur_28" />
+          <body pos="0 -0.4049451 1.004273E-07" quat="-1 0 0 0" name="K_rtibia_29">
+            <joint type="hinge" pos="0 0 0" axis="1 0 0" ref="0" armature="0.0225" springref="0" springdamper="0 0" damping="10" stiffness="1000" solreflimit="0.02 1" solimplimit="0 0.99 0.01 0.5 2" solreffriction="0.02 1" solimpfriction="0.9 0.95 0.001 0.5 2" frictionloss="100" limited="true" margin="0" range="0.5729578 170" name="K_rtibiarx_37" />
+            <geom density="1000" type="capsule" size="0.04000001 0.182561" pos="0 -0.2028461 2.418113E-08" quat="0.6963643 -0.6963643 0.1227881 0.1227881" priority="0" contype="0" conaffinity="0" group="2" condim="1" solmix="1" solref="0.015 1" solimp="0.99 0.99 0.003" margin="0" gap="0" friction="0.7 0.005 0.0001" name="K_rtibia_38" />
+            <body pos="0 -0.4156931 1.091591E-07" quat="0.7071069 -0.7071069 0 0" name="K_rfoot_39">
+              <joint type="hinge" pos="0 0 0" axis="-4.768369E-07 0 1" ref="0" armature="0.0225" springref="0" springdamper="0 0" damping="10" stiffness="1000" solreflimit="0.02 1" solimplimit="0 0.99 0.01 0.5 2" solreffriction="0.02 1" solimpfriction="0.9 0.95 0.001 0.5 2" frictionloss="100" limited="true" margin="0" range="-20.00001 69.99997" name="K_rfootrz_50" />
+              <joint type="hinge" pos="0 0 0" axis="1 0 0" ref="0" armature="0.0225" springref="0" springdamper="0 0" damping="10" stiffness="1000" solreflimit="0.02 1" solimplimit="0 0.99 0.01 0.5 2" solreffriction="0.02 1" solimpfriction="0.9 0.95 0.001 0.5 2" frictionloss="100" limited="true" margin="0" range="-44.99999 45.83662" name="K_rfootrx_51" />
+              <geom density="1000" type="capsule" size="0.02500002 0.08000004" pos="-0.02700002 -0.05000003 -0.01138783" quat="0.7352074 -0.5863352 0.2405011 0.2405011" priority="0" contype="0" conaffinity="1" group="2" condim="3" solmix="1" solref="0.015 1" solimp="0.98 0.98 0.001" margin="0" gap="0" friction="1 0.005 0.0001" name="K_rfoot_52" />
+              <geom density="1000" type="capsule" size="0.02500002 0.08000002" pos="0.02700003 -0.05000003 -0.01138783" quat="0.7731252 -0.6332311 -0.02545851 0.02545841" priority="0" contype="0" conaffinity="1" group="2" condim="3" solmix="1" solref="0.015 1" solimp="0.98 0.98 0.001" margin="0" gap="0" friction="1 0.005 0.0001" name="K_rfoot_ch_53" />
+              <body pos="0 -0.1563721 -0.02277565" quat="-1 0 0 0" name="K_rtoes_54">
+                <joint type="hinge" pos="0 0 0" axis="1 0 0" ref="0" armature="0.0225" springref="0" springdamper="0 0" damping="10" stiffness="1000" solreflimit="0.02 1" solimplimit="0 0.99 0.01 0.5 2" solreffriction="0.02 1" solimpfriction="0.9 0.95 0.001 0.5 2" frictionloss="100" limited="true" margin="0" range="-90.00021 20.00001" name="K_rtoesrx_70" />
+                <geom density="1000" type="sphere" size="0.02500002" pos="0 -0.009999995 -0.00999999" quat="-1 0 0 0" priority="0" contype="0" conaffinity="1" group="2" condim="3" solmix="1" solref="0.015 1" solimp="0.98 0.98 0.001" margin="0" gap="0" friction="1 0.005 0.0001" name="K_rtoes0_71" />
+                <geom density="1000" type="sphere" size="0.02500002" pos="0.03000002 -0.009999995 -0.00999999" quat="-1 0 0 0" priority="0" contype="0" conaffinity="1" group="2" condim="3" solmix="1" solref="0.015 1" solimp="0.98 0.98 0.001" margin="0" gap="0" friction="1 0.005 0.0001" name="K_rtoes1_72" />
+                <geom density="1000" type="sphere" size="0.02500002" pos="-0.03000001 -0.009999995 -0.00999999" quat="-1 0 0 0" priority="0" contype="0" conaffinity="1" group="2" condim="3" solmix="1" solref="0.015 1" solimp="0.98 0.98 0.001" margin="0" gap="0" friction="1 0.005 0.0001" name="K_rtoes2_73" />
+              </body>
+            </body>
+          </body>
+        </body>
+      </body>
+      <freejoint name="K_freejoint_12" />
+      <geom density="1000" type="capsule" size="0.1 0.07" pos="0 0 -0.05000001" quat="-0.5 -0.5 -0.5 -0.5" priority="0" contype="0" conaffinity="0" group="2" condim="1" solmix="1" solref="0.015 1" solimp="0.99 0.99 0.003" margin="0" gap="0" friction="0.7 0.005 0.0001" name="K_root_geom_13" />
+      <body pos="0 0 0" quat="0 0 0.7071068 0.7071068" name="K_lowerback_14">
+        <joint type="ball" pos="0 0 0" armature="0.0225" springref="0" springdamper="0 0" damping="10" stiffness="1000" solreflimit="0.02 1" solimplimit="0.9 0.95 0.001 0.5 2" solreffriction="0.02 1" solimpfriction="0.9 0.95 0.001 0.5 2" frictionloss="100" limited="true" margin="0" range="0 37.24227" name="K_lowerbackr_19" />
+        <geom density="1000" type="capsule" size="0.08500004 0.04540022" pos="0.002829314 0.05660651 0.009999989" quat="0.7071069 0 0.7071069 0" priority="0" contype="0" conaffinity="0" group="2" condim="1" solmix="1" solref="0.015 1" solimp="0.99 0.99 0.003" margin="0" gap="0" friction="0.7 0.005 0.0001" name="K_lowerback_20" />
+        <body pos="0.0005658568 0.113213 -0.008053012" quat="-1 0 0 0" name="K_upperback_21">
+          <geom density="1000" type="capsule" size="0.09000005 0.04542623" pos="0.0002562702 0.05678022 0.02" quat="0.7071069 0 0.7071069 0" priority="0" contype="0" conaffinity="0" group="2" condim="1" solmix="1" solref="0.015 1" solimp="0.99 0.99 0.003" margin="0" gap="0" friction="0.7 0.005 0.0001" name="K_upperback_32" />
+          <body pos="0.0005125405 0.11356 0.0009368002" quat="-1 0 0 0" name="K_thorax_33">
+            <joint type="ball" pos="0 0 0" armature="0.0225" springref="0" springdamper="0 0" damping="10" stiffness="1000" solreflimit="0.02 1" solimplimit="0.9 0.95 0.001 0.5 2" solreffriction="0.02 1" solimpfriction="0.9 0.95 0.001 0.5 2" frictionloss="100" limited="true" margin="0" range="0 37.24227" name="K_thoraxr_40" />
+            <geom density="1000" type="capsule" size="0.09500004 0.05702063" pos="0 0.05697251 0.01999999" quat="0.7071069 0 0.7071069 0" priority="0" contype="0" conaffinity="0" group="2" condim="1" solmix="1" solref="0.015 1" solimp="0.99 0.99 0.003" margin="0" gap="0" friction="0.7 0.005 0.0001" name="K_thorax_41" />
+            <body pos="0 0.113945 0.004680338" quat="-1 0 0 0" name="K_lowerneck_42">
+              <joint type="ball" pos="0 0 0" armature="0.0225" springref="0" springdamper="0 0" damping="10" stiffness="1000" solreflimit="0.02 1" solimplimit="0.9 0.95 0.001 0.5 2" solreffriction="0.02 1" solimpfriction="0.9 0.95 0.001 0.5 2" frictionloss="100" limited="true" margin="0" range="0 30.0803" name="K_lowerneckr_55" />
+              <geom density="500" type="capsule" size="0.07500006 0.02279232" pos="-0.001650721 0.04524014 0.005343582" quat="0.7071069 0.7071069 0 0" priority="0" contype="1" conaffinity="1" group="2" condim="1" solmix="1" solref="0.015 1" solimp="0.99 0.99 0.003" margin="0" gap="0" friction="0.7 0.005 0.0001" name="K_lowerneck_56" />
+              <body pos="-0.003301442 0.09048013 0.01068716" quat="-1 0 0 0" name="K_upperneck_57">
+                <joint type="ball" pos="0 0 0" armature="0.0225" springref="0" springdamper="0 0" damping="10" stiffness="1000" solreflimit="0.02 1" solimplimit="0.9 0.95 0.001 0.5 2" solreffriction="0.02 1" solimpfriction="0.9 0.95 0.001 0.5 2" frictionloss="100" limited="true" margin="0" range="0 30.0803" name="K_upperneckr_74" />
+                <geom density="500" type="capsule" size="0.05000004 0.02252722" pos="0.0005008728 0.04499561 -0.002246445" quat="0.7071069 0.7071069 0 0" priority="0" contype="1" conaffinity="1" group="2" condim="1" solmix="1" solref="0.015 1" solimp="0.99 0.99 0.003" margin="0" gap="0" friction="0.7 0.005 0.0001" name="K_upperneck_75" />
+                <body pos="0.001001761 0.13 -0.004492865" quat="-1 0 0 0" name="K_head_76">
+                  <joint type="ball" pos="0 0 0" armature="0.0225" springref="0" springdamper="0 0" damping="10" stiffness="1000" solreflimit="0.02 1" solimplimit="0.9 0.95 0.001 0.5 2" solreffriction="0.02 1" solimpfriction="0.9 0.95 0.001 0.5 2" frictionloss="100" limited="true" margin="0" range="0 0.525" name="K_headr_83" />
+                  <geom density="800" type="capsule" size="0.09500007 0.02410402" pos="0.0003414602 0.04818398 0.02499997" quat="0.7071069 0.7071069 0 0" priority="0" contype="0" conaffinity="0" group="2" condim="1" solmix="1" solref="0.015 1" solimp="0.99 0.99 0.003" margin="0" gap="0" friction="0.7 0.005 0.0001" name="K_head_84" />
+                </body>
+              </body>
+            </body>
+            <body pos="0 0.113945 0.004680338" quat="-0.9810503 0 0 0.193754" name="K_lclavicle_43">
+              <geom density="500" type="capsule" size="0.07500003 0.06000002" pos="0.09188176 0.03826361 0.005357058" quat="0.6879708 0.278988 -0.6699718 -8.640231E-10" priority="0" contype="1" conaffinity="1" group="2" condim="1" solmix="1" solref="0.015 1" solimp="0.99 0.99 0.003" margin="0" gap="0" friction="0.7 0.005 0.0001" name="K_lclavicle_60" />
+              <body pos="0.1800001 0.09000004 0.01071411" quat="-0.2512589 -0.2317584 0.9377106 -0.06209913" name="K_lhumerus_61">
+                <joint type="ball" pos="0 0 0" armature="0.0225" springref="0" springdamper="0 0" damping="10" stiffness="1000" solreflimit="0.02 1" solimplimit="0.9 0.95 0.001 0.5 2" solreffriction="0.02 1" solimpfriction="0.9 0.95 0.001 0.5 2" frictionloss="100" limited="true" margin="0" range="0 120" name="K_lhumerusr_77" />
+                <geom density="1000" type="capsule" size="0.042 0.124579" pos="-6.143738E-09 -0.138421 2.840297E-08" quat="0.6123726 -0.6123727 0.3535533 0.3535534" priority="0" contype="0" conaffinity="0" group="2" condim="1" solmix="1" solref="0.015 1" solimp="0.99 0.99 0.003" margin="0" gap="0" friction="0.7 0.005 0.0001" name="K_lhumerus_78" />
+                <body pos="3.413431E-08 -0.2768431 4.919416E-08" quat="-1 0 0 0" name="K_lradius_79">
+                  <joint type="hinge" pos="0 0 0" axis="0.8660251 5.233215E-09 0.5000004" ref="0" armature="0.0225" springref="0" springdamper="0 0" damping="10" stiffness="1000" solreflimit="0.02 1" solimplimit="0 0.99 0.01 0.5 2" solreffriction="0.02 1" solimpfriction="0.9 0.95 0.001 0.5 2" frictionloss="100" limited="true" margin="0" range="-10 170" name="K_lradiusrx_85" />
+                  <geom density="1000" type="capsule" size="0.03 0.08169109" pos="6.397308E-09 -0.09076791 1.018815E-08" quat="0.6123726 -0.6123727 0.3535533 0.3535534" priority="0" contype="0" conaffinity="0" group="2" condim="1" solmix="1" solref="0.015 1" solimp="0.99 0.99 0.003" margin="0" gap="0" friction="0.7 0.005 0.0001" name="K_lradius_86" />
+                  <body pos="-1.908565E-08 -0.1815361 1.970062E-09" quat="-0.5000004 -2.481983E-09 0.8660256 -7.237219E-09" name="K_lwrist_87">
+                    <geom density="1000" type="capsule" size="0.02000001 0.03" pos="1.880135E-09 -0.03 -3.279598E-08" quat="4.003268E-08 -4.391836E-08 -0.7071071 -0.7071071" priority="0" contype="0" conaffinity="0" group="2" condim="1" solmix="1" solref="0.015 1" solimp="0.99 0.99 0.003" margin="0" gap="0" friction="0.7 0.005 0.0001" name="K_lwrist_91" />
+                    <body pos="-9.784539E-09 -0.09076759 3.994287E-08" quat="-1 0 0 0" name="K_lhand_92">
+                      <geom density="1000" type="ellipsoid" size="0.03500002 0.02000001 0.045" pos="3.469804E-09 -0.01675202 -3.877605E-08" quat="4.003268E-08 -4.391836E-08 -0.7071071 -0.7071071" priority="0" contype="0" conaffinity="0" group="2" condim="3" solmix="1" solref="0.015 1" solimp="0.98 0.98 0.001" margin="0" gap="0" friction="1 0.005 0.0001" name="K_lhand_95" />
+                      <body pos="-6.475558E-09 -0.07500006 1.90359E-08" quat="-1 0 0 0" name="K_lfingers_96">
+                        <geom density="1000" type="capsule" size="0.006500002 0.04" pos="-0.02399999 -0.02500005 -4.555073E-08" quat="0.7071071 -0.7071071 4.391836E-08 4.003268E-08" priority="0" contype="0" conaffinity="0" group="2" condim="3" solmix="1" solref="0.015 1" solimp="0.98 0.98 0.001" margin="0" gap="0" friction="1 0.005 0.0001" name="K_lfinger0_101" />
+                        <geom density="1000" type="capsule" size="0.006500002 0.04" pos="-0.00799998 -0.02999995 -3.565628E-10" quat="0.7071071 -0.7071071 4.391836E-08 4.003268E-08" priority="0" contype="0" conaffinity="0" group="2" condim="3" solmix="1" solref="0.015 1" solimp="0.98 0.98 0.001" margin="0" gap="0" friction="1 0.005 0.0001" name="K_lfinger1_102" />
+                        <geom density="1000" type="capsule" size="0.006000001 0.04" pos="0.007999999 -0.03000007 -5.897357E-09" quat="0.7071071 -0.7071071 4.391836E-08 4.003268E-08" priority="0" contype="0" conaffinity="0" group="2" condim="3" solmix="1" solref="0.015 1" solimp="0.98 0.98 0.001" margin="0" gap="0" friction="1 0.005 0.0001" name="K_lfinger2_103" />
+                        <geom density="1000" type="capsule" size="0.005500001 0.04" pos="0.02400001 -0.02500007 3.095344E-08" quat="0.7071071 -0.7071071 4.391836E-08 4.003268E-08" priority="0" contype="0" conaffinity="0" group="2" condim="3" solmix="1" solref="0.015 1" solimp="0.98 0.98 0.001" margin="0" gap="0" friction="1 0.005 0.0001" name="K_lfinger3_104" />
+                      </body>
+                      <body pos="-0.025 6.70552E-09 -8.940694E-09" quat="0.92388 -4.930634E-08 6.000214E-08 -0.382683" name="K_lthumb_97">
+                        <geom density="1000" type="capsule" size="0.008000004 0.03" pos="2.888915E-08 -0.03000006 -2.920286E-08" quat="3.642271E-08 6.018672E-09 -0.707107 -0.707107" priority="0" contype="0" conaffinity="0" group="2" condim="3" solmix="1" solref="0.015 1" solimp="0.98 0.98 0.001" margin="0" gap="0" friction="1 0.005 0.0001" name="K_lthumb_105" />
+                      </body>
+                    </body>
+                  </body>
+                </body>
+              </body>
+            </body>
+            <body pos="0 0.113945 0.004680338" quat="-0.991445 0 0 -0.1305263" name="K_rclavicle_44">
+              <geom density="500" type="capsule" size="0.07500002 0.06000001" pos="-0.09188176 0.03826362 0.005357056" quat="0.6879708 0.2789879 0.6699718 1.381872E-08" priority="0" contype="0" conaffinity="0" group="2" condim="1" solmix="1" solref="0.015 1" solimp="0.99 0.99 0.003" margin="0" gap="0" friction="0.7 0.005 0.0001" name="K_rclavicle_64" />
+              <geom density="500" type="capsule" size="0.0300002 0.01000001" pos="-0.09188176 0.03826362 -0.025357056" quat="0.6879708 0.2789879 0.6699718 1.381872E-08" priority="0" contype="1" conaffinity="1" group="2" condim="1" solmix="1" solref="0.015 1" solimp="0.99 0.99 0.003" margin="0" gap="0" friction="0.7 0.005 0.0001" name="K_rclavicle_dummy" rgba="0 0 0 0"/>
+            </body>
+          </body>
+        </body>
+      </body>
+    </body>
+  </worldbody>
+  <contact />
+  <tendon />
+  <equality>
+    <weld body1="Mocap_K_head_0" body2="K_head_76" solref="0.02 1" solimp="0.9 0.95 0.001 0.5 2" name="weld_head_111" />
+    <weld body1="Mocap_K_upperback_3" body2="K_upperback_21" solref="0.02 1" solimp="0.9 0.95 0.001 0.5 2" name="weld_upperback_113" />
+    <weld body1="Mocap_K_lhand_6" body2="K_lhand_92" solref="0.02 1" solimp="0.9 0.95 0.001 0.5 2" name="weld_lhand_114" />
+    <weld body1="Mocap_K_lowerback_1" body2="K_lowerback_14" solref="0.02 1" solimp="0.9 0.95 0.001 0.5 2" name="weld_lowerback_115" />
+    <weld body1="Mocap_K_root_8" body2="K_root_9" solref="0.02 1" solimp="0.9 0.95 0.001 0.5 2" name="weld_root_116" />
+    <weld body1="Mocap_K_thorax_7" body2="K_thorax_33" solref="0.02 1" solimp="0.9 0.95 0.001 0.5 2" name="weld_thorax_117" />
+  </equality>
+  <actuator />
+  <sensor />
+  <compiler coordinate="local" />
+  <option gravity="0 0 -9.81" timestep="0.008" impratio="1" magnetic="0 0 0" wind="0 -0.5 0" density="0" viscosity="0" o_margin="0" o_solref="0.02 1" o_solimp="0.9 0.95 0.001 0.5 2" integrator="Euler" collision="all" cone="pyramidal" jacobian="auto" solver="Newton" iterations="100" tolerance="1E-08" noslip_iterations="0" noslip_tolerance="1E-06" mpr_iterations="50" mpr_tolerance="1E-06">
+    <flag constraint="enable" equality="enable" frictionloss="enable" limit="enable" contact="enable" passive="enable" gravity="enable" clampctrl="enable" warmstart="enable" filterparent="enable" actuation="enable" refsafe="enable" override="disable" energy="disable" fwdinv="disable" sensornoise="disable" multiccd="disable" />
+  </option>
+  <asset />
+</mujoco>

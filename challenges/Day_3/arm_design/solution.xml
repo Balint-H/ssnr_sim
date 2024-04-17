@@ -1,0 +1,193 @@
+<!--
+  The Takumi Hand was designed and modelled by Jumpei Kashiwakura.
+  This work is licensed under the Creative Commons Attribution 4.0 International License. 
+  To view a copy of this license, visit http://creativecommons.org/licenses/by/4.0/
+  
+  The MJCF file was assembled by Balint Hodossy.
+-->
+<mujoco>
+  <compiler meshdir="./mesh"/>
+  
+  <default>
+    <joint axis="0 0 1" damping="0.002" limited="true" range="-90 5" armature="0.0002" frictionloss="0.01"  stiffness="0.1"/>
+    <tendon width="0.0005" rgba="0.9 0.3 0.3 1"/>
+    <motor gear="-50" ctrlrange="0 1" ctrllimited="true"/>
+    <geom material="PLA"/>
+    <default class="black">
+      <geom rgba="0.2 0.2 0.2 1"/>
+    </default>
+    <default class="white">
+      <geom rgba="0.95 0.95 0.95 1"/>
+    </default>
+    <default class="red">
+      <geom rgba="0.95 0.2 0.2 1"/>
+    </default>
+  </default>
+  
+  <worldbody>
+    <body name="Hand Mount" pos="0.0 0.0 0.0005" quat="1.0 -5.68434e-14 -7.01660e-14 -3.98848e-27">
+      <geom pos="0.0015 0 -0.0005" rgba="0 0 0 0" type="cylinder" name="base geom" size="0.07 0.001" />
+      <joint type="free" />
+      <geom class="black" type="mesh" name="Hand Mount geom" mesh="Hand Mount" />
+      <body name="Dev platform" pos="0.00216 0.00175 0.06074" quat="0.70710 8.98093e-14 9.42055e-15 0.70710">
+        <joint name="rotation" range="-5 180" damping="0.2" stiffness="0"/>
+        <geom class="black" type="mesh" name="Dev platform geom" mesh="Dev platform" />
+        <body name="Flex platform" pos="-0.03410 3.16468e-05 0.03935" quat="0.49999 0.49999 0.49999 0.50000">
+          <joint  name="deviation" range="-30 30" damping="0.2" stiffness="0"/>
+          <geom class="black" type="mesh" name="Flex platform geom" mesh="Flex platform" />
+          <body name="Flex upper" pos="-0.02798 0.00012 0.03500" quat="0.70710 1.95982e-06 0.70710 1.68586e-06">
+            <joint  name="flexion" damping="0.2" range="-30 70"/>
+            <geom class="black" type="mesh" name="Flex upper geom" mesh="Flex upper" />
+            <body name="Palm" pos="-4.93567e-05 0.01689 0.02796" quat="0.49999 0.49999 0.49999 -0.50000">
+              <geom class="black" type="mesh" name="Palm geom" mesh="Palm" />
+              <body name="Index PIP" pos="0.02340 0.02154 -0.10906" quat="0.71794 -0.08703 0.69062 -0.00431">
+                <joint/>
+                <geom class="red" type="mesh" name="Index PIP geom" mesh="Index PIP" />
+                <body name="Index DIP" pos="0.04356 0.00546 3.91155e-08" quat="1.0 5.33647e-07 -8.38190e-07 -4.09781e-08">
+                  <joint/>
+                  <geom class="red" type="mesh" name="Index DIP geom" mesh="Index DIP" />
+                  <site rgba="0.8 0.3 0.4 0.2"  name="site_index_d" pos="0.00534 -0.00574 -1.86264e-09" size="0.00100" />
+                  <site rgba="0.8 0.3 0.4 0.2"  name="site_index_d_end" pos="0.03792 -0.00186 -3.35276e-08" size="0.00100" />
+                </body>
+                <site rgba="0.8 0.3 0.4 0.2"  name="site_index_p" pos="0.00633 -0.00341 3.72529e-09" size="0.00100" />
+                <site rgba="0.8 0.3 0.4 0.2"  name="site_index_p_end" pos="0.03887 -0.00074 3.16649e-08" size="0.00100" />
+              </body>
+              <body name="Little PIP" pos="-0.04781 0.01579 -0.10465" quat="0.60576 -0.00686 0.79556 0.00900">
+                <joint/>
+                <geom class="red" type="mesh" name="Little PIP geom" mesh="Little PIP" />
+                <body name="Little DIP" pos="0.02462 0.00295 0.0" quat="0.99796 3.44510e-06 -5.57692e-06 -0.06375">
+                  <joint/>
+                  <geom class="red" type="mesh" name="Little DIP geom" mesh="Little DIP" />
+                  <site rgba="0.8 0.3 0.4 0.2"  name="site_little_d" pos="0.00734 -0.00707 -1.86264e-08" size="0.00099" />
+                  <site rgba="0.8 0.3 0.4 0.2"  name="site_little_d_end" pos="0.03537 -0.00213 -4.09781e-07" size="0.00099" />
+                </body>
+                <site rgba="0.8 0.3 0.4 0.2"  name="site_little_p" pos="0.00485 -0.00457 0.0" size="0.00100" />
+                <site rgba="0.8 0.3 0.4 0.2"  name="site_little_p_end" pos="0.01737 -0.00398 3.72529e-09" size="0.00100" />
+              </body>
+              <body name="Middle PIP" pos="-0.00287 0.02301 -0.11338" quat="0.70355 -0.07482 0.70644 -0.01845">
+                <joint/>
+                <geom class="red" type="mesh" name="Middle PIP geom" mesh="Middle PIP" />
+                <body name="Middle DIP" pos="0.03523 2.05878e-05 4.05416e-07" quat="1.0 4.73652e-06 -9.76817e-06 -1.45286e-07">
+                  <joint/>
+                  <geom class="red" type="mesh" name="Middle DIP geom" mesh="Middle DIP" />
+                  <site rgba="0.8 0.3 0.4 0.2"  name="site_middle_d" pos="0.00498 -0.00431 -1.18743e-08" size="0.00100" />
+                  <site rgba="0.8 0.3 0.4 0.2"  name="site_middle_d_end" pos="0.03519 -7.22873e-05 -2.61759e-07" size="0.00100" />
+                </body>
+                <site rgba="0.8 0.3 0.4 0.2"  name="site_middle_p" pos="0.00564 -0.00428 4.28408e-08" size="0.00100" />
+                <site rgba="0.8 0.3 0.4 0.2"  name="site_middle_p_end" pos="0.03074 -0.00516 3.29513e-07" size="0.00100" />
+              </body>
+              <body name="Ring PIP" pos="-0.02697 0.02098 -0.10911" quat="0.64970 -0.06195 0.75713 -0.02810">
+                <joint/>
+                <geom class="red" type="mesh" name="Ring PIP geom" mesh="Ring PIP" />
+                <body name="Ring DIP" pos="0.03309 0.00202 -2.34693e-07" quat="1.0 -3.36067e-06 5.31971e-06 3.76254e-07">
+                  <joint/>
+                  <geom class="red" type="mesh" name="Ring DIP geom" mesh="Ring DIP" />
+                  <site rgba="0.8 0.3 0.4 0.2"  name="site_ring_d" pos="0.00546 -0.00525 3.72529e-09" size="0.00099" />
+                  <site rgba="0.8 0.3 0.4 0.2"  name="site_ring_d_end" pos="0.03445 -0.00169 1.67638e-07" size="0.00099" />
+                </body>
+                <site rgba="0.8 0.3 0.4 0.2"  name="site_ring_p" pos="0.00541 -0.00426 -2.60770e-08" size="0.00099" />
+                <site rgba="0.8 0.3 0.4 0.2"  name="site_ring_p_end" pos="0.02834 -0.00386 -1.41561e-07" size="0.00099" />
+              </body>
+              <site rgba="0.8 0.3 0.4 0.2"  name="site_index_origin" pos="0.02401 0.01552 -0.10544" size="0.00100" />
+              <site rgba="0.8 0.3 0.4 0.2"  name="site_little_origin" pos="-0.04685 0.00996 -0.10166" size="0.00100" />
+              <site rgba="0.8 0.3 0.4 0.2"  name="site_middle_origin" pos="-0.00234 0.01682 -0.10983" size="0.00100" />
+              <site rgba="0.8 0.3 0.4 0.2"  name="site_ring_origin" pos="-0.02619 0.01492 -0.10559" size="0.00100" />
+              <body name="Thumb PIP" pos="0.02429 0.00031 -0.05971" quat="0.99566 0.09304 -0.00187 -0.00017">
+                <joint range="-10 90" name="thumb abduct"/>
+                <geom class="white" type="mesh" name="Thumb PIP geom" mesh="Thumb PIP" />
+                <site rgba="0.8 0.3 0.4 0.2"  name="site_thumb_p" pos="0.00225 -0.01441 0.00397" size="0.00100" />
+                <site rgba="0.8 0.3 0.4 0.2"  name="site_thumb_p_end" pos="0.00308 -0.02203 0.00169" size="0.00100" />
+                <body name="Thumb DIP" pos="0.00396 -0.03009 0.00749" quat="0.69125 -0.07363 -0.70326 0.14886">
+                  <joint/>
+                  <geom class="white" type="mesh" name="Thumb DIP geom" mesh="Thumb DIP" />
+                  <site rgba="0.8 0.3 0.4 0.2"  name="site_thumb_d" pos="-0.00976 0.00217 1.86264e-09" size="0.00100" />
+                  <site rgba="0.8 0.3 0.4 0.2"  name="site_thumb_d_end" pos="-0.02500 -0.01821 9.31322e-09" size="0.00100" />
+                </body>
+              </body>
+            </body>
+          </body>
+        </body>
+      </body>
+    </body>
+  </worldbody>
+  
+  <tendon>
+    <spatial name="index">
+      <site site="site_index_origin"/>
+      <site site="site_index_p"/>
+      <site site="site_index_p_end"/>
+      <site site="site_index_d"/>
+      <site site="site_index_d_end"/>
+    </spatial>
+    
+    <spatial name="middle">
+      <site site="site_middle_origin"/>
+      <site site="site_middle_p"/>
+      <site site="site_middle_p_end"/>
+      <site site="site_middle_d"/>
+      <site site="site_middle_d_end"/>
+    </spatial>
+    
+    <spatial name="ring">
+      <site site="site_ring_origin"/>
+      <site site="site_ring_p"/>
+      <site site="site_ring_p_end"/>
+      <site site="site_ring_d"/>
+      <site site="site_ring_d_end"/>
+    </spatial>
+    
+    <spatial name="little">
+      <site site="site_little_origin"/>
+      <site site="site_little_p"/>
+      <site site="site_little_p_end"/>
+      <site site="site_little_d"/>
+      <site site="site_little_d_end"/>
+    </spatial>
+    
+    <spatial name="thumb">
+      <site site="site_thumb_p"/>
+      <site site="site_thumb_p_end"/>
+      <site site="site_thumb_d"/>
+      <site site="site_thumb_d_end"/>
+    </spatial>
+  </tendon>
+  
+  <actuator>
+    <motor name="index"  tendon="index"/>
+    <motor name="middle"  tendon="middle"/>
+    <motor name="ring"  tendon="ring"/>
+    <motor name="little"  tendon="little"/>
+    <motor name="thumb abduct"  joint="thumb abduct" gear="1"/>
+    <motor name="thumb"  tendon="thumb" gear="-10"/>
+    
+    <position name="rotate" kp="3"  joint="rotation" gear="1" ctrllimited="true" ctrlrange="-0.08726 3.14159 "/>
+    <position name="deviate" kp="3"  joint="deviation" gear="1" ctrllimited="true" ctrlrange="-0.52359 0.52359"/>
+    <position name="flex" kp="3"  joint="flexion" gear="1" ctrllimited="true" ctrlrange="-0.52359 1.22173"/>
+  </actuator>
+  
+  <contact>
+  
+    <exclude body1="Hand Mount" body2="Dev platform" />
+    <exclude body1="Dev platform" body2="Flex upper" />
+  </contact>
+  
+  <asset>
+    <mesh name="Hand Mount" file="Hand Mount.stl"/>
+    <mesh name="Dev platform" file="Dev platform.stl"/>
+    <mesh name="Flex platform" file="Flex platform.stl"/>
+    <mesh name="Flex upper" file="Flex upper.stl"/>
+    <mesh name="Palm" file="Palm.stl"/>
+    <mesh name="Index PIP" file="Index PIP.stl"/>
+    <mesh name="Index DIP" file="Index DIP.stl"/>
+    <mesh name="Little PIP" file="Little PIP.stl"/>
+    <mesh name="Little DIP" file="Little DIP.stl"/>
+    <mesh name="Middle PIP" file="Middle PIP.stl"/>
+    <mesh name="Middle DIP" file="Middle DIP.stl"/>
+    <mesh name="Ring PIP" file="Ring PIP.stl"/>
+    <mesh name="Ring DIP" file="Ring DIP.stl"/>
+    <mesh name="Thumb PIP" file="Thumb PIP.stl"/>
+    <mesh name="Thumb DIP" file="Thumb DIP.stl"/>
+    
+    <material name="PLA" shininess="0.2" reflectance="0" specular="0.01"/>
+  </asset>
+</mujoco>

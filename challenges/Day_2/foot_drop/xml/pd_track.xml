@@ -1,0 +1,218 @@
+<!--
+The model definition MJCF file for the ankle exo challenge. This defines the humanoid, the actuators and sensors and
+their names.
+-->
+
+<mujoco>
+  <actuator>
+    <motor name="exo"  gear="-50" ctrlrange="0 1" ctrllimited="true" tendon="exo"/>
+    <!-- Notice that the actuators below have 0 gearing i.e. they don't apply any force to the tendon.
+    Instead they are added as a way to get interactive sliders in the simulation window. You can rename
+    them or add more if you like. You can use them as tuneable parameters, and query their values at runtime.
+    You can edit the ctrlrange parameter to set the min and max values of the slider.
+    -->
+    <motor name="param_1"  gear="0" ctrlrange="0 1" ctrllimited="true" tendon="exo" group="1"/>
+    <motor name="param_2"  gear="0" ctrlrange="-0.5 1" ctrllimited="true" tendon="exo" group="1"/>
+    <motor name="param_3"  gear="0" ctrlrange="0 1" ctrllimited="true" tendon="exo" group="1"/>
+  </actuator>
+
+  <!-- You can reserve space in the data structure for your own logic that will be passed along from frame
+   to frame. By default we'll use it to keep track of the reward function and smooth it out. -->
+  <size nuserdata="1" />
+
+  <sensor>
+    <accelerometer site="lfootIMU" noise="0" cutoff="0" name="lfootACC" />
+    <accelerometer site="ltibiaIMU" noise="0" cutoff="0" name="ltibiaACC" />
+    <gyro site="ltibiaIMU" noise="0" cutoff="0" name="ltibiaGYR" />
+    <gyro site="lfootIMU" noise="0" cutoff="0" name="lfootGYR" />
+
+    <!-- The contact force at the toes, we'll use this in our reward function to penalize tripping. -->
+    <touch site="ltoesite" noise="0" cutoff="0" name="ltoeForce" />
+  </sensor>
+
+  <worldbody>
+    <!-- The ankle joint is on the left side, called "lfootrx" -->
+    <body pos="0 0 0.963" quat="-1 0 0 0" name="root">
+      <body pos="0 0 0" quat="0 0 0.7071068 0.7071068" name="lhipjoint">
+        <geom density="10" type="capsule" size="0.008000004 0.02187361" pos="0.05096853 -0.04590369 0.02472301" quat="0.5708001 -0.5666021 -0.5942641 0" priority="0" contype="0" conaffinity="0" group="2" condim="1" solmix="1" solref="0.015 1" solimp="0.99 0.99 0.003" margin="0" gap="0" friction="0.7 0.005 0.0001" name="lhipjoint" />
+        <body pos="0.1019371 -0.09180744 0.04944616" quat="-1 0 0 0" name="lfemur">
+          <joint type="ball" pos="0 0 0" armature="0.005" springref="0" springdamper="0 0" damping="20" stiffness="0" solreflimit="0.02 1" solimplimit="0.9 0.95 0.001 0.5 2" solreffriction="0.02 1" solimpfriction="0.9 0.95 0.001 0.5 2" frictionloss="0" limited="true" margin="0" range="0 137.51" name="lfemurr" />
+          <geom density="0" type="capsule" size="0.08500003 0.083" pos="0 -0.115473 3.61172E-08" quat="0.6963643 -0.6963643 -0.1227881 -0.1227881" priority="0" contype="0" conaffinity="0" group="2" condim="1" solmix="1" solref="0.015 1" solimp="0.99 0.99 0.003" margin="0" gap="0" friction="0.7 0.005 0.0001" name="lfemur_upper" />
+          <geom density="1000" type="capsule" size="0.07000002 0.182226" pos="0 -0.2024731 4.648841E-08" quat="0.6963643 -0.6963643 -0.1227881 -0.1227881" priority="0" contype="0" conaffinity="0" group="2" condim="1" solmix="1" solref="0.015 1" solimp="0.99 0.99 0.003" margin="0" gap="0" friction="0.7 0.005 0.0001" name="lfemur" />
+          <body pos="0 -0.4049452 1.302296E-07" quat="-1 0 0 0" name="ltibia">
+            <body name="tibiaIMU_body" pos="0 -0.194 0.04300001" quat="0 0 -0.7071069 -0.7071069">
+                <joint type="slide" stiffness="1" damping="20" axis="1 0 0"/>
+                <joint type="slide" stiffness="1" damping="20" axis="0 1 0"/>
+                <joint type="slide" stiffness="1" damping="20" axis="0 0 1"/>
+                <inertial mass="0.002" diaginertia="0.001 0.001 0.001" pos="0 0 0" />
+                <site type="box" size="0.01 0.01000001 0.02000001"  rgba="1 0.3 0.12 0" name="ltibiaIMU" />
+            </body>
+            <site type="box" size="0.01000002 0.01000001 0.02000001" pos="0 -0.194 0.04300001" quat="0 0 -0.7071069 -0.7071069" rgba="1 0.3 0.12 1" name="ltibiaTendon" />
+            <joint type="hinge" pos="0 0 0" axis="1 0 0" ref="0" armature="0.05" springref="0" springdamper="0 0" damping="40" stiffness="0" solreflimit="0.02 1" solimplimit="0 0.99 0.01 0.5 2" solreffriction="0.02 1" solimpfriction="0.9 0.95 0.001 0.5 2" frictionloss="0" limited="true" margin="0" range="0.5729578 170" name="ltibiarx" />
+            <geom density="1000" type="capsule" size="0.04000001 0.182561" pos="0 -0.2028461 2.418113E-08" quat="0.6963643 -0.6963643 -0.1227881 -0.1227881" priority="0" contype="0" conaffinity="0" group="2" condim="1" solmix="1" solref="0.015 1" solimp="0.99 0.99 0.003" margin="0" gap="0" friction="0.7 0.005 0.0001" name="ltibia" />
+            <body pos="0 -0.4156931 1.091591E-07" quat="0.7071069 -0.7071069 0 0" name="lfoot">
+              <body name="footIMU_body" pos="0 -0.1 0.01" quat="0 0 -0.7071069 -0.7071069">
+                <joint type="slide" stiffness="1" damping="20" axis="1 0 0"/>
+                <joint type="slide" stiffness="1" damping="20" axis="0 1 0"/>
+                <joint type="slide" stiffness="1" damping="20" axis="0 0 1"/>
+                <inertial mass="0.001" diaginertia="0.001 0.001 0.001" pos="0 0 0" />
+                <site type="box" size="0.01000002 0.01000001 0.02000001"  rgba="1 0.3 0.12 0" name="lfootIMU"  />
+              </body>
+              <site type="box" size="0.01000002 0.01000001 0.02000001"  rgba="1 0.3 0.12 1" pos="0 -0.1 0.01" quat="0 0 -0.7071069 -0.7071069" name="lfootTendon"  />
+              <joint type="hinge" pos="0 0 0" axis="1 0 0" ref="0" armature="0.005" springref="30" springdamper="0 0" damping="0.2" stiffness="1.5" solreflimit="0.02 1" solimplimit="0 0.99 0.01 0.5 2" solreffriction="0.02 1" solimpfriction="0.9 0.95 0.001 0.5 2" frictionloss="0.2" limited="true" margin="0" range="-44.99999 30" name="lfootrx" />
+              <geom density="1000" type="capsule" size="0.02500003 0.08000004" pos="-0.02700003 -0.04999997 -0.01138771" quat="0.7672563 -0.6405111 0.02306491 -0.02306581" priority="0" contype="1" conaffinity="1" group="2" condim="3" solmix="1" solref="0.1 1" solimp="0.98 0.98 0.002" margin="0" gap="0" friction="1 0.005 0.0001" name="lfoot" />
+              <geom density="1000" type="capsule" size="0.02500003 0.08000004" pos="0.02700002 -0.04999997 -0.01138771" quat="0.7288731 -0.5939951 -0.240743 -0.240743" priority="0" contype="1" conaffinity="1" group="2" condim="3" solmix="1" solref="0.1 1" solimp="0.98 0.98 0.002" margin="0" gap="0" friction="1 0.005 0.0001" name="lfoot_ch" />
+              <body pos="0 -0.1563721 -0.02277565" quat="-1 0 0 0" name="ltoes">
+
+                <site type="sphere" size="0.07000005" pos="0 -0.03280033 5.960464E-08" quat="-1 0 0 0" name="ltoesite" rgba="0 0 0 0" />
+                <joint type="hinge" pos="0 0 0" axis="1 0 0" ref="0" armature="0.005" springref="0" springdamper="0 0" damping="20" stiffness="0" solreflimit="0.02 1" solimplimit="0 0.99 0.01 0.5 2" solreffriction="0.02 1" solimpfriction="0.9 0.95 0.001 0.5 2" frictionloss="0" limited="true" margin="0" range="-90.00021 20.00001" name="ltoesrx" />
+                <geom density="3000" type="sphere" size="0.02500002" pos="0 -0.009999995 -0.00999999" quat="-1 0 0 0" priority="30" contype="1" conaffinity="1" group="2" condim="6" solmix="1" solref="-300 -50" solimp="0.80 0.98 0.01" margin="0" gap="0" friction="1 0.005 0.0001" name="ltoes0" />
+                <geom density="3000" type="sphere" size="0.02500002" pos="0.03000001 -0.009999995 -0.00999999" quat="-1 0 0 0" priority="30" contype="1" conaffinity="1" group="2" condim="6" solmix="1" solref="-300 -50" solimp="0.80 0.98 0.01" margin="0" gap="0" friction="1 0.005 0.0001" name="ltoes1" />
+                <geom density="3000" type="sphere" size="0.02500002" pos="-0.03000003 -0.009999995 -0.00999999" quat="-1 0 0 0" priority="30" contype="1" conaffinity="1" group="2" condim="6" solmix="1" solref="-300 -50" solimp="0.80 0.98 0.01" margin="0" gap="0" friction="1 0.005 0.0001" name="ltoes2" />
+              </body>
+            </body>
+          </body>
+        </body>
+      </body>
+      <body pos="0 0 0" quat="0 0 0.7071068 0.7071068" name="rhipjoint">
+        <geom density="10" type="capsule" size="0.008000002 0.02187361" pos="-0.05096853 -0.04590369 0.02472301" quat="0.5748562 -0.5475942 0.6080142 0" priority="0" contype="0" conaffinity="0" group="2" condim="1" solmix="1" solref="0.015 1" solimp="0.99 0.99 0.003" margin="0" gap="0" friction="0.7 0.005 0.0001" name="rhipjoint" />
+        <body pos="-0.1019371 -0.09180744 0.04944613" quat="-1 0 0 0" name="rfemur">
+          <joint type="ball" pos="0 0 0" armature="0.005" springref="0" springdamper="0 0" damping="20" stiffness="0" solreflimit="0.02 1" solimplimit="0.9 0.95 0.001 0.5 2" solreffriction="0.02 1" solimpfriction="0.9 0.95 0.001 0.5 2" frictionloss="0" limited="true" margin="0" range="0 137.51" name="rfemurr" />
+          <geom density="0" type="capsule" size="0.08500003 0.083" pos="0 -0.115473 3.61172E-08" quat="0.6963643 -0.6963643 0.1227881 0.1227881" priority="0" contype="0" conaffinity="0" group="2" condim="1" solmix="1" solref="0.015 1" solimp="0.99 0.99 0.003" margin="0" gap="0" friction="0.7 0.005 0.0001" name="rfemur_upper" />
+          <geom density="1000" type="capsule" size="0.07000002 0.182226" pos="0 -0.2024731 4.648841E-08" quat="0.6963643 -0.6963643 0.1227881 0.1227881" priority="0" contype="0" conaffinity="0" group="2" condim="1" solmix="1" solref="0.015 1" solimp="0.99 0.99 0.003" margin="0" gap="0" friction="0.7 0.005 0.0001" name="rfemur" />
+          <body pos="0 -0.4049451 1.004273E-07" quat="-1 0 0 0" name="rtibia">
+            <joint type="hinge" pos="0 0 0" axis="1 0 0" ref="0" armature="0.005" springref="0" springdamper="0 0" damping="20" stiffness="0" solreflimit="0.02 1" solimplimit="0 0.99 0.01 0.5 2" solreffriction="0.02 1" solimpfriction="0.9 0.95 0.001 0.5 2" frictionloss="0" limited="true" margin="0" range="0.5729578 170" name="rtibiarx" />
+            <geom density="1000" type="capsule" size="0.04000001 0.182561" pos="0 -0.2028461 2.418113E-08" quat="0.6963643 -0.6963643 0.1227881 0.1227881" priority="0" contype="0" conaffinity="0" group="2" condim="1" solmix="1" solref="0.015 1" solimp="0.99 0.99 0.003" margin="0" gap="0" friction="0.7 0.005 0.0001" name="rtibia" />
+            <body pos="0 -0.4156932 1.091591E-07" quat="0.7071069 -0.7071069 0 0" name="rfoot">
+              <joint type="hinge" pos="0 0 0" axis="-4.768369E-07 0 1" ref="0" armature="0.005" springref="0" springdamper="0 0" damping="20" stiffness="0" solreflimit="0.02 1" solimplimit="0 0.99 0.01 0.5 2" solreffriction="0.02 1" solimpfriction="0.9 0.95 0.001 0.5 2" frictionloss="0" limited="true" margin="0" range="-20.00001 69.99997" name="rfootrz" />
+              <joint type="hinge" pos="0 0 0" axis="1 0 0" ref="0" armature="0.005" springref="0" springdamper="0 0" damping="20" stiffness="0" solreflimit="0.02 1" solimplimit="0 0.99 0.01 0.5 2" solreffriction="0.02 1" solimpfriction="0.9 0.95 0.001 0.5 2" frictionloss="0" limited="true" margin="0" range="-44.99999 45.83662" name="rfootrx" />
+              <geom density="1000" type="capsule" size="0.02500002 0.08000004" pos="-0.02700002 -0.05000003 -0.01138777" quat="0.7352074 -0.5863352 0.2405011 0.2405011" priority="0" contype="0" conaffinity="0" group="2" condim="3" solmix="1" solref="0.015 1" solimp="0.98 0.98 0.001" margin="0" gap="0" friction="1 0.005 0.0001" name="rfoot" />
+              <geom density="1000" type="capsule" size="0.02500002 0.08000002" pos="0.02700003 -0.05000003 -0.01138777" quat="0.7731252 -0.6332311 -0.02545851 0.02545841" priority="0" contype="0" conaffinity="0" group="2" condim="3" solmix="1" solref="0.015 1" solimp="0.98 0.98 0.001" margin="0" gap="0" friction="1 0.005 0.0001" name="rfoot_ch" />
+              <body pos="0 -0.1563721 -0.02277559" quat="-1 0 0 0" name="rtoes">
+                <joint type="hinge" pos="0 0 0" axis="1 0 0" ref="0" armature="0.005" springref="0" springdamper="0 0" damping="20" stiffness="0" solreflimit="0.02 1" solimplimit="0 0.99 0.01 0.5 2" solreffriction="0.02 1" solimpfriction="0.9 0.95 0.001 0.5 2" frictionloss="0" limited="true" margin="0" range="-90.00021 20.00001" name="rtoesrx" />
+                <geom density="1000" type="sphere" size="0.02500002" pos="0 -0.009999995 -0.00999999" quat="-1 0 0 0" priority="0" contype="0" conaffinity="0" group="2" condim="3" solmix="1" solref="0.015 1" solimp="0.98 0.98 0.001" margin="0" gap="0" friction="1 0.005 0.0001" name="rtoes0" />
+                <geom density="1000" type="sphere" size="0.02500002" pos="0.03000003 -0.009999995 -0.00999999" quat="-1 0 0 0" priority="0" contype="0" conaffinity="0" group="2" condim="3" solmix="1" solref="0.015 1" solimp="0.98 0.98 0.001" margin="0" gap="0" friction="1 0.005 0.0001" name="rtoes1" />
+                <geom density="1000" type="sphere" size="0.02500002" pos="-0.03000001 -0.009999995 -0.00999999" quat="-1 0 0 0" priority="0" contype="0" conaffinity="0" group="2" condim="3" solmix="1" solref="0.015 1" solimp="0.98 0.98 0.001" margin="0" gap="0" friction="1 0.005 0.0001" name="rtoes2" />
+              </body>
+            </body>
+          </body>
+        </body>
+      </body>
+      <freejoint name="freejoint" />
+      <geom density="1000" type="capsule" size="0.1 0.07" pos="0 0 -0.05000001" quat="-0.5 -0.5 -0.5 -0.5" priority="0" contype="0" conaffinity="0" group="2" condim="1" solmix="1" solref="0.015 1" solimp="0.99 0.99 0.003" margin="0" gap="0" friction="0.7 0.005 0.0001" name="root_geom" />
+      <body pos="0 0 0" quat="0 0 0.7071068 0.7071068" name="lowerback">
+        <joint type="ball" pos="0 0 0" armature="0.005" springref="0" springdamper="0 0" damping="80" stiffness="5" solreflimit="0.02 1" solimplimit="0.9 0.95 0.001 0.5 2" solreffriction="0.02 1" solimpfriction="0.9 0.95 0.001 0.5 2" frictionloss="0" limited="true" margin="0" range="0 37.24227" name="lowerbackr" />
+        <geom density="1000" type="capsule" size="0.08500004 0.04540022" pos="0.002829311 0.05660648 0.009999989" quat="0.7071069 0 0.7071069 0" priority="0" contype="0" conaffinity="0" group="2" condim="1" solmix="1" solref="0.015 1" solimp="0.99 0.99 0.003" margin="0" gap="0" friction="0.7 0.005 0.0001" name="lowerback" />
+        <body pos="0.0005658622 0.113213 -0.008053012" quat="-1 0 0 0" name="upperback">
+          <joint type="hinge" pos="0 0 0" axis="-3.576278E-07 0 1" ref="0" armature="0.005" springref="0" springdamper="0 0" damping="80" stiffness="5" solreflimit="0.02 1" solimplimit="0 0.99 0.01 0.5 2" solreffriction="0.02 1" solimpfriction="0.9 0.95 0.001 0.5 2" frictionloss="0" limited="true" margin="0" range="-30.00002 30.00002" name="upperbackrz" />
+          <joint type="hinge" pos="0 0 0" axis="-3.576278E-07 1 0" ref="0" armature="0.005" springref="0" springdamper="0 0" damping="80" stiffness="5" solreflimit="0.02 1" solimplimit="0 0.99 0.01 0.5 2" solreffriction="0.02 1" solimpfriction="0.9 0.95 0.001 0.5 2" frictionloss="0" limited="true" margin="0" range="-30.00002 30.00002" name="upperbackry" />
+          <geom density="1000" type="capsule" size="0.09000005 0.04542623" pos="0.0002562642 0.05678022 0.02" quat="0.7071069 0 0.7071069 0" priority="0" contype="0" conaffinity="0" group="2" condim="1" solmix="1" solref="0.015 1" solimp="0.99 0.99 0.003" margin="0" gap="0" friction="0.7 0.005 0.0001" name="upperback" />
+          <body pos="0.0005125283 0.1135601 0.0009368002" quat="-1 0 0 0" name="thorax">
+            <joint type="ball" pos="0 0 0" armature="0.005" springref="0" springdamper="0 0" damping="80" stiffness="0" solreflimit="0.02 1" solimplimit="0.9 0.95 0.001 0.5 2" solreffriction="0.02 1" solimpfriction="0.9 0.95 0.001 0.5 2" frictionloss="0" limited="true" margin="0" range="0 37.24227" name="thoraxr" />
+            <geom density="1000" type="capsule" size="0.09500004 0.05702063" pos="0 0.05697251 0.01999999" quat="0.7071069 0 0.7071069 0" priority="0" contype="0" conaffinity="0" group="2" condim="1" solmix="1" solref="0.015 1" solimp="0.99 0.99 0.003" margin="0" gap="0" friction="0.7 0.005 0.0001" name="thorax" />
+            <body pos="0 0.113945 0.004680337" quat="-1 0 0 0" name="lowerneck">
+              <joint type="ball" pos="0 0 0" armature="0.005" springref="0" springdamper="0 0" damping="80" stiffness="5" solreflimit="0.02 1" solimplimit="0.9 0.95 0.001 0.5 2" solreffriction="0.02 1" solimpfriction="0.9 0.95 0.001 0.5 2" frictionloss="0" limited="true" margin="0" range="0 30.0803" name="lowerneckr" />
+              <geom density="500" type="capsule" size="0.07500006 0.02279232" pos="-0.001650711 0.04524005 0.005343582" quat="0.7071069 0.7071069 0 0" priority="0" contype="0" conaffinity="0" group="2" condim="1" solmix="1" solref="0.015 1" solimp="0.99 0.99 0.003" margin="0" gap="0" friction="0.7 0.005 0.0001" name="lowerneck" />
+              <body pos="-0.003301431 0.0904801 0.01068716" quat="-1 0 0 0" name="upperneck">
+                <joint type="ball" pos="0 0 0" armature="0.005" springref="0" springdamper="0 0" damping="80" stiffness="5" solreflimit="0.02 1" solimplimit="0.9 0.95 0.001 0.5 2" solreffriction="0.02 1" solimpfriction="0.9 0.95 0.001 0.5 2" frictionloss="0" limited="true" margin="0" range="0 30.0803" name="upperneckr" />
+                <geom density="500" type="capsule" size="0.05000004 0.02252722" pos="0.0005008752 0.04499555 -0.002246445" quat="0.7071069 0.7071069 0 0" priority="0" contype="0" conaffinity="0" group="2" condim="1" solmix="1" solref="0.015 1" solimp="0.99 0.99 0.003" margin="0" gap="0" friction="0.7 0.005 0.0001" name="upperneck" />
+                <body pos="0.001001751 0.13 -0.004492865" quat="-1 0 0 0" name="head">
+                  <joint type="ball" pos="0 0 0" armature="0.005" springref="0" springdamper="0 0" damping="80" stiffness="0" solreflimit="0.02 1" solimplimit="0.9 0.95 0.001 0.5 2" solreffriction="0.02 1" solimpfriction="0.9 0.95 0.001 0.5 2" frictionloss="0" limited="true" margin="0" range="0 0.525" name="headr" />
+                  <geom density="800" type="capsule" size="0.09500007 0.02410402" pos="0.0003414648 0.04818404 0.02499997" quat="0.7071069 0.7071069 0 0" priority="0" contype="0" conaffinity="0" group="2" condim="1" solmix="1" solref="0.015 1" solimp="0.99 0.99 0.003" margin="0" gap="0" friction="0.7 0.005 0.0001" name="head" />
+                </body>
+              </body>
+            </body>
+            <body pos="0 0.113945 0.004680337" quat="-1 0 0 0" name="lclavicle">
+              <joint type="hinge" pos="0 0 0" axis="-3.576278E-07 0 1" ref="0" armature="0.005" springref="0" springdamper="0 0" damping="20" stiffness="0" solreflimit="0.02 1" solimplimit="0 0.99 0.01 0.5 2" solreffriction="0.02 1" solimpfriction="0.9 0.95 0.001 0.5 2" frictionloss="0" limited="true" margin="0" range="-20.00001 0" name="lclaviclerz" />
+              <joint type="hinge" pos="0 0 0" axis="-3.576278E-07 1 0" ref="0" armature="0.005" springref="0" springdamper="0 0" damping="20" stiffness="0" solreflimit="0.02 1" solimplimit="0 0.99 0.01 0.5 2" solreffriction="0.02 1" solimpfriction="0.9 0.95 0.001 0.5 2" frictionloss="0" limited="true" margin="0" range="-10 20" name="lclaviclery" />
+              <geom density="500" type="capsule" size="0.07500002 0.06000001" pos="0.09188174 0.03826356 0.005357023" quat="0.6879708 0.2789879 -0.6699718 0" priority="0" contype="0" conaffinity="0" group="2" condim="1" solmix="1" solref="0.015 1" solimp="0.99 0.99 0.003" margin="0" gap="0" friction="0.7 0.005 0.0001" name="lclavicle" />
+              <body pos="0.1800001 0.08999992 0.01071407" quat="0.1830129 0.6830128 -0.6830128 0.1830129" name="lhumerus">
+                <joint type="ball" pos="0 0 0" armature="0.005" springref="0" springdamper="0 0" damping="20" stiffness="0" solreflimit="0.02 1" solimplimit="0.9 0.95 0.001 0.5 2" solreffriction="0.02 1" solimpfriction="0.9 0.95 0.001 0.5 2" frictionloss="0" limited="true" margin="0" range="0 120" name="lhumerusr" />
+                <geom density="1000" type="capsule" size="0.04200003 0.124579" pos="-5.579768E-08 -0.1384211 -5.960476E-08" quat="0.6123727 -0.6123727 0.3535535 0.3535534" priority="0" contype="0" conaffinity="0" group="2" condim="1" solmix="1" solref="0.015 1" solimp="0.99 0.99 0.003" margin="0" gap="0" friction="0.7 0.005 0.0001" name="lhumerus" />
+                <body pos="-8.356723E-09 -0.2768433 -5.960476E-08" quat="-1 0 0 0" name="lradius">
+                  <joint type="hinge" pos="0 0 0" axis="0.8660252 0 0.5000002" ref="0" armature="0.005" springref="0" springdamper="0 0" damping="20" stiffness="0" solreflimit="0.02 1" solimplimit="0 0.99 0.01 0.5 2" solreffriction="0.02 1" solimpfriction="0.9 0.95 0.001 0.5 2" frictionloss="0" limited="true" margin="0" range="-10 170" name="lradiusrx" />
+                  <geom density="1000" type="capsule" size="0.03000001 0.08169114" pos="3.11086E-08 -0.09076798 0" quat="0.6123727 -0.6123727 0.3535535 0.3535534" priority="0" contype="0" conaffinity="0" group="2" condim="1" solmix="1" solref="0.015 1" solimp="0.99 0.99 0.003" margin="0" gap="0" friction="0.7 0.005 0.0001" name="lradius" />
+                  <body pos="-4.102102E-08 -0.1815361 -5.960476E-08" quat="-0.5000005 0 0.8660256 0" name="lwrist">
+                    <geom density="1000" type="capsule" size="0.02000002 0.03000002" pos="1.430511E-08 -0.02999999 0" quat="-8.108592E-09 -5.511171E-08 -0.7071072 -0.7071072" priority="0" contype="0" conaffinity="0" group="2" condim="1" solmix="1" solref="0.015 1" solimp="0.99 0.99 0.003" margin="0" gap="0" friction="0.7 0.005 0.0001" name="lwrist" />
+                    <body pos="4.328137E-08 -0.09076761 0" quat="-1 0 0 0" name="lhand">
+                      <geom density="1000" type="ellipsoid" size="0.03500004 0.02000002 0.04500004" pos="7.987984E-09 -0.01675201 0" quat="-8.108592E-09 -5.511171E-08 -0.7071072 -0.7071072" priority="0" contype="0" conaffinity="0" group="2" condim="3" solmix="1" solref="0.015 1" solimp="0.98 0.98 0.001" margin="0" gap="0" friction="1 0.005 0.0001" name="lhand" />
+                      <body pos="3.576289E-08 -0.0750002 0" quat="-1 0 0 0" name="lfingers">
+                        <geom density="1000" type="capsule" size="0.006500005 0.04000004" pos="-0.02400002 -0.02500006 -2.629966E-08" quat="0.7071072 -0.7071072 7.618512E-08 -2.918201E-08" priority="0" contype="0" conaffinity="0" group="2" condim="3" solmix="1" solref="0.015 1" solimp="0.98 0.98 0.001" margin="0" gap="0" friction="1 0.005 0.0001" name="lfinger0" />
+                        <geom density="1000" type="capsule" size="0.006500005 0.04000004" pos="-0.008000006 -0.03000005 -8.766564E-09" quat="0.7071072 -0.7071072 7.618512E-08 -2.918201E-08" priority="0" contype="0" conaffinity="0" group="2" condim="3" solmix="1" solref="0.015 1" solimp="0.98 0.98 0.001" margin="0" gap="0" friction="1 0.005 0.0001" name="lfinger1" />
+                        <geom density="1000" type="capsule" size="0.006000004 0.04000004" pos="0.008000004 -0.03000004 8.766532E-09" quat="0.7071072 -0.7071072 7.618512E-08 -2.918201E-08" priority="0" contype="0" conaffinity="0" group="2" condim="3" solmix="1" solref="0.015 1" solimp="0.98 0.98 0.001" margin="0" gap="0" friction="1 0.005 0.0001" name="lfinger2" />
+                        <geom density="1000" type="capsule" size="0.005500004 0.04000004" pos="0.02400004 -0.02500004 2.629966E-08" quat="0.7071072 -0.7071072 7.618512E-08 -2.918201E-08" priority="0" contype="0" conaffinity="0" group="2" condim="3" solmix="1" solref="0.015 1" solimp="0.98 0.98 0.001" margin="0" gap="0" friction="1 0.005 0.0001" name="lfinger3" />
+                      </body>
+                      <body pos="-0.02500002 -1.192094E-08 -2.739547E-08" quat="0.9238802 -1.159555E-08 -1.097658E-08 -0.3826831" name="lthumb">
+                        <geom density="1000" type="capsule" size="0.008000006 0.03000002" pos="8.00791E-08 -0.03000013 -1.428458E-07" quat="4.502673E-09 -1.725909E-08 -0.7071071 -0.7071071" priority="0" contype="0" conaffinity="0" group="2" condim="3" solmix="1" solref="0.015 1" solimp="0.98 0.98 0.001" margin="0" gap="0" friction="1 0.005 0.0001" name="lthumb" />
+                      </body>
+                    </body>
+                  </body>
+                </body>
+              </body>
+            </body>
+            <body pos="0 0.113945 0.004680337" quat="-1 0 0 0" name="rclavicle">
+              <joint type="hinge" pos="0 0 0" axis="-3.576278E-07 0 1" ref="0" armature="0.005" springref="0" springdamper="0 0" damping="20" stiffness="0" solreflimit="0.02 1" solimplimit="0 0.99 0.01 0.5 2" solreffriction="0.02 1" solimpfriction="0.9 0.95 0.001 0.5 2" frictionloss="0" limited="true" margin="0" range="0 20.00001" name="rclaviclerz" />
+              <joint type="hinge" pos="0 0 0" axis="-3.576278E-07 1 0" ref="0" armature="0.005" springref="0" springdamper="0 0" damping="20" stiffness="0" solreflimit="0.02 1" solimplimit="0 0.99 0.01 0.5 2" solreffriction="0.02 1" solimpfriction="0.9 0.95 0.001 0.5 2" frictionloss="0" limited="true" margin="0" range="-20.00001 10" name="rclaviclery" />
+              <geom density="500" type="capsule" size="0.07500002 0.06000001" pos="-0.09188174 0.03826356 0.005357023" quat="0.6879708 0.2789879 0.6699718 0" priority="0" contype="0" conaffinity="0" group="2" condim="1" solmix="1" solref="0.015 1" solimp="0.99 0.99 0.003" margin="0" gap="0" friction="0.7 0.005 0.0001" name="rclavicle" />
+              <body pos="-0.1800001 0.08999992 0.01071407" quat="0.1830129 0.6830128 0.6830128 -0.1830129" name="rhumerus">
+                <joint type="ball" pos="0 0 0" armature="0.005" springref="0" springdamper="0 0" damping="20" stiffness="0" solreflimit="0.02 1" solimplimit="0.9 0.95 0.001 0.5 2" solreffriction="0.02 1" solimpfriction="0.9 0.95 0.001 0.5 2" frictionloss="0" limited="true" margin="0" range="0 120" name="rhumerusr" />
+                <geom density="1000" type="capsule" size="0.04200003 0.124579" pos="5.579769E-08 -0.1384211 -5.960476E-08" quat="0.6123727 -0.6123727 -0.3535535 -0.3535534" priority="0" contype="0" conaffinity="0" group="2" condim="1" solmix="1" solref="0.015 1" solimp="0.99 0.99 0.003" margin="0" gap="0" friction="0.7 0.005 0.0001" name="rhumerus" />
+                <body pos="8.356744E-09 -0.2768432 -5.960476E-08" quat="-1 0 0 0" name="rradius">
+                  <joint type="hinge" pos="0 0 0" axis="0.8660253 0 -0.5000001" ref="0" armature="0.005" springref="0" springdamper="0 0" damping="20" stiffness="0" solreflimit="0.02 1" solimplimit="0 0.99 0.01 0.5 2" solreffriction="0.02 1" solimpfriction="0.9 0.95 0.001 0.5 2" frictionloss="0" limited="true" margin="0" range="-10 170" name="rradiusrx" />
+                  <geom density="1000" type="capsule" size="0.03000002 0.08169118" pos="-3.110858E-08 -0.09076792 0" quat="0.6123802 -0.6123722 -0.3535542 -0.3535411" priority="0" contype="0" conaffinity="0" group="2" condim="1" solmix="1" solref="0.015 1" solimp="0.99 0.99 0.003" margin="0" gap="0" friction="0.7 0.005 0.0001" name="rradius" />
+                  <body pos="4.102105E-08 -0.181536 -5.960476E-08" quat="-0.5000005 0 -0.8660256 0" name="rwrist">
+                    <geom density="1000" type="capsule" size="0.02000002 0.03000002" pos="-1.430511E-08 -0.02999999 0" quat="-8.108592E-09 -5.511171E-08 0.7071072 0.7071072" priority="0" contype="0" conaffinity="0" group="2" condim="1" solmix="1" solref="0.015 1" solimp="0.99 0.99 0.003" margin="0" gap="0" friction="0.7 0.005 0.0001" name="rwrist" />
+                    <body pos="-4.328137E-08 -0.09076761 0" quat="-1 0 0 0" name="rhand">
+                      <geom density="1000" type="ellipsoid" size="0.03500004 0.02000002 0.04500004" pos="-7.987984E-09 -0.01675201 0" quat="-8.108592E-09 -5.511171E-08 0.7071072 0.7071072" priority="0" contype="0" conaffinity="0" group="2" condim="3" solmix="1" solref="0.015 1" solimp="0.98 0.98 0.001" margin="0" gap="0" friction="1 0.005 0.0001" name="rhand" />
+                      <body pos="-3.576289E-08 -0.0750002 0" quat="-1 0 0 0" name="rfingers">
+                        <geom density="1000" type="capsule" size="0.006500005 0.04000004" pos="0.02400002 -0.02500006 -2.629966E-08" quat="0.7071072 -0.7071072 -7.618512E-08 2.918201E-08" priority="0" contype="0" conaffinity="0" group="2" condim="3" solmix="1" solref="0.015 1" solimp="0.98 0.98 0.001" margin="0" gap="0" friction="1 0.005 0.0001" name="rfinger0" />
+                        <geom density="1000" type="capsule" size="0.006500005 0.04000004" pos="0.008000006 -0.03000005 -8.766564E-09" quat="0.7071072 -0.7071072 -7.618512E-08 2.918201E-08" priority="0" contype="0" conaffinity="0" group="2" condim="3" solmix="1" solref="0.015 1" solimp="0.98 0.98 0.001" margin="0" gap="0" friction="1 0.005 0.0001" name="rfinger1" />
+                        <geom density="1000" type="capsule" size="0.006000004 0.04000004" pos="-0.008000004 -0.03000004 8.766532E-09" quat="0.7071072 -0.7071072 -7.618512E-08 2.918201E-08" priority="0" contype="0" conaffinity="0" group="2" condim="3" solmix="1" solref="0.015 1" solimp="0.98 0.98 0.001" margin="0" gap="0" friction="1 0.005 0.0001" name="rfinger2" />
+                        <geom density="1000" type="capsule" size="0.005500004 0.04000004" pos="-0.02400004 -0.02500004 2.629966E-08" quat="0.7071072 -0.7071072 -7.618512E-08 2.918201E-08" priority="0" contype="0" conaffinity="0" group="2" condim="3" solmix="1" solref="0.015 1" solimp="0.98 0.98 0.001" margin="0" gap="0" friction="1 0.005 0.0001" name="rfinger3" />
+                      </body>
+                      <body pos="0.02500002 -1.192094E-08 -2.739547E-08" quat="0.9238802 -1.159555E-08 1.097658E-08 0.3826831" name="rthumb">
+                        <geom density="1000" type="capsule" size="0.008000006 0.03000002" pos="4.214583E-09 -0.03000004 -1.428458E-07" quat="4.502673E-09 -1.725909E-08 0.7071071 0.7071071" priority="0" contype="0" conaffinity="0" group="2" condim="3" solmix="1" solref="0.015 1" solimp="0.98 0.98 0.001" margin="0" gap="0" friction="1 0.005 0.0001" name="rthumb" />
+                      </body>
+                    </body>
+                  </body>
+                </body>
+              </body>
+            </body>
+          </body>
+        </body>
+      </body>
+    </body>
+  
+  <!-- These two elements are necessary for clearer visualisation of spatial relationships. --> 
+    <body mocap="true" name="floor">
+      <geom name="floor" pos="0 0 -0.01" size="0 0 1"  condim="1" friction="0 0 0" type="plane" material="matplane" priority="3" solref="0.2 5" solimp="0.1 0.98 0.1" rgba="0.5 0.5 0.5 1"/>
+    </body>
+    <light directional="true" diffuse=".8 .8 .8" specular=".2 .2 .2" pos="0 0 5" dir="0 0 -1"/>
+  </worldbody>
+
+  
+  <tendon>
+    <spatial name="exo" width="0.01" rgba="0.25 0.075 0.03 1">
+      <site site="ltibiaTendon"/>
+      <site site="lfootTendon"/>
+    </spatial>
+  </tendon>
+  
+  <default>
+    <geom rgba="0.32 0.5 0.8 1" />
+  </default>
+
+  <compiler coordinate="local" />
+  <option gravity="0 0 -9.81" timestep="0.005" impratio="1" magnetic="0 0 0" wind="0 0 0" density="0" viscosity="0" o_margin="0" o_solref="0.02 1" o_solimp="0.9 0.95 0.001 0.5 2" integrator="implicit" collision="all" cone="pyramidal" jacobian="auto" solver="Newton" iterations="100" tolerance="1E-08" noslip_iterations="0" noslip_tolerance="1E-06" mpr_iterations="50" mpr_tolerance="1E-06">
+    <flag constraint="enable" equality="enable" frictionloss="enable" limit="enable" contact="enable" passive="enable" gravity="enable" clampctrl="enable" warmstart="enable" filterparent="enable" actuation="enable" refsafe="enable" override="disable" energy="disable" fwdinv="disable" sensornoise="disable" multiccd="disable" />
+  </option>
+  <asset>
+    <texture type="skybox" builtin="gradient" rgb1="0.6 0.6 0.6" rgb2="0 0 0" width="512" height="512"/>
+    <texture name="texplane" type="2d" builtin="checker" rgb1=".25 .25 .25" rgb2=".3 .3 .3" width="512" height="512" mark="cross" markrgb=".8 .8 .8"/>
+    <material name="matplane" reflectance="0.3" texture="texplane" texrepeat="1 1" texuniform="true"/>
+  </asset>
+
+  <visual>
+    <rgba haze=".3 .3 .3 1"/>
+  </visual>
+</mujoco>

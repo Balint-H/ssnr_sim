@@ -1,0 +1,59 @@
+<!--
+This scene is identical to the previous one, except the actuators are 
+swapped from direct torque actuation, to position-controlled actuators
+where the output force is proportional to the error between the desired
+and actual joint-space position (proportional control).
+
+For more information on the actuator model used in MuJoCo see:
+https://mujoco.readthedocs.io/en/latest/modeling.html#actuator-shortcuts
+https://mujoco.readthedocs.io/en/latest/XMLreference.html#actuator-position
+
+Things to note:
+  - What happens when you play with shoulder's control? What if you then
+    leave it at a constant value?
+    
+Things to try:
+  - Adjust the default damping value in the joints. Try different values,
+    including negative ones.
+    
+  - Try to reach the transparent sphere in the scene with the tip of the
+    forearm. What strategy are you using, and what order do you perform
+    actions? You can use multiple different approaches to get to the same
+    state. This is an example of trajectory redundancy.
+    
+  - Adjust the stiffness parameter "kp" in the actuators.
+    
+  - Uncomment the velocity actuators below. What is the connection between
+    damping and velocity actuation?
+    
+Tip: You can use the "Reload" button on the left sidebar of the simulation
+scene to apply changes you saved in the currently loaded XML.
+
+-->
+
+<mujoco model="2-link arm position control">
+  <option timestep="0.005" noslip_iterations="3"/>
+  <include file="humanoid_muscle.xml"/>
+  <worldbody>
+
+    <body name="pass_body" pos="0.62 3.7 0">
+      <geom density="3000" type="cylinder" fromto="0 0 0 0 0 2" size="0.06" rgba=".8 .2 .2 1"/>
+      <joint type="slide" axis="0 1 0" limited="true" range="-100 0"/>
+    </body>
+
+    <body name="block_body"  pos="0.67 3.8 0">
+      <geom density="900" type="cylinder" fromto="0 0 0 0 0 2" size="0.02" rgba=".2 .8 .2 1"/>
+      <joint type="slide" axis="0 1 0" limited="true" range="-100 0"/>
+    </body>
+  </worldbody>
+  <keyframe>
+    <key name="reach_imp" qpos="0 0 1.282
+                            0 0 0 0
+                            0 0 0
+                            0 0 0 0 0 0
+                            0 0 0 0 0 0
+                            0.364 0.7 -1.7 0 0.75 -0.75 -1.4
+                            0 0"/>
+  </keyframe>
+
+</mujoco>

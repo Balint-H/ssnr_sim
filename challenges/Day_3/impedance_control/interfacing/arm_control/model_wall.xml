@@ -1,0 +1,199 @@
+<mujoco>
+  <compiler meshdir="./mesh"/>
+  <option integrator="implicit"/>
+  
+  <default>
+    <joint axis="0 0 1" damping="0.002" limited="true" range="-90 5" armature="0.0002" frictionloss="0.01"  stiffness="0.1"/>
+    <tendon width="0.0005" rgba="0.9 0.3 0.3 1"/>
+    <motor gear="-50" ctrlrange="0 1" ctrllimited="true"/>
+    <geom material="PLA"/>
+    <default class="black">
+      <geom rgba="0.2 0.2 0.2 1"/>
+    </default>
+    <default class="white">
+      <geom rgba="0.95 0.95 0.95 1"/>
+    </default>
+    <default class="blue">
+      <geom rgba="0.5 0.5 0.95 1"/>
+    </default>
+    <default class="red">
+      <geom rgba="0.95 0.2 0.2 1"/>
+    </default>
+  </default>
+  
+  <worldbody>
+    <body name="Hand Mount" pos="0.0 0.0 0.1" euler="-90 0 0">
+      <geom class="black" type="mesh" name="Hand Mount geom" mesh="Hand Mount" />
+      <body name="Dev platform" pos="0.0021651722490787506 0.0017595496028661728 0.060748666524887085" quat="0.7071067094802856 8.980930419916905e-14 9.420559831893084e-15 0.7071068286895752">
+        <joint name="rotation" range="-180 5" damping="0.5" stiffness="0"/>
+        <geom class="black" type="mesh" name="Dev platform geom" mesh="Dev platform" />
+        <body name="Flex platform" pos="-0.034104812890291214 3.164680674672127e-05 0.03935021162033081" quat="0.4999997615814209 0.4999998211860657 0.49999749660491943 0.5000030398368835">
+          <joint  name="deviation" range="-30 30" damping="0.2" stiffness="0"/>
+          <geom class="black" type="mesh" name="Flex platform geom" mesh="Flex platform" />
+          <body name="Flex upper" pos="-0.02798687480390072 0.00012725958367809653 0.035001061856746674" quat="0.7071073651313782 1.9598271592258243e-06 0.7071062922477722 1.68586132076598e-06">
+            <joint  name="flexion" damping="0.001" stiffness="0" frictionloss="0"  range="-50 90"/>
+            <geom class="black" type="mesh" name="Flex upper geom" mesh="Flex upper" />
+            <body name="Palm" pos="-4.935679316986352e-05 0.016898464411497116 0.027966387569904327" quat="0.49999940395355225 0.4999999403953552 0.49999505281448364 -0.5000056028366089">
+              <geom class="black" type="mesh" name="Palm geom" mesh="Palm" />
+              <body name="Index PIP" pos="0.023404277861118317 0.021546611562371254 -0.10906360298395157" quat="0.7179468274116516 -0.08703412115573883 0.6906220316886902 -0.004313287325203419">
+                <joint/>
+                <geom class="red" type="mesh" name="Index PIP geom" mesh="Index PIP" />
+                <body name="Index DIP" pos="0.0435655415058136 0.005462737753987312 3.91155481338501e-08" quat="1.0 5.336478352546692e-07 -8.381903739973495e-07 -4.0978189730367376e-08">
+                  <joint/>
+                  <geom class="red" type="mesh" name="Index DIP geom" mesh="Index DIP" />
+                  <site rgba="0.8 0.3 0.4 0.2"  name="site_index_d" pos="0.00534376734867692 -0.005746813490986824 -1.862645149230957e-09" size="0.0010000000474974513" />
+                  <site rgba="0.8 0.3 0.4 0.2"  name="site_index_d_end" pos="0.03792751207947731 -0.0018642190843820572 -3.3527612686157227e-08" size="0.0010000000474974513" />
+                </body>
+                <site rgba="0.8 0.3 0.4 0.2"  name="site_index_p" pos="0.00633727852255106 -0.0034190956503152847 3.725290298461914e-09" size="0.0010000000474974513" />
+                <site rgba="0.8 0.3 0.4 0.2"  name="site_index_p_end" pos="0.03887232765555382 -0.0007469840347766876 3.166496753692627e-08" size="0.0010000000474974513" />
+              </body>
+              <body name="Little PIP" pos="-0.04781273752450943 0.015793027356266975 -0.10465630143880844" quat="0.6057679653167725 -0.006865044590085745 0.7955607771873474 0.009009131230413914">
+                <joint/>
+                <geom class="red" type="mesh" name="Little PIP geom" mesh="Little PIP" />
+                <body name="Little DIP" pos="0.02462170645594597 0.0029504410922527313 0.0" quat="0.9979657530784607 3.44510317518143e-06 -5.576928742812015e-06 -0.06375257670879364">
+                  <joint/>
+                  <geom class="red" type="mesh" name="Little DIP geom" mesh="Little DIP" />
+                  <site rgba="0.8 0.3 0.4 0.2"  name="site_little_d" pos="0.007341291755437851 -0.007074745371937752 -1.862645149230957e-08" size="0.0009999999310821295" />
+                  <site rgba="0.8 0.3 0.4 0.2"  name="site_little_d_end" pos="0.03537172079086304 -0.002132187597453594 -4.0978193283081055e-07" size="0.0009999999310821295" />
+                </body>
+                <site rgba="0.8 0.3 0.4 0.2"  name="site_little_p" pos="0.004854120314121246 -0.004572820849716663 0.0" size="0.0010000000474974513" />
+                <site rgba="0.8 0.3 0.4 0.2"  name="site_little_p_end" pos="0.017376791685819626 -0.003984550014138222 3.725290298461914e-09" size="0.0010000000474974513" />
+              </body>
+              <body name="Middle PIP" pos="-0.002872677519917488 0.02301611192524433 -0.11338350176811218" quat="0.7035547494888306 -0.07482649385929108 0.706449568271637 -0.01845884509384632">
+                <joint/>
+                <geom class="red" type="mesh" name="Middle PIP geom" mesh="Middle PIP" />
+                <body name="Middle DIP" pos="0.03523259982466698 2.0587816834449768e-05 4.054163582623005e-07" quat="1.0 4.736529717774829e-06 -9.768174095370341e-06 -1.4528623637488636e-07">
+                  <joint/>
+                  <geom class="red" type="mesh" name="Middle DIP geom" mesh="Middle DIP" />
+                  <site rgba="0.8 0.3 0.4 0.2"  name="site_middle_d" pos="0.004985290113836527 -0.004314734600484371 -1.1874362826347351e-08" size="0.0010000000474974513" />
+                  <site rgba="0.8 0.3 0.4 0.2"  name="site_middle_d_end" pos="0.03519299253821373 -7.228739559650421e-05 -2.6175985112786293e-07" size="0.0010000000474974513" />
+                </body>
+                <site rgba="0.8 0.3 0.4 0.2"  name="site_middle_p" pos="0.005642591044306755 -0.004280927591025829 4.284083843231201e-08" size="0.0010000001639127731" />
+                <site rgba="0.8 0.3 0.4 0.2"  name="site_middle_p_end" pos="0.030748896300792694 -0.005160078406333923 3.29513568431139e-07" size="0.0010000000474974513" />
+              </body>
+              <body name="Ring PIP" pos="-0.026974555104970932 0.020984716713428497 -0.10911669582128525" quat="0.6497063040733337 -0.06195838004350662 0.7571348547935486 -0.02810170315206051">
+                <joint/>
+                <geom class="red" type="mesh" name="Ring PIP geom" mesh="Ring PIP" />
+                <body name="Ring DIP" pos="0.033095020800828934 0.0020259059965610504 -2.3469328880310059e-07" quat="1.0 -3.3606781926209806e-06 5.319714091456262e-06 3.762543201446533e-07">
+                  <joint/>
+                  <geom class="red" type="mesh" name="Ring DIP geom" mesh="Ring DIP" />
+                  <site rgba="0.8 0.3 0.4 0.2"  name="site_ring_d" pos="0.00546188373118639 -0.00525276456028223 3.725290298461914e-09" size="0.0009999999310821295" />
+                  <site rgba="0.8 0.3 0.4 0.2"  name="site_ring_d_end" pos="0.03445776179432869 -0.0016925381496548653 1.6763806343078613e-07" size="0.0009999999310821295" />
+                </body>
+                <site rgba="0.8 0.3 0.4 0.2"  name="site_ring_p" pos="0.005418251734226942 -0.004268208518624306 -2.60770320892334e-08" size="0.0009999998146668077" />
+                <site rgba="0.8 0.3 0.4 0.2"  name="site_ring_p_end" pos="0.02834234945476055 -0.003868062049150467 -1.4156103134155273e-07" size="0.0009999998146668077" />
+              </body>
+              <site rgba="0.8 0.3 0.4 0.2"  name="site_index_origin" pos="0.02401391789317131 0.01552288606762886 -0.10544589906930923" size="0.0010000000474974513" />
+              <site rgba="0.8 0.3 0.4 0.2"  name="site_little_origin" pos="-0.04685092717409134 0.009965126402676105 -0.10166710615158081" size="0.0010000000474974513" />
+              <site rgba="0.8 0.3 0.4 0.2"  name="site_middle_origin" pos="-0.0023472050670534372 0.01682126149535179 -0.1098322793841362" size="0.0010000000474974513" />
+              <site rgba="0.8 0.3 0.4 0.2"  name="site_ring_origin" pos="-0.026190999895334244 0.01492474414408207 -0.10559122264385223" size="0.0010000000474974513" />
+              <body name="Thumb PIP" pos="0.02429400384426117 0.0003116875886917114 -0.05971387028694153" quat="0.9956603646278381 0.09304214268922806 -0.001878855051472783 -0.00017629745707381517">
+                <joint range="-10 90" name="thumb abduct"/>
+                <geom class="white" type="mesh" name="Thumb PIP geom" mesh="Thumb PIP" />
+                <site rgba="0.8 0.3 0.4 0.2"  name="site_thumb_p" pos="0.002251492813229561 -0.01441190019249916 0.003971865866333246" size="0.0010000000474974513" />
+                <site rgba="0.8 0.3 0.4 0.2"  name="site_thumb_p_end" pos="0.003088695928454399 -0.022036490961909294 0.0016912040300667286" size="0.0010000000474974513" />
+                <body name="Thumb DIP" pos="0.003961114212870598 -0.03009866550564766 0.007494896184653044" quat="0.6912592053413391 -0.07363290339708328 -0.703262448310852 0.148865208029747">
+                  <joint/>
+                  <geom class="white" type="mesh" name="Thumb DIP geom" mesh="Thumb DIP" />
+                  <site rgba="0.8 0.3 0.4 0.2"  name="site_thumb_d" pos="-0.009761819615960121 0.002171304076910019 1.862645149230957e-09" size="0.0010000001639127731" />
+                  <site rgba="0.8 0.3 0.4 0.2"  name="site_thumb_d_end" pos="-0.0250035859644413 -0.018215373158454895 9.313225746154785e-09" size="0.0010000001639127731" />
+                </body>
+              </body>
+            </body>
+          </body>
+        </body>
+      </body>
+    </body>
+  </worldbody>
+  
+  <tendon>
+    <spatial name="index">
+      <site site="site_index_origin"/>
+      <site site="site_index_p"/>
+      <site site="site_index_p_end"/>
+      <site site="site_index_d"/>
+      <site site="site_index_d_end"/>
+    </spatial>
+    
+    <spatial name="middle">
+      <site site="site_middle_origin"/>
+      <site site="site_middle_p"/>
+      <site site="site_middle_p_end"/>
+      <site site="site_middle_d"/>
+      <site site="site_middle_d_end"/>
+    </spatial>
+    
+    <spatial name="ring">
+      <site site="site_ring_origin"/>
+      <site site="site_ring_p"/>
+      <site site="site_ring_p_end"/>
+      <site site="site_ring_d"/>
+      <site site="site_ring_d_end"/>
+    </spatial>
+    
+    <spatial name="little">
+      <site site="site_little_origin"/>
+      <site site="site_little_p"/>
+      <site site="site_little_p_end"/>
+      <site site="site_little_d"/>
+      <site site="site_little_d_end"/>
+    </spatial>
+    
+    <spatial name="thumb">
+      <site site="site_thumb_p"/>
+      <site site="site_thumb_p_end"/>
+      <site site="site_thumb_d"/>
+      <site site="site_thumb_d_end"/>
+    </spatial>
+  </tendon>
+  
+  <actuator>
+    <motor name="a1"  gear="0" joint="rotation" group="2"/>
+    <motor name="a2"  gear="0" joint="rotation" group="2" ctrllimited="true" ctrlrange="0 10"/>
+    <motor name="a3"  gear="0" joint="rotation" group="2" ctrllimited="true" ctrlrange="0 3"/>
+    <motor name="a4"  gear="0" joint="rotation" group="2" ctrllimited="true" ctrlrange="1 16"/>
+    <motor name="q_target"  gear="0" joint="rotation" group="2" ctrllimited="true" ctrlrange="-0.523599 1.22173"/>
+
+    <motor name="flexion_rms"  gear="0" joint="rotation" group="1" ctrllimited="true" ctrlrange="0 500"/>
+    <motor name="extension_rms"  gear="0" joint="rotation" group="1" ctrllimited="true" ctrlrange="0 500"/>
+
+    <motor name="index"  tendon="index"/>
+    <motor name="middle"  tendon="middle"/>
+    <motor name="ring"  tendon="ring"/>
+    <motor name="little"  tendon="little"/>
+    <motor name="thumb abduct"  joint="thumb abduct" gear="1"/>
+    <motor name="thumb"  tendon="thumb" gear="-10"/>
+
+
+    <position name="rotate" kp="10"  joint="rotation" gear="1" ctrllimited="true" ctrlrange="-3.14159 0.0872665"/>
+    <position name="deviate" kp="3"  joint="deviation" gear="1" ctrllimited="true" ctrlrange="-0.523599 0.523599"/>
+</actuator>
+  
+  <contact>
+  
+    <exclude body1="Hand Mount" body2="Dev platform" />
+    <exclude body1="Dev platform" body2="Flex upper" />
+    <exclude body1="Flex upper" body2="Dev platform"/>
+    <exclude body1="Palm" body2="Dev platform"/>
+  </contact>
+  
+  <asset>
+    <mesh name="Hand Mount" file="Hand Mount.stl"/>
+    <mesh name="Dev platform" file="Dev platform.stl"/>
+    <mesh name="Flex platform" file="Flex platform.stl"/>
+    <mesh name="Flex upper" file="Flex upper.stl"/>
+    <mesh name="Palm" file="Palm.stl"/>
+    <mesh name="Index PIP" file="Index PIP.stl"/>
+    <mesh name="Index DIP" file="Index DIP.stl"/>
+    <mesh name="Little PIP" file="Little PIP.stl"/>
+    <mesh name="Little DIP" file="Little DIP.stl"/>
+    <mesh name="Middle PIP" file="Middle PIP.stl"/>
+    <mesh name="Middle DIP" file="Middle DIP.stl"/>
+    <mesh name="Ring PIP" file="Ring PIP.stl"/>
+    <mesh name="Ring DIP" file="Ring DIP.stl"/>
+    <mesh name="Thumb PIP" file="Thumb PIP.stl"/>
+    <mesh name="Thumb DIP" file="Thumb DIP.stl"/>
+    
+    <material name="PLA" shininess="0.3" reflectance="0" specular="0.01"/>
+  </asset>
+</mujoco>

@@ -1,0 +1,121 @@
+<!--
+This is an example scene for a planar arm in the MuJoCo physics engine.
+It is in the XML format, which means different elements can be hierarchically
+structured. This file is parsed and converted into binary data structures used
+by MuJoCo, with which at each time step it defines and solves the equations
+of motion. This scene serves as a hands-on introduction of planar arm dynamics
+and the MuJoCo physics engine and its built-in visualizer.
+
+For more information on MuJoCo visit:
+https://mujoco.readthedocs.io/en/latest/overview.html
+
+To load this model, run the python script "load_model.py". You can edit that
+python script to load other models.
+
+You can interact with the model in different ways. On the right side of the
+window you'll see a dropdown labeled "Control". There you can set the torque
+of the two joints. You can also apply linear forces and torques on the arm.
+To do this, double-left-click the surface of the arm, then press Ctrl and
+drag right-click to apply forces. To change the plane in which you are
+applying forces, press Shift in addition to Ctrl. If you drag left-click
+instead, then you apply torques as opposed to forces.
+
+You can see the joint angles if you expand the dropdown on the right-hand
+side of the simulator window. The values are in radians.
+
+Below is the structure of the arm modeled. I encourage you to examine the way
+it is constructed, and to play around with values, then reload the model.
+
+Text starting with "<!-- " are comments ignored when parsing this file. I
+recommend reading this file in an editor with syntax highlighting, such as
+Notepad++, or VS Code (or even a browser).
+
+Things to note:
+  - Activating the controller of the shoulder changes not only the angle of
+    the shoulder, but the elbow as well. Why is that? Is the reverse true?
+    
+  - What happens when controlling the shoulder, the joint limit is reached
+    at elbow, compared to when the limit is not active?
+    
+Things to try:
+  - Increase the mass of the forearm geom 3 fold. Observe how it effects
+    the dynamics of the system controlling the shoulder. Fully flex the elbow
+    
+  - In the left sidebar, under Rendering>Frame you can select different options
+    to visualise reference frames. In particular try out the "Body" and "World"
+    options.
+
+-->
+
+<mujoco model="2-link arm joint torque control">
+  <!-- Defining how equations of motions and constraints are solved -->
+  <option timestep="0.005" iterations="50" solver="Newton" tolerance="1e-10"/>  
+  
+  <default>
+    <!-- 
+    Values for attributes defined here are applied for all elements matching the kind of element. 
+    So all joints defined will be hinge joints by default. This can simplify the XML text.
+    -->
+    <joint type="hinge" pos="0 0 0" axis="0 0 1" limited="true" range="-5 160" damping="0.0001"/>
+  </default>
+
+  <!-- 
+  This is where the physical elements will be defined. 
+  The worldbody is the root element, all other rigid bodies are its children. 
+  -->
+  <worldbody> 
+  
+    <!-- 
+    This is a rigid body. It can have children bodies of its own nested inside. 
+    The child elements' position is defined in relation to this one's.
+    -->
+    <body name="parent" pos="0 0 0">
+    
+      <!-- 
+      A "geom" defines a volume or surface that can't be penetrated by other geoms, and determines
+      mass and inertia as well.
+      -->
+      <geom name="upper arm" mass="1" type="capsule" size="0.045" fromto="0 0 0  0.31 0 0" rgba=".5 .1 .1 1"/>
+      
+      <!-- 
+      Joints define degrees of freedom in relation to the current rigid body's parent (the worldbody).
+      This joint overrides one of the default values. The XML uses degrees as angle units by default.
+      -->
+      <joint name="shoulder" range="-60 160"/>
+      
+      <body name="child" pos="0.31 0 0">
+        <geom name="forearm" mass="2" type="capsule" size="0.035" fromto="0 0 0  0.3 0 0" rgba=".5 .1 .1 1"/>
+        <joint name="elbow"/>
+      </body>
+    </body>
+
+    <!-- These two elements are necessary for clearer visualisation of spatial relationships. --> 
+    <geom name="floor" pos="0 0 -1.35" size="0 0 1" type="plane" material="matplane"/>
+    <light directional="true" diffuse=".8 .8 .8" specular=".2 .2 .2" pos="0 0 5" dir="0 0 -1"/>
+  </worldbody>
+  
+  <!-- Actuators apply joint-space forces at specified degrees of freedom -->
+  <actuator>
+    <motor name="shoulder" joint="shoulder" ctrllimited="true" ctrlrange="-1 1" gear="0.5 0 0 0 0 0 "/>
+    <motor name="elbow" joint="elbow" ctrllimited="true" ctrlrange="-1 1" gear="0.5 0 0 0 0 0 "/>
+  </actuator>
+  
+  <!-- 
+  Add humanoid model, for spatial reference.
+  -->
+  <include file="cmu_model.xml"/>
+
+  <!--
+  The elements below are for visuals only, defining textures and postprocessing.
+  -->
+
+  <asset>
+    <texture type="skybox" builtin="gradient" rgb1="0.6 0.6 0.6" rgb2="0 0 0" width="512" height="512"/>
+    <texture name="texplane" type="2d" builtin="checker" rgb1=".25 .25 .25" rgb2=".3 .3 .3" width="512" height="512" mark="cross" markrgb=".8 .8 .8"/>
+    <material name="matplane" reflectance="0.3" texture="texplane" texrepeat="1 1" texuniform="true"/>
+  </asset>
+
+  <visual>
+    <rgba haze=".3 .3 .3 1"/>
+  </visual>
+</mujoco>

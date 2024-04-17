@@ -1,0 +1,6 @@
+Fri Nov 24 13:39:46 2023
+WARNING: mju_openResource: unknown file 'challenges/Day_3/arm_design/solution_scene_wall.xml'
+
+Fri Nov 24 13:56:42 2023
+WARNING: mju_openResource: unknown file '../arm_design/hand_scene_wall.xml'
+

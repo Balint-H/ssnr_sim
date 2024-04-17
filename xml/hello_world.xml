@@ -1,0 +1,20 @@
+
+<mujoco model="Hello world">
+  <worldbody>
+    <light directional="true" diffuse=".8 .8 .8" specular=".2 .2 .2" pos="0 0 5" dir="0 0 -1"/>
+  </worldbody>
+
+  <!--
+  The elements below are for visuals only, defining textures and postprocessing.
+  -->
+  <asset>
+    <texture type="skybox" builtin="gradient" rgb1="0.6 0.6 0.6" rgb2="0 0 0" width="512" height="512"/>
+    <texture name="texplane" type="2d" builtin="checker" rgb1=".25 .25 .25" rgb2=".3 .3 .3" width="512" height="512" mark="cross" markrgb=".8 .8 .8"/>
+    <material name="matplane" reflectance="0.3" texture="texplane" texrepeat="1 1" texuniform="true"/>
+  </asset>
+
+  <visual>
+    <rgba haze=".3 .3 .3 1"/>
+  </visual>
+
+</mujoco>

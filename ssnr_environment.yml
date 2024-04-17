@@ -1,0 +1,11 @@
+name: ssnr23
+channels:
+  - conda-forge
+dependencies:
+  - python=3.9
+  - matplotlib
+  - scipy
+  - pip
+  - pip:
+    - mujoco
+

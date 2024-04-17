@@ -1,0 +1,55 @@
+<mujoco>
+  <compiler meshdir="./meshes/"/>
+  
+  <visual>
+    <map fogstart="3" fogend="5" force="0.1" znear="0.1"/>
+    <rgba haze="0.15 0.25 0.35 1"/>
+  </visual>
+  
+  <asset>
+    <mesh name="Text.001" file="Text.001.stl"/>
+    <mesh name="Text.002" file="Text.002.stl"/>
+    <mesh name="Text.003" file="Text.003.stl"/>
+    <mesh name="Text.004" file="Text.004.stl"/>
+    <mesh name="Text.005" file="Text.005.stl"/>
+    <mesh name="Text.006" file="Text.006.stl"/>
+    <mesh name="Text.007" file="Text.007.stl"/>
+    <mesh name="Text.008" file="Text.008.stl"/>
+    
+    <material name="green" rgba="0.2 1 0.2 1" specular="0.5" shininess="0.5"/>
+  </asset>
+  
+  <worldbody>
+    <body name="object1" >
+      <geom type="mesh" mesh="Text.001" material="green" condim="3" density="1000" euler="0 0 0" margin="0.001" solref="0.01 1" />
+    <freejoint/></body>
+    
+    <body name="object2" >
+      <geom type="mesh" mesh="Text.002" material="green" condim="3" density="1000" euler="0 0 0" margin="0.001" solref="0.01 1" />
+    <freejoint/></body>
+    
+    <body name="object3" >
+      <geom type="mesh" mesh="Text.003" material="green" condim="3" density="1000" euler="0 0 0" margin="0.001" solref="0.01 1" />
+    <freejoint/></body>
+    
+    <body name="object4" >
+      <geom type="mesh" mesh="Text.004" material="green" condim="3" density="1000" euler="0 0 0" margin="0.001" solref="0.01 1" />
+    <freejoint/></body>
+    
+    <body name="object5" >
+      <geom type="mesh" mesh="Text.005" material="green" condim="3" density="1000" euler="0 0 0" margin="0.001" solref="0.01 1" />
+    <freejoint/></body>
+    
+    <body name="object6" >
+      <geom type="mesh" mesh="Text.006" material="green" condim="3" density="1000" euler="0 0 0" margin="0.001" solref="0.01 1" />
+    <freejoint/></body>
+    
+    <body name="object7" >
+      <geom type="mesh" mesh="Text.007" material="green" condim="3" density="1000" euler="0 0 0" margin="0.001" solref="0.01 1" />
+    <freejoint/></body>
+    
+    <body name="object8" >
+      <geom type="mesh" mesh="Text.008" material="green" condim="3" density="1000" euler="0 0 0" margin="0.001" solref="0.01 1" />
+    <freejoint/></body>
+  </worldbody>
+</mujoco>

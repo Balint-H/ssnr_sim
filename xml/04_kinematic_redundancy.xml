@@ -1,0 +1,118 @@
+<!--
+This is example highlights a system with kinematic redundancy; there are more 
+degrees of freedom than necessary to specify a task space state. That is,
+there are multiple wrist, elbow and shoulder angle combinations that result
+in the same position of the fingertips
+
+You can double click the transparent sphere, then use Ctrl+right drag to move
+the target in the horizontal plane.
+    
+Things to try:
+  - what happens if you apply a control torque to the elbow at different positions?
+  - What is the difference if you remove the wrist joint?
+    
+  
+
+-->
+
+<mujoco model="2-link arm joint torque control">
+  <!-- Defining how equations of motions and constraints are solved -->
+  <option timestep="0.005" iterations="50" solver="Newton" tolerance="1e-10"/>  
+  
+  <default>
+    <!-- 
+    Values for attributes defined here are applied for all elements matching the kind of element. 
+    So all joints defined will be hinge joints by default. This can simplify the XML text.
+    -->
+    <joint type="hinge" pos="0 0 0" axis="0 0 1" limited="true" range="-5 160" damping="0.0001"/>
+  </default>
+
+  <!-- 
+  This is where the physical elements will be defined. 
+  The worldbody is the root element, all other rigid bodies are its children. 
+  -->
+  <worldbody> 
+  
+    <!-- 
+    This is a rigid body. It can have children bodies of its own nested inside. 
+    The child elements' position is defined in relation to this one's.
+    -->
+    <body name="upper arm" pos="0 0 0">
+    
+      <!-- 
+      A "geom" defines a volume or surface that can't be penetrated by other geoms, and determines
+      mass and inertia as well.
+      -->
+      <geom name="upper arm" mass="1" type="capsule" size="0.045" fromto="0 0 0  0.25 0 0" rgba=".5 .1 .1 1"/>
+      
+      <!-- 
+      Joints define degrees of freedom in relation to the current rigid body's parent (the worldbody).
+      This joint overrides one of the default values. The XML uses degrees as angle units by default.
+      -->
+      <joint name="shoulder" range="-60 160"/>
+      
+      <body name="forearm" pos="0.25 0 0">
+        <geom name="forearm" mass="2" type="capsule" size="0.035" fromto="0 0 0  0.25 0 0" rgba=".5 .1 .1 1"/>
+        <joint name="elbow"/>
+          <body  name="rwrist_87" pos="0.25 0 0" euler="-90 0 90">
+              <geom density="1000" type="capsule" size="0.02000001 0.03" pos="1.880135E-09 -0.03 -3.279598E-08" quat="4.003268E-08 -4.391836E-08 -0.7071071 -0.7071071" priority="0" contype="0" conaffinity="0" group="2" condim="1" solmix="1" solref="0.015 1" rgba=".5 .1 .1 1" solimp="0.99 0.99 0.003" margin="0" gap="0" friction="0.7 0.005 0.0001" name="rwrist_91" />
+              <body pos="-9.784539E-09 -0.09076759 3.994287E-08" quat="-1 0 0 0" name="rhand_92">
+                <joint name="wrist" axis="-1 0 0"/>
+                <geom density="1000" type="ellipsoid" size="0.03500002 0.02000001 0.045" pos="3.469804E-09 -0.01675202 -3.877605E-08" quat="4.003268E-08 -4.391836E-08 -0.7071071 -0.7071071" priority="0" contype="0" conaffinity="0" group="2" rgba=".5 .1 .1 1" condim="3" solmix="1" solref="0.015 1" solimp="0.98 0.98 0.001" margin="0" gap="0" friction="1 0.005 0.0001" name="rhand_95" />
+                <body pos="-6.475558E-09 -0.06500006 1.90359E-08" quat="-1 0 0 0" name="rfingers_96">
+                  <geom density="1000" type="capsule" size="0.006500002 0.04" pos="-0.02399999 -0.02500005 -4.555073E-08" quat="0.7071071 -0.7071071 4.391836E-08 4.003268E-08" priority="0" contype="0" conaffinity="0" group="2" condim="3" rgba=".5 .1 .1 1" solmix="1" solref="0.015 1" solimp="0.98 0.98 0.001" margin="0" gap="0" friction="1 0.005 0.0001" name="rfinger0_101" />
+                  <geom density="1000" type="capsule" size="0.006500002 0.04" pos="-0.00799998 -0.02999995 -3.565628E-10" quat="0.7071071 -0.7071071 4.391836E-08 4.003268E-08" priority="0" contype="0" conaffinity="0" group="2" condim="3" rgba=".5 .1 .1 1" solmix="1" solref="0.015 1" solimp="0.98 0.98 0.001" margin="0" gap="0" friction="1 0.005 0.0001" name="rfinger1_102" />
+                  <geom density="1000" type="capsule" size="0.006000001 0.04" pos="0.007999999 -0.03000007 -5.897357E-09" quat="0.7071071 -0.7071071 4.391836E-08 4.003268E-08" priority="0" contype="0" conaffinity="0" group="2" condim="3" rgba=".5 .1 .1 1" solmix="1" solref="0.015 1" solimp="0.98 0.98 0.001" margin="0" gap="0" friction="1 0.005 0.0001" name="rfinger2_103" />
+                  <geom density="1000" type="capsule" size="0.005500001 0.04" pos="0.02400001 -0.02500007 3.095344E-08" quat="0.7071071 -0.7071071 4.391836E-08 4.003268E-08" priority="0" contype="0" conaffinity="0" group="2" condim="3" rgba=".5 .1 .1 1" solmix="1" solref="0.015 1" solimp="0.98 0.98 0.001" margin="0" gap="0" friction="1 0.005 0.0001" name="rfinger3_104" />
+                  <body name="tip" pos="-0.048 0 0">
+
+                  </body>
+                </body>
+                <body pos="-0.025 6.70552E-09 -8.940694E-09" quat="0.92388 -4.930634E-08 6.000214E-08 -0.382683" name="rthumb_97">
+                  <geom density="1000" type="capsule" size="0.008000004 0.03" pos="2.888915E-08 -0.03000006 -2.920286E-08" quat="3.642271E-08 6.018672E-09 -0.707107 -0.707107" priority="0" contype="0" conaffinity="0" group="2" rgba=".5 .1 .1 1"  condim="3" solmix="1" solref="0.015 1" solimp="0.98 0.98 0.001" margin="0" gap="0" friction="1 0.005 0.0001" name="rthumb_105" />
+                </body>
+              </body>
+          </body>
+
+      </body>
+    </body>
+
+    <!-- These two elements are necessary for clearer visualisation of spatial relationships. --> 
+    <geom name="floor" pos="0 0 -1.35" size="0 0 1" type="plane" material="matplane"/>
+    <light directional="true" diffuse=".8 .8 .8" specular=".2 .2 .2" pos="0 0 5" dir="0 0 -1"/>
+
+    <body name="IK" mocap="true" pos="0.75 0 0">
+        <geom type="sphere" size="0.04" contype="0" conaffinity="0" rgba="0.8 0.4 0.4 0.2"/>
+    </body>
+  </worldbody>
+  
+  <!-- Actuators apply joint-space forces at specified degrees of freedom -->
+  <actuator>
+    <motor name="shoulder" joint="shoulder" ctrllimited="true" ctrlrange="-1 1" gear="0.5 0 0 0 0 0 "/>
+    <motor name="elbow" joint="elbow" ctrllimited="true" ctrlrange="-1 1" gear="0.5 0 0 0 0 0 "/>
+  </actuator>
+
+
+  <equality>
+    <connect body1="IK" body2="tip" anchor="0 0 0"/>
+  </equality>
+
+  <!-- 
+  Add humanoid model, for spatial reference.
+  -->
+  <include file="cmu_model.xml"/>
+
+  <!--
+  The elements below are for visuals only, defining textures and postprocessing.
+  -->
+
+  <asset>
+    <texture type="skybox" builtin="gradient" rgb1="0.6 0.6 0.6" rgb2="0 0 0" width="512" height="512"/>
+    <texture name="texplane" type="2d" builtin="checker" rgb1=".25 .25 .25" rgb2=".3 .3 .3" width="512" height="512" mark="cross" markrgb=".8 .8 .8"/>
+    <material name="matplane" reflectance="0.3" texture="texplane" texrepeat="1 1" texuniform="true"/>
+  </asset>
+
+  <visual>
+    <rgba haze=".3 .3 .3 1"/>
+  </visual>
+</mujoco>
