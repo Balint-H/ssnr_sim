@@ -11,7 +11,7 @@ import glfw
 Kp = 100
 Kd = 0
 
-xml = '../xml/arm_joint_3.xml'
+xml = 'arm_model.xml'
 
 
 def arm_control(model, data):
@@ -28,10 +28,12 @@ def arm_control(model, data):
 
     # Clipping the target position's distance, otherwise weird behaviour occurs when out of reach
     ls = model.body("forearm").pos[0]
-    le = model.body("hand").pos[0]
-    lh = model.body("tip").pos[0]
+    lw = model.body("wrist_body").pos[0]
+    le = -model.body("hand").pos[1]
+    lh = -model.body("tip").pos[1]
+
     rt = np.linalg.norm([xt, yt])
-    xt, yt = np.array([xt, yt])/rt * np.clip(rt, 0, ls+le+lh)
+    xt, yt = np.array([xt, yt])/rt * np.clip(rt, 0, ls+le+lh+lw)
 
     # Current position of arm end in comparison
     x, y, _ = data.body("tip").xpos
