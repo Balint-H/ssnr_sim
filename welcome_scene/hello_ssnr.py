@@ -9,7 +9,7 @@ matplotlib.use("QtAgg")
 
 # Change this string to other scenes you may want to load. You can also open the xml in a code editor
 # to examine its contents. For more instructions check out the header comments of xml/01_planar_arm.xml
-xml = r'welcome_scene/welcome.xml'
+xml = r'welcome.xml'
 
 
 if __name__ == '__main__':
