@@ -23,8 +23,11 @@ import numpy as np
 xml = 'xml/pd_track.xml'
 
 # Feel free to store your data in different way (e.g. a raw deque or list), or add or edit DataCollecter objects
-data_collecter = DataCollecter(maxlen=20, nchannels=3, plot=False)
+data_collecter = DataCollecter(maxlen=20, nchannels=3)
 reward_plotter = DataCollecter(maxlen=300, nchannels=1, min_max_scales=[0, 1])
+
+# reward_plotter.launch_plot()
+data_collecter.launch_plot()
 
 
 def ankle_control(model: mujoco.MjModel, data: mujoco.MjData, precalc_mocap_dictionary, mocap_metadata):
@@ -100,7 +103,7 @@ def track_mocap(model, data, precalc_mocap_dictionary, mocap_metadata,):
     data.joint("freejoint").qacc = 0
 
     # We'll fake forward motion by moving the ground instead. Hurrah for Galilean relativity!
-    mocap_body_idx = int(model.body("floor").mocapid)  # mocap bodies are only moved by us, unaffected by physics
+    mocap_body_idx = int(model.body("floor").mocapid[0])  # mocap bodies are only moved by us, unaffected by physics
     data.mocap_pos[mocap_body_idx][1] = - (1.5*data.time)
     return data
 
@@ -141,7 +144,7 @@ def load_callback(model=None, data=None):
 
 
 def smooth_reward(data, model, smoothing_factor=0.998):
-    data.userdata[0] = (1-smoothing_factor) * reward(data, model) + smoothing_factor * data.userdata[0]
+    data.userdata[0] = ((1-smoothing_factor) * reward(data, model) + smoothing_factor * data.userdata[0])[0]
     return data.userdata[0]
 
 

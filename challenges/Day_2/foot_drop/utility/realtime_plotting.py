@@ -10,7 +10,6 @@ from functools import partial
 
 from matplotlib.animation import FuncAnimation
 
-
 class DataCollecter:
 
     def __init__(self, maxlen=500, nchannels=1, plot=True, min_max_scales=(1, 1)):
@@ -32,17 +31,18 @@ class DataCollecter:
             self.ax = None
             self.min_max_scales = None
             return
+        self.min_max_scales = min_max_scales
+
+    def launch_plot(self):
         self.fig = plt.figure()
         self.lines = plt.plot(self.data_deque)
         self.ax = plt.gca()
 
-        self.min_max_scales = min_max_scales
         ani = FuncAnimation(self.fig, partial(self.update), interval=50, save_count=0, blit=True)
         plt.show(block=False)
 
     def add_data(self, data_in):
-        self.data_deque.append(np.array(data_in))
-
+        self.data_deque.append(np.array(data_in).flatten())
 
     def update(self, frame):
         arr = np.array(self.data_deque)

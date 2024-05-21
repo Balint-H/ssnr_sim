@@ -13,7 +13,9 @@ xml = '05_nonlinear_sensing_visu.xml'
 
 def predict(model, data, sv_z, sv_y):
     data.joint("shoulder_z_vis").qpos = sv_z.predict(data.sensordata[None, :])
+    data.joint("shoulder_z_vis").qvel= [0]
     data.joint("shoulder_y_vis").qpos = sv_y.predict(data.sensordata[None, :])
+    data.joint("shoulder_y_vis").qvel = [0]
 
 
 # This function is called by the viewer after it is initialized to load the model

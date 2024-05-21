@@ -203,8 +203,8 @@ their names.
   </default>
 
   <compiler coordinate="local" />
-  <option gravity="0 0 -9.81" timestep="0.005" impratio="1" magnetic="0 0 0" wind="0 0 0" density="0" viscosity="0" o_margin="0" o_solref="0.02 1" o_solimp="0.9 0.95 0.001 0.5 2" integrator="implicit" collision="all" cone="pyramidal" jacobian="auto" solver="Newton" iterations="100" tolerance="1E-08" noslip_iterations="0" noslip_tolerance="1E-06" mpr_iterations="50" mpr_tolerance="1E-06">
-    <flag constraint="enable" equality="enable" frictionloss="enable" limit="enable" contact="enable" passive="enable" gravity="enable" clampctrl="enable" warmstart="enable" filterparent="enable" actuation="enable" refsafe="enable" override="disable" energy="disable" fwdinv="disable" sensornoise="disable" multiccd="disable" />
+  <option gravity="0 0 -9.81" timestep="0.005" impratio="1" magnetic="0 0 0" wind="0 0 0" density="0" viscosity="0" o_margin="0" o_solref="0.02 1" o_solimp="0.9 0.95 0.001 0.5 2" integrator="implicit" cone="pyramidal" jacobian="auto" solver="Newton" iterations="100" tolerance="1E-08" noslip_iterations="0" noslip_tolerance="1E-06" mpr_iterations="50" mpr_tolerance="1E-06">
+    <flag constraint="enable" equality="enable" frictionloss="enable" limit="enable" contact="enable" passive="enable" gravity="enable" clampctrl="enable" warmstart="enable" filterparent="enable" actuation="enable" refsafe="enable" override="disable" energy="disable" fwdinv="disable" multiccd="disable" />
   </option>
   <asset>
     <texture type="skybox" builtin="gradient" rgb1="0.6 0.6 0.6" rgb2="0 0 0" width="512" height="512"/>
