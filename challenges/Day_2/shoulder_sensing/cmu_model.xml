@@ -62,7 +62,6 @@ This model is only used as a visual reference to illustrate a humanoid body in s
           </body>
         </body>
       </body>
-      <freejoint name="K_freejoint_12" />
       <geom density="1000" type="capsule" size="0.1 0.07" pos="0 0 -0.05000001" quat="-0.5 -0.5 -0.5 -0.5" priority="0" contype="0" conaffinity="0" group="2" condim="1" solmix="1" solref="0.015 1" solimp="0.99 0.99 0.003" margin="0" gap="0" friction="0.7 0.005 0.0001" name="K_root_geom_13" />
       <body pos="0 0 0" quat="0 0 0.7071068 0.7071068" name="K_lowerback_14">
         

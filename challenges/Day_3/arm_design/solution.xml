@@ -5,7 +5,7 @@
   
   The MJCF file was assembled by Balint Hodossy.
 -->
-<mujoco>
+<mujoco model="solution">
   <compiler meshdir="./mesh"/>
   
   <default>
@@ -27,7 +27,7 @@
   <worldbody>
     <body name="Hand Mount" pos="0.0 0.0 0.0005" quat="1.0 -5.68434e-14 -7.01660e-14 -3.98848e-27">
       <geom pos="0.0015 0 -0.0005" rgba="0 0 0 0" type="cylinder" name="base geom" size="0.07 0.001" />
-      <joint type="free" />
+      <joint type="free" name="root"/>
       <geom class="black" type="mesh" name="Hand Mount geom" mesh="Hand Mount" />
       <body name="Dev platform" pos="0.00216 0.00175 0.06074" quat="0.70710 8.98093e-14 9.42055e-15 0.70710">
         <joint name="rotation" range="-5 180" damping="0.2" stiffness="0"/>
@@ -39,6 +39,7 @@
             <joint  name="flexion" damping="0.2" range="-30 70"/>
             <geom class="black" type="mesh" name="Flex upper geom" mesh="Flex upper" />
             <body name="Palm" pos="-4.93567e-05 0.01689 0.02796" quat="0.49999 0.49999 0.49999 -0.50000">
+              <site name = "palm_centre_site" pos="-0.01 0.002 -0.083" euler="15 0 0" group="4"/>
               <geom class="black" type="mesh" name="Palm geom" mesh="Palm" />
               <body name="Index PIP" pos="0.02340 0.02154 -0.10906" quat="0.71794 -0.08703 0.69062 -0.00431">
                 <joint/>

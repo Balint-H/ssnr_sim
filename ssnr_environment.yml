@@ -10,4 +10,5 @@ dependencies:
   - pyqt
   - pip:
     - mujoco
+    - dm_control
 

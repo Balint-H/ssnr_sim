@@ -1,0 +1,84 @@
+<mujoco model="elbow">
+  <compiler meshdir="./mesh"/>
+  
+  <include file="./assets.xml"/>
+  
+  <default>
+    <joint axis="0 0 1" damping="0.25" limited="true" range="-90 90" armature="0.01" frictionloss="0.01"  stiffness="0.001"/>
+    <tendon width="0.0005" rgba="0.9 0.3 0.3 1"/>
+    <position gear="-1" ctrllimited="true" forcelimited="true" forcerange="-120 120"/>
+    <geom material="MatMetal"/>
+  </default>
+  
+  <worldbody>
+      <body name="Base">
+        <geom type="mesh" name="Base geom" mesh="Base"/>
+        <geom type="mesh" name="Upper geom" mesh="Upper" group="1" material="MatDark"/>
+        <body name="Body1" pos="-6.195478352566397e-09 1.0700787811401824e-08 0.1417362242937088" quat="0.5 0.5000001192092896 0.5000000596046448 0.4999999403953552">
+          <geom type="mesh" name="Body1 geom" mesh="Body1" material="MatDark"/>
+          <body name="Elbow_Flexion" pos="5.187093120184727e-05 0.012017354369163513 0.0" euler="0 0 -90">
+            <joint name="elbow_flex"/>
+            <geom type="mesh" name="Elbow_Flexion geom" mesh="Elbow_Flexion" />
+            <body name="Forearm_1" pos="0.012065773829817772 -1.4990678920412392e-08 0.0" quat="1.5734916303244972e-07 -0.7071066498756409 0.70710688829422 -2.7255148893345904e-07">
+              <geom type="mesh" name="Forearm_1 geom" mesh="Forearm_1" material="MatYellow"/>
+              <geom type="mesh" name="Lower geom" mesh="Lower" group="1" material="MatDark"/>
+              <body name="Forearm_2" pos="2.7008354663848877e-08 0.22724080085754395 -4.121661186218262e-05" quat="0.5 0.4999999403953552 0.5000001788139343 -0.5000000596046448">
+                <geom type="mesh" name="Forearm_2 geom" mesh="Forearm_2" />
+                <body name="Body1.034" pos="-4.119143704883754e-05 8.764642552705482e-05 -0.04105289280414581" quat="2.980233659855003e-07 1.0 -3.7153677112655714e-07 -2.2252552867030317e-07">
+                  <geom type="mesh" name="Body1.034 geom" mesh="Body1.034"  material="MatGreen"/>
+                  <body name="Rotation_Body" pos="-2.901279572142812e-08 -1.356974479449491e-07 0.017020076513290405" quat="1.0 -1.5893290239432645e-08 -7.549763836323109e-08 -2.970309935790283e-07">
+                    <joint name="rotation"/>
+                    <geom type="mesh" name="Rotation_Body geom" mesh="Rotation_Body" material="MatGreen" />
+                    <body name="Deviation_Body" pos="-0.002074986230581999 1.511028102640921e-08 0.02224990725517273" quat="0.7071068286895752 -2.150937916667317e-07 -0.7071068286895752 -1.0944008721480714e-07">
+                      <joint name="deviation"/>
+                      <geom type="mesh" name="Deviation_Body geom" mesh="Deviation_Body" />
+                      <body name="Flexion_Body" pos="0.024000436067581177 0.0018041771836578846 -1.4901161193847656e-07" quat="0.4803839325904846 -0.4803832471370697 0.5188746452331543 -0.5188759565353394">
+                        <joint axis="1 0 0" name="flexion" />
+                        <geom type="mesh" name="Flexion_Body geom" mesh="Flexion_Body" />
+                        <site name="attach_site"  pos="0 0 0.02796" euler="180 0 180"/>
+                      </body>
+                    </body>
+                  </body>
+                </body>
+                <body name="Forearm_3" pos="-4.1190520278178155e-05 0.011087620630860329 -0.03207288682460785" quat="4.37113598650285e-08 1.341104507446289e-07 -1.0 -4.371138828673793e-08">
+                  <geom type="mesh" name="Forearm_3 geom" mesh="Forearm_3" material="MatDark"/>
+                </body>
+              </body>
+            </body>
+          </body>
+        </body>
+        <body name="Fittings" pos="-6.195478352566397e-09 1.0700787811401824e-08 0.1417362242937088" quat="0.5 0.5000001192092896 0.5000000596046448 0.4999999403953552">
+          <geom type="mesh" name="Fittings geom" mesh="Fittings" />
+        </body>
+      </body>
+  </worldbody>
+  
+<contact>
+  <exclude body1="Forearm_1" body2="Base"/>
+  <exclude body1="Forearm_1" body2="Fittings"/>
+  <exclude body1="Forearm_1" body2="Body1"/>
+</contact>
+
+<actuator>
+    <position name="elbow_flex"  joint="elbow_flex" kp="10" ctrlrange="0 1.5707962" ctrllimited="true"/>
+    <position name="rotation"  joint="rotation" kp="2" ctrlrange="-1.5707962 1.5707962" ctrllimited="true"/>
+    <position name="deviation"  joint="deviation" kp="2" ctrlrange="-1.2 1.2"  ctrllimited="true"/>
+    <position name="flexion"  joint="flexion" kp="2" ctrlrange="-1.2 1.2" ctrllimited="true"/>
+
+  </actuator>
+
+<asset>
+    <mesh name="Base" file="Base.stl"/>
+    <mesh name="Body1" file="Body1.stl"/>
+    <mesh name="Elbow_Flexion" file="Elbow_Flexion.stl"/>
+    <mesh name="Forearm_1" file="Forearm_1.stl"/>
+    <mesh name="Forearm_2" file="Forearm_2.stl"/>
+    <mesh name="Body1.034" file="Body1.034.stl"/>
+    <mesh name="Rotation_Body" file="Rotation_Body.stl"/>
+    <mesh name="Deviation_Body" file="Deviation_Body.stl"/>
+    <mesh name="Flexion_Body" file="Flexion_Body.stl"/>
+    <mesh name="Forearm_3" file="Forearm_3.stl"/>
+    <mesh name="Fittings" file="Fittings.stl"/>
+    <mesh name="Upper" file="upper.stl"/>
+    <mesh name="Lower" file="lower.stl"/>
+  </asset></mujoco>

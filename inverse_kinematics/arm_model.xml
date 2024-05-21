@@ -86,8 +86,9 @@ Things to try:
   
   <!-- Actuators apply joint-space forces at specified degrees of freedom -->
   <actuator>
-    <motor name="shoulder" joint="shoulder" ctrllimited="true" ctrlrange="-1 1" gear="0.5 0 0 0 0 0 "/>
-    <motor name="elbow" joint="elbow" ctrllimited="true" ctrlrange="-1 1" gear="0.5 0 0 0 0 0 "/>
+    <motor name="shoulder" joint="shoulder" ctrllimited="true" ctrlrange="-2 2" gear="0 0 0 0 0 0 "/>
+    <motor name="elbow" joint="elbow" ctrllimited="true" ctrlrange="-2 2" gear="0 0 0 0 0 0 "/>
+    <motor name="wrist" joint="wrist" ctrllimited="true" ctrlrange="-2 2" gear="0 0 0 0 0 0 "/>
   </actuator>
 
 

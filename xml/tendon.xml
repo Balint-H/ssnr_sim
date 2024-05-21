@@ -1,5 +1,8 @@
 <!--
-This example scene 
+This example scene demonstrates tendon simulation with mujoco, including wrapping around geometrical elements.
+The force from the weight attached to one end of the tendon is transferred to the finger's phalanges. Double-click the
+fingertip, then use Ctrl+Right click to apply a downward force. Observe how when the proximal joint's limit is reached,
+
 -->
 
 <mujoco model="test">
