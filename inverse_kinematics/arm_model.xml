@@ -84,7 +84,9 @@ Things to try:
     </body>
   </worldbody>
   
-  <!-- Actuators apply joint-space forces at specified degrees of freedom -->
+  <!-- Actuators apply joint-space forces at specified degrees of freedom. We are using a gearing of 0; this means
+  that setting data.ctrl either via the sliders or in code will not apply a force on the joints. This is a trick
+  to get sliders we can interact with, the values we can read and process with code.-->
   <actuator>
     <motor name="shoulder" joint="shoulder" ctrllimited="true" ctrlrange="-2 2" gear="0 0 0 0 0 0 "/>
     <motor name="elbow" joint="elbow" ctrllimited="true" ctrlrange="-2 2" gear="0 0 0 0 0 0 "/>

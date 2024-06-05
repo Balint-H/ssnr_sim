@@ -8,6 +8,7 @@ dependencies:
   - pip
   - scikit-learn
   - pyqt
+  - pyqtgraph
   - pip:
     - mujoco
     - dm_control
