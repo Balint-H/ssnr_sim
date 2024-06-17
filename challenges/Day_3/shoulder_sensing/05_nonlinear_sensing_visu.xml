@@ -13,7 +13,7 @@ estimate the joint angles.
     Values for attributes defined here are applied for all elements matching the kind of element. 
     So all joints defined will be hinge joints by default. This can simplify the XML text.
     -->
-    <joint type="hinge" pos="0 0 0" axis="0 0 1" limited="true" range="-5 160" damping="0.0001"/>
+    <joint type="hinge" pos="0 0 0" axis="0 0 1" limited="true" range="-5 160" damping="0.01"/>
   </default>
 
   <!-- 
@@ -141,7 +141,7 @@ estimate the joint angles.
 
 
   <equality>
-    <connect body1="IK" body2="tip" anchor="0 0 0"/>
+    <connect body1="IK" body2="tip" anchor="0 0 0" solref="0.001 1" solimp="0 0.9 0.1 0.5 2"/>
 	<joint joint1="elbow" joint2="wrist"/>
   </equality>
 

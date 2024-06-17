@@ -6,16 +6,31 @@ import mujoco.viewer as viewer
 from functools import partial
 from utility.generalized_coords import get_generalized_coordinate_dict, get_pos_error, \
     get_vel_error, smooth_loop_dict
-from utility.realtime_plotting import DataCollecter, subsampled_execution
+from utility.realtime_plotting_qt import DataCollecter
 import numpy as np
+from multiprocessing import Queue
 
 
 # Change this string to other scenes you may want to load. You can also open the xml in a code editor
 # to examine its contents. For more instructions check out the header comments of xml/01_planar_arm.xml
 xml = 'xml/pd_track.xml'
 
-data_collecter = DataCollecter(20, 3, plot=False)
-data_plotter = DataCollecter(300, 1, min_max_scales=[0, 1])
+queue = Queue()
+
+# Feel free to store your data in different way (e.g. a raw deque or list), or add or edit DataCollecter objects
+data_collecter = DataCollecter(queue, labels=[
+    "Tibia Accelerometer",
+    "Tibia Gyroscpe",
+    "Foot Accelerometer",
+    "Foot Gyroscope",
+    "Toe contact force",
+    "Tendon length",
+    "Reward",
+    "Phase"
+], maxlen=100)
+
+data_collecter.launch_plot()
+
 
 
 def ankle_control(model, data, precalc_mocap_dictionary, mocap_metadata):
@@ -31,27 +46,35 @@ def ankle_control(model, data, precalc_mocap_dictionary, mocap_metadata):
     # `data` contains the current dynamic state of the system
 
     # this method applies the necessary forces to mimic the walk cycle, no need to edit it.
-    track_mocap(model, data, precalc_mocap_dictionary, mocap_metadata)
+    _, phase = track_mocap(model, data, precalc_mocap_dictionary, mocap_metadata)
 
     # data.ctrl holds the values of the sliders from the UI. You can also write values to data.ctrl, and it
     # will be applied to the simulation
     ctrls = data.ctrl
     _, param_1, param_2, param_3 = ctrls
-    pass
 
     # if np.median(data_collecter.data_deque, axis=0)[1] > param_1 * 5:
     #     data.ctrl[0] = 0
-    if np.median(data_collecter.data_deque, axis=0)[1] > param_1 * 10:
-        data.ctrl[0] = param_3
-    if np.median(data_collecter.data_deque, axis=0)[1] < param_2 * -10:
+    if np.median(list(data_collecter.data_deques[1])[-5:], axis=0)[0] > param_1 * 10:
         data.ctrl[0] = param_3/10
+    if np.median(list(data_collecter.data_deques[1])[-5:], axis=0)[0] < param_2 * -10:
+        data.ctrl[0] = param_3
 
-    subsampled_execution(lambda: data_collecter.add_data(data.sensor("ltibiaACC").data), data, 3)
+    smooth_reward(data, model)  # The reward is stored in data.userdata[0]
 
-    smooth_reward(data, model)
-    subsampled_execution(lambda: data_plotter.add_data([data.userdata[0]]), data, 3)
+    # Most likely you don't need to collect data on every step, this method will only add data every 3rd step
+    if int(data.time // model.opt.timestep) % 5 == 0:
+        tib_acc = data.sensor("ltibiaACC").data
+        tib_gyr = data.sensor("ltibiaGYR").data
+        foot_acc = data.sensor("lfootACC").data
+        foot_gyr = data.sensor("lfootGYR").data
+        force = data.sensor("ltoeForce").data
+        encoder = data.tendon("exo").length
+        reward = data.userdata
+        queue.put([tib_acc, tib_gyr, foot_acc, foot_gyr, force, encoder, reward, [phase]])
 
 
+# You do not need to edit this method, but feel free to experiment with adjusting values
 # You do not need to edit this method, but feel free to experiment with adjusting values
 def track_mocap(model, data, precalc_mocap_dictionary, mocap_metadata,):
     """
@@ -71,8 +94,8 @@ def track_mocap(model, data, precalc_mocap_dictionary, mocap_metadata,):
     t_idx = t_idx % mocap_metadata["frame_count"]
 
     # PD parameters for following the refernce motion
-    stiffness = 500
-    damping = 3
+    stiffness = 700
+    damping = 4
     for name in precalc_mocap_dictionary["pos"].keys():
         if name == "freejoint":
             continue
@@ -99,9 +122,9 @@ def track_mocap(model, data, precalc_mocap_dictionary, mocap_metadata,):
     data.joint("freejoint").qacc = 0
 
     # We'll fake forward motion by moving the ground instead. Hurrah for Galilean relativity!
-    mocap_body_idx = int(model.body("floor").mocapid)  # mocap bodies are only moved by us, unaffected by physics
+    mocap_body_idx = int(model.body("floor").mocapid[0])  # mocap bodies are only moved by us, unaffected by physics
     data.mocap_pos[mocap_body_idx][1] = - (1.5*data.time)
-    return data
+    return data, (t_idx/mocap_metadata["frame_count"]-0.6)%1
 
 
 # This function loads the environment and the reference animation for the gait cycle
@@ -111,6 +134,10 @@ def load_callback(model=None, data=None):
     model = mujoco.MjModel.from_xml_path(filename=xml, assets=None)
     # `data` contains the current dynamic state of the system
     data = mujoco.MjData(model)
+
+    queue.put([[0]*3, [0]*3, [0]*3, [0]*3, [0], [0], [0], [0]])
+    data.ctrl[1:] = [0.52, 0.168, 0.4]
+
     if model is not None:
         # Load generalized joint position information.
         target_pos = get_generalized_coordinate_dict("data/qpos.csv")
@@ -140,7 +167,7 @@ def load_callback(model=None, data=None):
 
 
 def smooth_reward(data, model, smoothing_factor=0.998):
-    data.userdata[0] = (1-smoothing_factor) * reward(data, model) + smoothing_factor * data.userdata[0]
+    data.userdata[0] = ((1-smoothing_factor) * reward(data, model) + smoothing_factor * data.userdata[0])[0]
     return data.userdata[0]
 
 

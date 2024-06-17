@@ -1,4 +1,6 @@
 """
+This is an alternate script that uses a different plotting library in case the primary one didn't work for you!
+
 A cable actuated ankle exo prototype script. I recommend you run this script to see the humanoid mimicking walking
 and their left foot tripping on the ground. On the right hand side in the "Control" dropdown you'll see the "Exo" slider
 that determines the force on the cable. Experiment manually how you can prevent the trip with the least force over time,
@@ -14,29 +16,18 @@ import mujoco.viewer as viewer
 from functools import partial
 from utility.generalized_coords import get_generalized_coordinate_dict, get_pos_error, \
     get_vel_error, smooth_loop_dict
-from utility.realtime_plotting_qt import DataCollecter
-from utility.realtime_plotting import subsampled_execution
+from utility.realtime_plotting import DataCollecter, subsampled_execution
 import numpy as np
-from multiprocessing import Queue
+
 
 
 # Change this string to other scenes you may want to load. You can also open the xml in a code editor
 # to examine its contents. For more instructions check out the header comments of xml/01_planar_arm.xml
 xml = 'xml/pd_track.xml'
 
-queue = Queue()
-
 # Feel free to store your data in different way (e.g. a raw deque or list), or add or edit DataCollecter objects
-data_collecter = DataCollecter(queue, labels=[
-    "Tibia Accelerometer",
-    "Tibia Gyroscpe",
-    "Foot Accelerometer",
-    "Foot Gyroscope",
-    "Toe contact force",
-    "Tendon length",
-    "Reward",
-    "Phase"
-], maxlen=100)
+data_collecter = DataCollecter(maxlen=20, nchannels=3)
+reward_plotter = DataCollecter(maxlen=300, nchannels=1, min_max_scales=[0, 1])
 
 # reward_plotter.launch_plot()
 data_collecter.launch_plot()
@@ -54,7 +45,7 @@ def ankle_control(model: mujoco.MjModel, data: mujoco.MjData, precalc_mocap_dict
     """
 
     # This method applies the necessary forces to mimic the walk cycle, no need to edit it.
-    _, phase = track_mocap(model, data, precalc_mocap_dictionary, mocap_metadata)
+    track_mocap(model, data, precalc_mocap_dictionary, mocap_metadata)
 
     # data.ctrl holds the values of the sliders from the UI. You can also write values to data.ctrl, and it
     # will be applied to the simulation
@@ -64,15 +55,8 @@ def ankle_control(model: mujoco.MjModel, data: mujoco.MjData, precalc_mocap_dict
     smooth_reward(data, model)  # The reward is stored in data.userdata[0]
 
     # Most likely you don't need to collect data on every step, this method will only add data every 3rd step
-    if int(data.time // model.opt.timestep) % 5 == 0:
-        tib_acc = data.sensor("ltibiaACC").data
-        tib_gyr = data.sensor("ltibiaGYR").data
-        foot_acc = data.sensor("lfootACC").data
-        foot_gyr = data.sensor("lfootGYR").data
-        force = data.sensor("ltoeForce").data
-        encoder = data.tendon("exo").length
-        reward = data.userdata
-        queue.put([tib_acc, tib_gyr, foot_acc, foot_gyr, force, encoder, reward, [phase]])
+    subsampled_execution(lambda: data_collecter.add_data(data.sensor("ltibiaACC").data), data, subsample_factor=3)
+    subsampled_execution(lambda: reward_plotter.add_data(data.userdata[0]), data, subsample_factor=5)
 
 
 # You do not need to edit this method, but feel free to experiment with adjusting values
@@ -94,8 +78,8 @@ def track_mocap(model, data, precalc_mocap_dictionary, mocap_metadata,):
     t_idx = t_idx % mocap_metadata["frame_count"]
 
     # PD parameters for following the refernce motion
-    stiffness = 700
-    damping = 4
+    stiffness = 500
+    damping = 3
     for name in precalc_mocap_dictionary["pos"].keys():
         if name == "freejoint":
             continue
@@ -124,7 +108,7 @@ def track_mocap(model, data, precalc_mocap_dictionary, mocap_metadata,):
     # We'll fake forward motion by moving the ground instead. Hurrah for Galilean relativity!
     mocap_body_idx = int(model.body("floor").mocapid[0])  # mocap bodies are only moved by us, unaffected by physics
     data.mocap_pos[mocap_body_idx][1] = - (1.5*data.time)
-    return data, (t_idx/mocap_metadata["frame_count"]-0.6)%1
+    return data
 
 
 # This function loads the environment and the reference animation for the gait cycle
