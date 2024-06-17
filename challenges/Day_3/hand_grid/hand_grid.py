@@ -1,11 +1,15 @@
-filename = r"../../Day_3/arm_design/solution.xml"
+filename = r"../../Day_2/arm_design/solution.xml"
 filename_scene = r"hand_grid_wall_scene.xml"
 from dm_control import mjcf
 import mujoco
 import mujoco.viewer as viewer
 
+# Modular sensing grid generation script written by Indumita Prakash
+
+
 def main():
     generate_hand()
+
 
 def generate_hand():
     mjcf_model = mjcf.from_path(filename)
