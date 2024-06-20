@@ -7,7 +7,7 @@ import mujoco.viewer as viewer
 
 # Change this string to other scenes you may want to load. You can also open the xml in a code editor
 # to examine its contents. For more instructions check out the header comments of xml/01_planar_arm.xml
-xml = 'xml/hello_world.xml'
+xml = 'model.xml'
 
 
 # This function is called by the viewer after it is initialized to load the model
