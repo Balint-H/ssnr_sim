@@ -22,7 +22,7 @@
      Simple humanoid on a hammock, implemented as a 2D grid composite, pinned at the corners.
 -->
 
-  <option timestep="0.005" solver="CG" iterations="30" tolerance="1e-6"/>
+  <option timestep="0.001" solver="CG" iterations="40" tolerance="1e-6"/>
 
   <size memory="20M"/>
 
@@ -32,6 +32,10 @@
     <quality shadowsize="2048"/>
     <global offwidth="800" offheight="800"/>
   </visual>
+  
+  <extension>
+    <plugin plugin="mujoco.elasticity.shell"/>
+  </extension>
 
   <asset>
     <texture type="skybox" builtin="gradient" rgb1="0.3 0.5 0.7" rgb2="0 0 0" width="512" height="512"/>
@@ -50,26 +54,27 @@
     <geom name="floor" pos="0 0 -0.7" size="0 0 .25" type="plane" material="plane" condim="3"/>
     <light directional="true" diffuse=".2 .2 .2" specular="0 0 0" pos="0 -2 5" dir="0 0 -1" castshadow="false"/>
     <light directional="false" diffuse=".85 .85 .85" specular="0.5 0.5 0.5" pos="0 -2 4" dir="0 0 -1"/>
-	<geom type="capsule" rgba="0.3 0.2 0.1 1" size="0.03" fromto="1.5 -2.1 -1 1.5 -2.1 0.8" contype="0" conaffinity="0"/>
-	<geom type="capsule" rgba="0.3 0.2 0.1 1"  size="0.03" fromto="-1.5 -2.1 -1 -1.5 -2.1 0.8" contype="0" conaffinity="0"/>
+	<geom type="capsule" rgba="0.3 0.2 0.1 1" size="0.03" fromto="1.5 -2.1 -1 1.5 -2.1 1.4" contype="0" conaffinity="0"/>
+	<geom type="capsule" rgba="0.3 0.2 0.1 1"  size="0.03" fromto="-1.5 -2.1 -1 -1.5 -2.1 1.4" contype="0" conaffinity="0"/>
 	<camera name="main" mode="targetbody" target="torso" pos="-3 -7 3"/>
 	<body pos= " 0 -2 0">
 	
-	<joint type="hinge" pos="0 0 0.8" stiffness="0" damping="0" axis="1 0 0" armature="0.001"/>
-	<geom type="capsule" size="0.015" rgba="0.5 0.4 0.2 1" fromto="0.9 0.7 0 1.5 -0.1 0.8 "/> 
-	<geom type="capsule" size="0.015" rgba="0.5 0.4 0.2 1" fromto="-1.1 0.7 0 -1.5 -0.1 0.8 "/> 
-	<geom type="capsule" size="0.015" rgba="0.5 0.4 0.2 1" fromto="0.9 -0.9 0 1.5 -0.1 0.8 "/> 
-	<geom type="capsule" size="0.015" rgba="0.5 0.4 0.2 1" fromto="-1.1 -0.9 0 -1.5 -0.1 0.8 "/> 
+	<joint type="hinge" pos="0 0 1.4" stiffness="0" damping="10" axis="1 0 0" armature="0.01"/>
+	<geom type="capsule" size="0.015" contype="0" conaffinity="0"  rgba="0.5 0.4 0.2 1" fromto="0.9 0.7 0.6 1.5 -0.1 1.4 "/> 
+	<geom type="capsule" size="0.015" contype="0" conaffinity="0" rgba="0.5 0.4 0.2 1" fromto="-1.1 0.7 0.6 -1.5 -0.1 1.4 "/> 
+	<geom type="capsule" size="0.015" contype="0" conaffinity="0" rgba="0.5 0.4 0.2 1" fromto="0.9 -0.9 0.6 1.5 -0.1 1.4 "/> 
+	<geom type="capsule" size="0.015" contype="0" conaffinity="0" rgba="0.5 0.4 0.2 1" fromto="-1.1 -0.9 0.6 -1.5 -0.1 1.4 "/> 
 	
-    <composite type="grid" count="11 9 1" spacing="0.2" offset="0. 0 0">
-      <skin texcoord="true" material="hammock" inflate="0.01" subgrid="3"/>
-      <pin coord="0 0"/>
-      <pin coord="10 0"/>
-      <pin coord="0 8"/>
-      <pin coord="10 8"/>
-      <geom size=".095"/>
-      <joint kind="main" damping="10"/>
-    </composite>
+	<body name="hammock body" pos="-0.1 -0.1 0.57">
+    <flexcomp name="hammock" type="grid" count="11 9 1" spacing="0.2 0.2 0.2" material="hammock"
+              radius="0.01">
+      <pin id="0 8 90 98"/>
+      <edge equality="true" solref="0.00001 4" damping="10"/>
+
+       
+      <contact selfcollide="none" internal="false" solimp=".99 .999 .000001" solref="0.001 1"/>
+    </flexcomp>
+	</body>
 	
 	</body>
   </worldbody>
