@@ -174,6 +174,7 @@ class Balance(base.Task):
     self._swing_up = swing_up
     super().__init__(random=random)
 
+  # Increase noise to make policy more robust!
   def initialize_episode(self, physics):
     """Sets the state of the environment at the start of each episode.
 

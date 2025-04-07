@@ -39,7 +39,7 @@ def make_env(rank: int, seed: int = 0):
     return _init
 
 if __name__ == "__main__":
-    num_cpu = 4  
+    num_cpu = 8
     env_seed = 42
     
     os.makedirs(TENSORBOARD_LOG_DIR, exist_ok=True)
@@ -49,14 +49,14 @@ if __name__ == "__main__":
     vec_env = SubprocVecEnv([make_env(i, env_seed) for i in range(num_cpu)])
     vec_env = VecMonitor(vec_env)  # log episode reward stats
 
-    # Instantiate the PPO agent
     print("Instantiating SB3 PPO agent...")
     # MultiInputPolicy is an MLP that flattens the dict of observations to an input
-    model = PPO("MultiInputPolicy", vec_env, verbose=1, tensorboard_log=TENSORBOARD_LOG_DIR)
+    model = PPO("MultiInputPolicy", vec_env, verbose=1, tensorboard_log=TENSORBOARD_LOG_DIR,
+                n_steps=2048, batch_size=64)
 
     # Train the agent
     print("Starting training...")
-    model.learn(total_timesteps=200000, progress_bar=True) # Adjust timesteps as needed
+    model.learn(total_timesteps=200000, progress_bar=True)  # Increase timesteps if want to fully converge (overfit?)
     print("Training finished.")
 
     model.save("ppo_dm_cartpole_local_parallel")
