@@ -12,4 +12,7 @@ dependencies:
   - pip:
     - mujoco
     - dm_control
+    - "shimmy[dm_control]"
+    - "stable-baselines3[extra]"
+    - "tensorboard"
 
