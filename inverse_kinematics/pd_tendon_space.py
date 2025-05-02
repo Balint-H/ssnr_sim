@@ -55,6 +55,7 @@ def arm_control(model, data):
 
     # Convert from joint-space to tendon space
     J_tendon = data.ten_J
+
     tendon_force = pinv(J_tendon.T) @ qfrc_desired
 
     # Muscles/cables should only pull

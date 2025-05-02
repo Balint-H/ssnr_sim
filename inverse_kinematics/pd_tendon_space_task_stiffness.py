@@ -8,10 +8,14 @@ import numpy as np
 from numpy.linalg import pinv, inv
 import glfw
 
-Kp = 100
-Kd = 10
+Kp = 1000
+Kd = 100
 
 xml = 'arm_model_tendon.xml'
+
+def weighted_pinv(J, H):
+    Hinv = inv(H)
+    return Hinv@J.T@pinv(J@Hinv@J.T)
 
 
 def arm_control(model, data):
@@ -38,18 +42,25 @@ def arm_control(model, data):
     # Current position of arm end in comparison
     x, y, _ = data.body("tip").xpos
 
-
+    # dx/dq
     # Jacobian from engine. The jacobian converts differences (e.g. error, velocity) in joint space to differences in
     # task space (Cartesian coords). It depends on the current configuration of the arm, therefore we need to calculate
     # it every frame. We'll use MuJoCo's built in function for getting the matrix.
     J = np.empty((3, model.nv))
     mujoco.mj_jac(model, data, jacp=J, jacr=None, point=np.array([[x], [y], [0]]), body=model.body("tip").id)
+
+    H = np.empty((model.nv, model.nv))
+
+    mujoco.mj_fullM(model,H, data.qM)
+    H[[(x, x) for x in range(model.nv)]] += 0.01
+    H/model.body("upper arm").subtreemass
+
     xvel, yvel, _ = J@data.qvel  # Get task velocity with jacobian
-    Ji = pinv(J)  # Invert it so we can go from task space to joint space
+    Ji = weighted_pinv(J, H)  # Invert it so we can go from task space to joint space
 
     xe, ye = xt-x, yt-y  # Errors in task space
     task_force = Kp * np.array([xe, ye, 0]) - Kd*np.array([xvel, yvel, 0])  # Stiffness and damping in task space!
-    f = Ji @ task_force  # desired joint torque
+    f = J.T @ task_force  # desired joint torque
     # Good practice to clip forces to reasonable values
     qfrc_desired = np.clip(f/10, -10, 10)
 
@@ -58,7 +69,7 @@ def arm_control(model, data):
     tendon_force = pinv(J_tendon.T) @ qfrc_desired
 
     # Muscles/cables should only pull
-    data.ctrl = np.minimum(0, tendon_force * 10)
+    data.ctrl = np.minimum(0, tendon_force)
 
 def load_callback(model=None, data=None):
     # Clear the control callback before loading a new model

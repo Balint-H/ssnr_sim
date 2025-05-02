@@ -57,7 +57,7 @@ Things to try:
       Joints define degrees of freedom in relation to the current rigid body's parent (the worldbody).
       This joint overrides one of the default values. The XML uses degrees as angle units by default.
       -->
-      <joint name="shoulder" range="-60 160"/>
+      <joint name="shoulder" range="-80 180"/>
 
       <site name="s1" pos="0.06 0.04 0" />
       <site name="s2" pos="0.06 -0.04 0" />
@@ -71,7 +71,7 @@ Things to try:
         <geom name="forearm" mass="2" type="capsule" size="0.035" fromto="0 0 0  0.25 0 0" rgba=".5 .1 .1 1"/>
         <!-- Geom used for wrapping for tendons -->
         <geom name="elbow" type="cylinder" pos="0 0 0" size=".04 .05" rgba=".5 .1 .8 .5" mass="0" group="1"/>
-        <joint name="elbow" range="0 110"/>
+        <joint name="elbow" range="0 150"/>
           <body  name="wrist_body" pos="0.25 0 0" euler="-90 0 90">
               <geom density="1000" type="capsule" size="0.02000001 0.03" pos="1.880135E-09 -0.03 -3.279598E-08" quat="4.003268E-08 -4.391836E-08 -0.7071071 -0.7071071" priority="0" contype="0" conaffinity="0" group="2" condim="1" solmix="1" solref="0.015 1" rgba=".5 .1 .1 1" solimp="0.99 0.99 0.003" margin="0" gap="0" friction="0.7 0.005 0.0001" name="rwrist_91" />
               <body pos="0 -0.09076759 0" quat="-1 0 0 0" name="hand">
