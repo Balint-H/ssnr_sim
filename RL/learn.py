@@ -1,11 +1,11 @@
 import gymnasium as gym
-from cartpole_solution import swingup, _DEFAULT_TIME_LIMIT  # Switch to cartpole_solution for a tested env
+from cartpole import swingup, _DEFAULT_TIME_LIMIT  # Switch to cartpole_solution for a tested env
 _DEFAULT_TIME_LIMIT = 30
 from shimmy.dm_control_compatibility import DmControlCompatibilityV0
 
 from stable_baselines3 import PPO
 from stable_baselines3.common.env_util import make_vec_env
-from stable_baselines3.common.vec_env import SubprocVecEnv, VecMonitor
+from stable_baselines3.common.vec_env import SubprocVecEnv, VecMonitor, DummyVecEnv
 from stable_baselines3.common.utils import set_random_seed
 from gymnasium.wrappers import TimeLimit
 from torch import nn
@@ -23,9 +23,9 @@ def make_env(rank: int, seed: int = 0):
     def _init():
         print(f"Creating environment in process {rank}...")
         # 1. Instantiate the dm_control environmen
-        dm_control_env = swingup(random=seed + rank) # Pass distinct random seeds
+        dm_control_env = swingup(random=seed + rank)  # Pass distinct random seeds
 
-        # 2. Wrap the dm_control environment using Shimmy (so its gym format)
+        # 2. Wrap the dm_control environment using Shimmy (so its in gym format)
         env = DmControlCompatibilityV0(dm_control_env)
 
         # 3. Apply TimeLimit
@@ -40,14 +40,18 @@ def make_env(rank: int, seed: int = 0):
 
 
 if __name__ == "__main__":
-    num_cpu = 1
+    num_parallel = 1
     env_seed = 42
+    use_multiprocessing = True
     
     os.makedirs(TENSORBOARD_LOG_DIR, exist_ok=True)
 
-    print(f"Setting up {num_cpu} parallel environments...")
+    print(f"Setting up {num_parallel} parallel environments...")
     # Vectorized environments run in parallel to collect experience (here on cpu)
-    vec_env = SubprocVecEnv([make_env(i, env_seed) for i in range(num_cpu)])
+    if use_multiprocessing:
+        vec_env = SubprocVecEnv([make_env(i, env_seed) for i in range(num_parallel)])
+    else:
+        vec_env = DummyVecEnv([make_env(i, env_seed) for i in range(num_parallel)])
     vec_env = VecMonitor(vec_env)  # log episode reward stats
 
     print("Instantiating SB3 PPO agent...")
