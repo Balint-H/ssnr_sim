@@ -15,4 +15,5 @@ dependencies:
     - "shimmy[dm_control]"
     - "stable-baselines3[extra]"
     - "tensorboard"
+    - myosuite
 
