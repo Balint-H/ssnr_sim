@@ -1,6 +1,6 @@
 import gymnasium as gym
-from cartpole import swingup, _DEFAULT_TIME_LIMIT
-
+from cartpole_solution import swingup, _DEFAULT_TIME_LIMIT  # Switch to cartpole_solution for a tested env
+_DEFAULT_TIME_LIMIT = 30
 from shimmy.dm_control_compatibility import DmControlCompatibilityV0
 
 from stable_baselines3 import PPO
@@ -8,7 +8,7 @@ from stable_baselines3.common.env_util import make_vec_env
 from stable_baselines3.common.vec_env import SubprocVecEnv, VecMonitor
 from stable_baselines3.common.utils import set_random_seed
 from gymnasium.wrappers import TimeLimit
-
+from torch import nn
 import os
 
 TENSORBOARD_LOG_DIR = "./ppo_cartpole_tensorboard/"
@@ -38,8 +38,9 @@ def make_env(rank: int, seed: int = 0):
     set_random_seed(seed)
     return _init
 
+
 if __name__ == "__main__":
-    num_cpu = 8
+    num_cpu = 1
     env_seed = 42
     
     os.makedirs(TENSORBOARD_LOG_DIR, exist_ok=True)
@@ -50,13 +51,17 @@ if __name__ == "__main__":
     vec_env = VecMonitor(vec_env)  # log episode reward stats
 
     print("Instantiating SB3 PPO agent...")
+
+    # We can define hyperparameters of the function approximators used in PPO
+    policy_kwargs = dict(activation_fn=nn.Tanh,
+                         net_arch=dict(pi=[32, 32], vf=[32, 32]))
     # MultiInputPolicy is an MLP that flattens the dict of observations to an input
     model = PPO("MultiInputPolicy", vec_env, verbose=1, tensorboard_log=TENSORBOARD_LOG_DIR,
-                n_steps=2048, batch_size=64)
+                n_steps=2048, batch_size=64, policy_kwargs=policy_kwargs)
 
     # Train the agent
     print("Starting training...")
-    model.learn(total_timesteps=200000, progress_bar=True)  # Increase timesteps if want to fully converge (overfit?)
+    model.learn(total_timesteps=400000, progress_bar=True)  # Increase timesteps if want to fully converge (overfit?)
     print("Training finished.")
 
     model.save("ppo_dm_cartpole_local_parallel")

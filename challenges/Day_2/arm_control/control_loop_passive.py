@@ -4,7 +4,7 @@ import mujoco.viewer
 
 
 def main():
-    m = mujoco.MjModel.from_xml_path(r'C:\Users\hbkm9\Documents\Projects\Source_files\Python\ssnr23_ws4\challenges\Day_3\arm_design\solution_scene_wall.xml')
+    m = mujoco.MjModel.from_xml_path(r'../arm_design/solution_scene_wall.xml')
     d = mujoco.MjData(m)
 
     with mujoco.viewer.launch_passive(m, d) as viewer:

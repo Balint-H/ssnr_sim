@@ -192,7 +192,8 @@ class Balance(base.Task):
     else:
       physics.named.data.qpos['slider'] = self.random.uniform(-.1, .1)
       physics.named.data.qpos[1:] = self.random.uniform(-.034, .034, nv - 1)
-    physics.named.data.qvel[:] = 0.01 * self.random.randn(physics.model.nv)
+    physics.named.data.qvel[0] = 0.1 * self.random.randn()
+    physics.named.data.qvel[1] = 15 * self.random.randn()
     super().initialize_episode(physics)
 
   def get_observation(self, physics):
@@ -203,12 +204,23 @@ class Balance(base.Task):
     return obs
 
   def _get_reward(self, physics, sparse):
-    """Naive reward function as a first guess"""
-
-    upright = (np.cos(physics.data.qpos[1])+1)/2  # Divide by max angle
-    # Could we shape the reward in another way? What's the benefit of that?
-    # centered =
-    return upright
+    if sparse:
+      cart_in_bounds = rewards.tolerance(physics.cart_position(),
+                                         self._CART_RANGE)
+      angle_in_bounds = rewards.tolerance(physics.pole_angle_cosine(),
+                                          self._ANGLE_COSINE_RANGE).prod()
+      return cart_in_bounds * angle_in_bounds
+    else:
+      upright = (physics.pole_angle_cosine() + 1) / 2
+      centered = rewards.tolerance(physics.cart_position(), margin=2)
+      centered = (1 + centered) / 2
+      small_control = rewards.tolerance(physics.control(), margin=1,
+                                        value_at_margin=0,
+                                        sigmoid='quadratic')[0]
+      small_control = (4 + small_control) / 5
+      small_velocity = rewards.tolerance(physics.angular_vel(), margin=5).min()
+      small_velocity = (1 + small_velocity) / 2
+      return upright.mean() * small_control * small_velocity * centered
 
   def get_reward(self, physics):
     """Returns a sparse or a smooth reward, as specified in the constructor."""
