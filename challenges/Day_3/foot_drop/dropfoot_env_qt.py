@@ -23,21 +23,7 @@ from multiprocessing import Queue
 # to examine its contents. For more instructions check out the header comments of xml/01_planar_arm.xml
 xml = 'xml/pd_track.xml'
 
-queue = Queue()
 
-# Feel free to store your data in different way (e.g. a raw deque or list), or add or edit DataCollecter objects
-data_collecter = DataCollecter(queue, labels=[
-    "Tibia Accelerometer",
-    "Tibia Gyroscpe",
-    "Foot Accelerometer",
-    "Foot Gyroscope",
-    "Toe contact force",
-    "Tendon length",
-    "Reward",
-    "Phase"
-], maxlen=100)
-
-data_collecter.launch_plot()
 
 
 def ankle_control(model: mujoco.MjModel, data: mujoco.MjData, precalc_mocap_dictionary, mocap_metadata):
@@ -173,4 +159,20 @@ def reward(data, model):
 
 
 if __name__ == '__main__':
+    queue = Queue()
+
+    # Feel free to store your data in different way (e.g. a raw deque or list), or add or edit DataCollecter objects
+    data_collecter = DataCollecter(queue, labels=[
+        "Tibia Accelerometer",
+        "Tibia Gyroscpe",
+        "Foot Accelerometer",
+        "Foot Gyroscope",
+        "Toe contact force",
+        "Tendon length",
+        "Reward",
+        "Phase"
+    ], maxlen=100)
+
+    data_collecter.launch_plot()
+
     viewer.launch(loader=load_callback)

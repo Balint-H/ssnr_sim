@@ -8,7 +8,7 @@ import numpy as np
 from pyqtgraph import PlotWidget
 import pyqtgraph as pg
 import sys
-from PyQt5.QtWidgets import QApplication
+from PyQt6.QtWidgets import QApplication
 from multiprocessing import Queue
 from typing import Optional
 from functools import partial
@@ -159,7 +159,7 @@ if __name__ == '__main__':
 
     signal_generator = SignalGenerator(data_queue, N)
     signal_generator.start()
-    data_collecter = DataCollecter(data_queue, N)
+    data_collecter = DataCollecter(data_queue, [str(n) for n in range(N)])
     data_collecter.launch_plot()
-    data_collecter.plot_app.app.exec_()
+    data_collecter.plot_app.app.exec()
     signal_generator.join()
