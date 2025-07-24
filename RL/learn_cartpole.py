@@ -1,5 +1,5 @@
 import gymnasium as gym
-from cartpole_solution import swingup, _DEFAULT_TIME_LIMIT  # Switch to cartpole_solution for a tested env
+from cartpole import swingup, _DEFAULT_TIME_LIMIT  # Switch to cartpole_solution for a tested env
 _DEFAULT_TIME_LIMIT = 30
 from shimmy.dm_control_compatibility import DmControlCompatibilityV0
 
