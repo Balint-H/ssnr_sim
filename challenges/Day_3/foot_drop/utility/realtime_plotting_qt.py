@@ -44,7 +44,7 @@ class DataCollecter:
         self.timer.start(10)  # Update the plot every 50 ms
         self.start_time = time.time()
 
-        t = threading.Thread(target=lambda: self.plot_app.app.exec_())
+        t = threading.Thread(target=lambda: self.plot_app.app.exec())
         t.daemon = True
         t.start()
         pass

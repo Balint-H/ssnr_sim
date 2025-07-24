@@ -2,21 +2,22 @@ name: ssnr_sim
 channels:
   - conda-forge
 dependencies:
-  - python=3.9
+  - python=3.10
   - matplotlib
   - scipy
   - pip
   - scikit-learn
-  - pyqt6
-  - pyqtgraph
   - pip:
     - mujoco
     - dm_control
     - "shimmy[dm_control]"
     - "stable-baselines3[extra]"
     - "tensorboard"
-    - myosuite
+    - myosuite==2.9.0
     - loop_rate_limiters
     - epath
+    - PyQt6
+    - pyqtgraph
     - mink
+    - "qpsolvers[quadprog]"
 

@@ -350,7 +350,10 @@ class PingPongEnvV0(BaseV0):
 class IdInfo:
   def __init__(self, model: mujoco.MjModel):
     self.paddle_sid = model.site("paddle").id
-    self.paddle_bid = model.body("ping_pong_paddle").id
+    try:
+      self.paddle_bid = model.body("ping_pong_paddle").id
+    except:
+      self.paddle_bid = -1
     self.ball_sid = model.site("pingpong").id
     self.ball_bid = model.body("pingpong").id
 
