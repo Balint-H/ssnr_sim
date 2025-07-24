@@ -74,7 +74,16 @@ def load_callback(model=None, data=None):
         mujoco.mj_inverse(model, data)
         qfrc0 = data.qfrc_inverse.copy()
 
-        ctrl0 = np.atleast_2d(qfrc0) @ np.linalg.pinv(data.actuator_moment[:-2, :])
+        actuator_moment = np.zeros((model.nu, model.nv))
+        mujoco.mju_sparse2dense(
+            actuator_moment,
+            data.actuator_moment.reshape(-1),
+            data.moment_rownnz,
+            data.moment_rowadr,
+            data.moment_colind.reshape(-1),
+        )
+
+        ctrl0 = np.atleast_2d(qfrc0) @ np.linalg.pinv(actuator_moment[:-2, :])
         ctrl0 = ctrl0.flatten()
 
         nu = model.nu  # Alias for the number of actuators.
