@@ -16,4 +16,5 @@ dependencies:
     - "stable-baselines3[extra]"
     - "tensorboard"
     - myosuite
+    - loop_rate_limiters
 
