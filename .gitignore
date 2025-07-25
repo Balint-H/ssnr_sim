@@ -1,7 +1,8 @@
 *.idea/
-*/__pycache__/
+__pycache__/
 *.zip
 *tensorboard/
 *.ipynb_checkpoints/
 */elbow_gym/
 .vscode/
+.DS_Store
