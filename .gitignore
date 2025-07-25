@@ -4,3 +4,4 @@
 *tensorboard/
 *.ipynb_checkpoints/
 */elbow_gym/
+.vscode/
