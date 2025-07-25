@@ -145,7 +145,7 @@ class Physics(mujoco.Physics):
   def bounded_position(self):
     """Returns the state, with pole angle split into sin/cos."""
     return np.hstack((self.cart_position(),
-                      self.named.data.xmat[2:, ['zz', 'xz']].ravel()))
+                      self.named.data.xmat[2:, np.array(['zz', 'xz'])].ravel()))
 
 
 class Balance(base.Task):
@@ -207,8 +207,8 @@ class Balance(base.Task):
 
     upright = (np.cos(physics.data.qpos[1])+1)/2  # Divide by max angle
     # Could we shape the reward in another way? What's the benefit of that?
-    # centered =
-    return upright
+    # centered =    
+    return upright.mean()
 
   def get_reward(self, physics):
     """Returns a sparse or a smooth reward, as specified in the constructor."""

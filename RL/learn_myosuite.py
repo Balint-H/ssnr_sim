@@ -20,7 +20,7 @@ if __name__ == '__main__':
         return _init
 
     # Create vectorized environments with monitoring
-    env = DummyVecEnv([make_env() for _ in range(NUM_ENVS)])
+    env = DummyVecEnv([make_env for _ in range(NUM_ENVS)])
     env = VecNormalize(env, norm_obs=True, norm_reward=False)
     env = VecMonitor(env)  # Ensures rollouts are logged
 
@@ -31,7 +31,7 @@ if __name__ == '__main__':
     )
 
     # Add evaluation callback for rollout logging
-    eval_env = DummyVecEnv([make_env()])  # Wrap in DummyVecEnv (since it's not parallel)
+    eval_env = DummyVecEnv([make_env])  # Wrap in DummyVecEnv (since it's not parallel)
     eval_env = VecNormalize(eval_env, norm_obs=True, norm_reward=False, training=False)  # Match training env
     eval_env = VecMonitor(eval_env)  # Ensures logging
     eval_callback = EvalCallback(eval_env, best_model_save_path="./elbow_gym/",
