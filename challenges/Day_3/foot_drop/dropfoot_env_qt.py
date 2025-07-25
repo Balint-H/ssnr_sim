@@ -18,7 +18,15 @@ from utility.realtime_plotting_qt import DataCollecter
 import numpy as np
 from multiprocessing import Queue
 
+import os
+import sys
 
+# Change working directory to the script's directory
+script_dir = os.path.dirname(os.path.abspath(__file__))
+os.chdir(script_dir)
+
+# Add script directory to sys.path if you want relative imports to work
+sys.path.insert(0, script_dir)
 # Change this string to other scenes you may want to load. You can also open the xml in a code editor
 # to examine its contents. For more instructions check out the header comments of xml/01_planar_arm.xml
 xml = 'xml/pd_track.xml'
