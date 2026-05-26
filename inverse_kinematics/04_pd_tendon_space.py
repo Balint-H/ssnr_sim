@@ -6,12 +6,12 @@ import mujoco
 import mujoco.viewer as viewer
 import numpy as np
 from numpy.linalg import pinv, inv
-import glfw
+import os
 
 Kp = 100
 Kd = 10
 
-xml = 'arm_model_tendon.xml'
+xml = os.path.dirname(__file__) + '/arm_model_tendon.xml'
 
 
 def arm_control(model, data):
@@ -54,7 +54,8 @@ def arm_control(model, data):
     qfrc_desired = np.clip(f/10, -10, 10)
 
     # Convert from joint-space to tendon space
-    J_tendon = data.ten_J
+    J_tendon = np.empty((model.ntendon, model.nv))
+    mujoco.mju_sparse2dense(J_tendon, data.ten_J, model.ten_J_rownnz, model.ten_J_rowadr, model.ten_J_colind)
 
     tendon_force = pinv(J_tendon.T) @ qfrc_desired
 

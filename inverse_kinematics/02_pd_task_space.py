@@ -6,12 +6,12 @@ import mujoco
 import mujoco.viewer as viewer
 import numpy as np
 from numpy.linalg import pinv, inv
-import glfw
+import os
 
 Kp = 100
-Kd = 1
+Kd = 0
 
-xml = 'arm_model.xml'
+xml = os.path.dirname(__file__) + '/arm_model.xml'
 
 
 def arm_control(model, data):
@@ -24,12 +24,34 @@ def arm_control(model, data):
 
     # Getting the current position of the interactive target. You can use Ctrl (Cmd on Mac) + Shift + Right click drag
     # to move the target in the horizontal plane.
-    joint_target = data.ctrl
+    xt, yt, _ = data.mocap_pos[0]
 
-    error = joint_target - data.qpos
-    joint_velocity = data.qvel
+    # Clipping the target position's distance, otherwise weird behaviour occurs when out of reach
+    ls = model.body("forearm").pos[0]
+    lw = model.body("wrist_body").pos[0]
+    le = -model.body("hand").pos[1]
+    lh = -model.body("tip").pos[1]
 
-    data.qfrc_applied = error*Kp + Kd*(0-joint_velocity)
+    rt = np.linalg.norm([xt, yt])
+    xt, yt = np.array([xt, yt])/rt * np.clip(rt, 0, ls+le+lh+lw)
+
+    # Current position of arm end in comparison
+    x, y, _ = data.body("tip").xpos
+
+    # Jacobian from engine. The jacobian converts differences (e.g. error, velocity) in joint space to differences in
+    # task space (Cartesian coords). It depends on the current configuration of the arm, therefore we need to calculate
+    # it every frame. We'll use MuJoCo's built in function for getting the matrix.
+    J = np.empty((3, model.nv))
+    mujoco.mj_jac(model, data, jacp=J, jacr=None, point=np.array([[x], [y], [0]]), body=model.body("tip").id)
+    Ji = pinv(J)  # Invert it so we can go from task space to joint space
+
+    xe, ye = xt-x, yt-y  # Errors in task space
+    qe = Ji @ np.array([xe, ye, 0])  # Error vector in joint space
+
+    f = Kp*qe - Kd*data.qvel  # Force based on error + damping to make it stable at high gains.
+
+    # Good practice to clip forces to reasonable values
+    data.qfrc_applied = np.clip(f/10, -10, 10)
 
 
 def load_callback(model=None, data=None):

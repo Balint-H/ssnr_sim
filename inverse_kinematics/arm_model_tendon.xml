@@ -10,9 +10,6 @@ the target in the horizontal plane.
 Things to try:
   - what happens if you apply a control torque to the elbow at different positions?
   - What is the difference if you remove the wrist joint?
-    
-  
-
 -->
 
 <mujoco model="2-link arm joint torque control">
@@ -75,10 +72,13 @@ Things to try:
           <body  name="wrist_body" pos="0.25 0 0" euler="-90 0 90">
               <geom density="1000" type="capsule" size="0.02000001 0.03" pos="1.880135E-09 -0.03 -3.279598E-08" quat="4.003268E-08 -4.391836E-08 -0.7071071 -0.7071071" priority="0" contype="0" conaffinity="0" group="2" condim="1" solmix="1" solref="0.015 1" rgba=".5 .1 .1 1" solimp="0.99 0.99 0.003" margin="0" gap="0" friction="0.7 0.005 0.0001" name="rwrist_91" />
               <body pos="0 -0.09076759 0" quat="-1 0 0 0" name="hand">
-                <joint name="wrist" axis="-1 0 0"/>
+                <joint name="wrist" axis="-1 0 0" pos="0 0.05 0" damping="0.1" armature="0.0001" range="-30 70"/>
+                <geom name="wrist" type="cylinder" pos="0 0.05 0" size=".03 .05" euler="0 90 -90" rgba=".5 .1 .8 .5" mass="0" group="1"/>
                 <geom density="1000" type="ellipsoid" size="0.03500002 0.02000001 0.045" pos="3.469804E-09 -0.01675202 -3.877605E-08" quat="4.003268E-08 -4.391836E-08 -0.7071071 -0.7071071" priority="0" contype="0" conaffinity="0" group="2" rgba=".5 .1 .1 1" condim="3" solmix="1" solref="0.015 1" solimp="0.98 0.98 0.001" margin="0" gap="0" friction="1 0.005 0.0001" name="rhand_95" />
                 <body name="tip" pos="0 -0.175 0"/>
                 <body pos="-6.475558E-09 -0.06500006 1.90359E-08" quat="-1 0 0 0" name="rfingers_96">
+                  <site name="p0" pos=" 0 0.07 0.02"/>
+                  <site name="p1" pos=" 0 0.07 -0.02"/>
                   <geom density="1000" type="capsule" size="0.006500002 0.04" pos="-0.02399999 -0.02500005 -4.555073E-08" quat="0.7071071 -0.7071071 4.391836E-08 4.003268E-08" priority="0" contype="0" conaffinity="0" group="2" condim="3" rgba=".5 .1 .1 1" solmix="1" solref="0.015 1" solimp="0.98 0.98 0.001" margin="0" gap="0" friction="1 0.005 0.0001" name="rfinger0_101" />
                   <geom density="1000" type="capsule" size="0.006500002 0.04" pos="-0.00799998 -0.02999995 -3.565628E-10" quat="0.7071071 -0.7071071 4.391836E-08 4.003268E-08" priority="0" contype="0" conaffinity="0" group="2" condim="3" rgba=".5 .1 .1 1" solmix="1" solref="0.015 1" solimp="0.98 0.98 0.001" margin="0" gap="0" friction="1 0.005 0.0001" name="rfinger1_102" />
                   <geom density="1000" type="capsule" size="0.006000001 0.04" pos="0.007999999 -0.03000007 -5.897357E-09" quat="0.7071071 -0.7071071 4.391836E-08 4.003268E-08" priority="0" contype="0" conaffinity="0" group="2" condim="3" rgba=".5 .1 .1 1" solmix="1" solref="0.015 1" solimp="0.98 0.98 0.001" margin="0" gap="0" friction="1 0.005 0.0001" name="rfinger2_103" />
@@ -90,6 +90,8 @@ Things to try:
               </body>
             <site name="s7" pos="0  0.11 0.03 " />
             <site name="s8" pos="0 0.11 -0.03  " />
+            <site name="x2" pos="0 0.11 0.1  " group="4"/>
+            <site name="x3" pos="0 0.11 -0.1  " group="4"/>
           </body>
 
       </body>
@@ -144,6 +146,18 @@ Things to try:
       <geom geom="elbow" sidesite="x1"/>
       <site site="s8"/>
     </spatial>
+
+     <spatial name="WF" width="0.0069" rgba=".4 .6 .4 1">
+      <site site="s7"/>
+      <geom geom="wrist" sidesite="x2"/>
+      <site site="p0"/>
+    </spatial>
+
+     <spatial name="WE" width="0.0069" rgba=".4 .6 .4 1">
+      <site site="s8"/>
+      <geom geom="wrist" sidesite="x3"/>
+      <site site="p1"/>
+    </spatial>
   </tendon>
 
     <actuator>
@@ -153,6 +167,8 @@ Things to try:
     <motor name="EE" tendon="EE" ctrlrange="-100 0"/>
     <motor name="BF" tendon="BF" ctrlrange="-100 0"/>
     <motor name="BE" tendon="BE" ctrlrange="-100 0"/>
+    <motor name="WF" tendon="WF" ctrlrange="-100 0"/>
+    <motor name="WE" tendon="WE" ctrlrange="-100 0"/>
   </actuator>
 
 

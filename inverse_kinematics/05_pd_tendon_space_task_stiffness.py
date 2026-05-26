@@ -5,21 +5,18 @@
 import mujoco
 import mujoco.viewer as viewer
 import numpy as np
-from etils import epath
 from numpy.linalg import pinv, inv
-import jax.numpy as jnp
+import os
 
-Kp = 100
-Kd = 10
+Kp = 500
+Kd = 3
 
-Kp_act = 5
-Kd_act = 0
+xml = os.path.dirname(__file__) + '/arm_model_tendon.xml'
 
-xml = (epath.Path(epath.resource_path('mujoco')) / (
-        'mjx/test_data/actuator/arm26.xml')).as_posix()
+def weighted_pinv(J, H):
+    Hinv = inv(H)
+    return Hinv@J.T@pinv(J@Hinv@J.T)
 
-
-actuators = ['SF', 'SE', 'EF', 'EE', 'BF', 'BE']
 
 def arm_control(model, data):
     """
@@ -31,73 +28,64 @@ def arm_control(model, data):
 
     # Getting the current position of the interactive target. You can use Ctrl (Cmd on Mac) + Shift + Right click drag
     # to move the target in the horizontal plane.
-    data.mocap_pos[0][2] = 0
     xt, yt, _ = data.mocap_pos[0]
 
     # Clipping the target position's distance, otherwise weird behaviour occurs when out of reach
+    ls = model.body("forearm").pos[0]
+    lw = model.body("wrist_body").pos[0]
+    le = -model.body("hand").pos[1]
+    lh = -model.body("tip").pos[1]
+
     rt = np.linalg.norm([xt, yt])
-    xt, yt = np.array([xt, yt])/(rt+0.000001) * np.clip(rt, 0, 1)
+    xt, yt = np.array([xt, yt])/rt * np.clip(rt, 0, ls+le+lh+lw)
 
     # Current position of arm end in comparison
     x, y, _ = data.body("tip").xpos
 
-
+    # dx/dq
     # Jacobian from engine. The jacobian converts differences (e.g. error, velocity) in joint space to differences in
     # task space (Cartesian coords). It depends on the current configuration of the arm, therefore we need to calculate
     # it every frame. We'll use MuJoCo's built in function for getting the matrix.
     J = np.empty((3, model.nv))
     mujoco.mj_jac(model, data, jacp=J, jacr=None, point=np.array([[x], [y], [0]]), body=model.body("tip").id)
-    xvel, yvel, _ = J@data.qvel  # Get task velocity with jacobian
 
     H = np.empty((model.nv, model.nv))
-    mujoco.mj_fullM(model, H, data.qM)
-    Ji = weighted_pinv(J, H/mujoco.mj_getTotalmass(model))  # Invert it so we can go from task space to joint space
+
+    mujoco.mj_fullM(model,H, data.qM)
+    H[[(x, x) for x in range(model.nv)]] += 0.01
+    H/model.body("upper arm").subtreemass
+
+    xvel, yvel, _ = J@data.qvel  # Get task velocity with jacobian
+    Ji = weighted_pinv(J, H)  # Invert it so we can go from task space to joint space
 
     xe, ye = xt-x, yt-y  # Errors in task space
     task_force = Kp * np.array([xe, ye, 0]) - Kd*np.array([xvel, yvel, 0])  # Stiffness and damping in task space!
-    f = pinv(Ji).T @ task_force  # desired joint torque
+    f = J.T @ task_force  # desired joint torque
     # Good practice to clip forces to reasonable values
-    qfrc_desired = np.clip(f, -1000, 1000)
+    qfrc_desired = np.clip(f/10, -10, 10)
 
-    force_error = qfrc_desired - data.qfrc_actuator
+    # Convert from joint-space to tendon space
+    J_tendon = np.empty((model.ntendon, model.nv))
+    mujoco.mju_sparse2dense(J_tendon, data.ten_J, model.ten_J_rownnz, model.ten_J_rowadr, model.ten_J_colind)
 
-    gains = [mujoco.mju_muscleGain(data.actuator(a_name).length[0],
-                                   data.actuator(a_name).velocity[0],
-                                   model.actuator(a_name).lengthrange.reshape(2, 1),
-                                   model.actuator(a_name).acc0[0],
-                                   model.actuator(a_name).gainprm[:-1].reshape(9, 1), ) for a_name in actuators]
-    gains = np.array(gains)
-    moment_matrix = np.zeros((model.nu, model.nv))
-    mujoco.mju_sparse2dense(moment_matrix,
-                            data.actuator_moment,
-                            data.moment_rownnz,
-                            data.moment_rowadr,
-                            data.moment_colind)
+    tendon_force = pinv(J_tendon.T) @ qfrc_desired
 
-    df_dact = gains[:, None] * moment_matrix
-    activation_error = weighted_pinv(df_dact, H/mujoco.mj_getTotalmass(model)).T @ force_error
     # Muscles/cables should only pull
-    data.ctrl = np.clip(Kp_act * activation_error - Kd_act * data.act_dot, 0, 1)
+    data.ctrl = np.minimum(0, tendon_force)
+
+    # We'll visualise the force applied on each tendon:
+    color = np.log(-data.ctrl+0.0001)
+    model.tendon_rgba = (color[:, None] * np.array([0.95, 0.3, 0.3, 1])[None, :]
+                         + (1 - color[:, None]) * np.array([0.45, 0.15, 0.15, 1])[None, :])
 
 def load_callback(model=None, data=None):
     # Clear the control callback before loading a new model
     # or a Python exception is raised
     mujoco.set_mjcb_control(None)
 
-    spec = mujoco.MjSpec.from_file(filename=xml, assets=None)
-    forearm = spec.worldbody.first_body().first_body()
-    forearm.name = "forearm"
-
-    tip = forearm.add_body(name="tip",pos=[0.5, 0, 0])
-    target = spec.worldbody.add_body(name="target",
-                                     mocap=True,
-                                     pos=[-0.1, 0.9, 0])
-    ball = target.add_geom(name="mocap_geom", size=[0.05, 0, 0], rgba=[0.5, 0.1, 0.1, 0.1],
-                           contype=0, conaffinity=0, mass=0)
-    model = spec.compile()
-
     # `model` contains static information about the modeled system
-    model.actuator_dynprm[:, 2] = 0.5
+    model = mujoco.MjModel.from_xml_path(filename=xml, assets=None)
+
     # `data` contains the current dynamic state of the system
     data = mujoco.MjData(model)
 
@@ -112,11 +100,6 @@ def load_callback(model=None, data=None):
         mujoco.set_mjcb_control(arm_control)
 
     return model, data
-
-
-def weighted_pinv(J, H):
-    Hinv = inv(H)
-    return Hinv @ J.T @ pinv(J @ Hinv @ J.T)
 
 
 if __name__ == '__main__':

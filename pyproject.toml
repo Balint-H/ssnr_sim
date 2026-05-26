@@ -1,0 +1,20 @@
+[project]
+name = "ssnr-sim"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "dm-control>=1.0.38",
+    "loop-rate-limiters>=1.2.0",
+    "matplotlib>=3.10.9",
+    "mujoco==3.8.0",
+    "pip>=26.1.1",
+    "pyqt6>=6.11.0",
+    "pyqtgraph>=0.14.0",
+    "scikit-learn>=1.7.2",
+    "scipy>=1.15.3",
+    "shimmy[dm-control]>=2.0.1",
+    "stable-baselines3[extra]>=2.8.0",
+    "tensorboard>=2.20.0",
+]

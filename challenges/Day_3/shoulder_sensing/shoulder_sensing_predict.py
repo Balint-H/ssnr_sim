@@ -25,6 +25,7 @@ def load_callback(model=None, data=None, sv_z=None, sv_y=None):
     model = mujoco.MjModel.from_xml_path(filename=xml, assets=None)
     # `data` contains the current dynamic state of the system
     data = mujoco.MjData(model)
+    data.mocap_pos[0, :] = [0.3, 0.3, 0]
     mujoco.set_mjcb_control(partial(predict, sv_z=sv_z, sv_y=sv_y))
     return model, data
 

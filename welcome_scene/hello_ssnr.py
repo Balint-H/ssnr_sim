@@ -2,14 +2,14 @@
 # Alternatively you could just drag and drop an xml file after running "simulate.exe"
 # from the MuJoCo directory downloaded.
 
-import mujoco
+import os
 import mujoco.viewer as viewer
 import matplotlib
 matplotlib.use("QtAgg")
 
 # Change this string to other scenes you may want to load. You can also open the xml in a code editor
 # to examine its contents. For more instructions check out the header comments of xml/01_planar_arm.xml
-xml = r'welcome_scene/welcome.xml'
+xml = os.path.dirname(__file__)+'/welcome.xml'
 
 
 if __name__ == '__main__':

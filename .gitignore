@@ -1,6 +1,7 @@
 *.idea/
-*/__pycache__/
+__pycache__/
 *.zip
 *tensorboard/
 *.ipynb_checkpoints/
+*MUJOCO_LOG.txt
 */elbow_gym/
