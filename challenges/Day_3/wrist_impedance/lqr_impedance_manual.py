@@ -41,7 +41,7 @@ def lqr_control(model, data, K, ctrl0, qpos0):
     if (data.time // model.opt.timestep) % 2000 == 0:
         data.qpos[-2] = -15
         data.qpos[-1] = 0
-        data.qvel[-1] = -2
+        data.qvel[-1] = -2.5
 
     # LQR control law.
     data.ctrl[:-2] = ctrl0 - K[:-2, :] @ dxf

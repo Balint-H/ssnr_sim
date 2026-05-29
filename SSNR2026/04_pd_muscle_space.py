@@ -8,8 +8,9 @@ import numpy as np
 from numpy.linalg import pinv, inv
 import os
 
-Kp = 500
-Kd = 3
+Kp = 10
+Kd = 0.3
+
 
 xml = os.path.dirname(__file__) + '/arm_model_tendon.xml'
 
@@ -29,6 +30,7 @@ def arm_control(model, data):
     # Getting the current position of the interactive target. You can use Ctrl (Cmd on Mac) + Shift + Right click drag
     # to move the target in the horizontal plane.
     xt, yt, _ = data.mocap_pos[0]
+    data.mocap_pos[0][2] = 0
 
     # Clipping the target position's distance, otherwise weird behaviour occurs when out of reach
     ls = model.body("forearm").pos[0]
@@ -38,6 +40,7 @@ def arm_control(model, data):
 
     rt = np.linalg.norm([xt, yt])
     xt, yt = np.array([xt, yt])/rt * np.clip(rt, 0, ls+le+lh+lw)
+    data.mocap_pos[0][:2] = [xt, yt]
 
     # Current position of arm end in comparison
     x, y, _ = data.body("tip").xpos
@@ -53,16 +56,17 @@ def arm_control(model, data):
 
     mujoco.mj_fullM(model,H, data.qM)
     H[[(x, x) for x in range(model.nv)]] += 0.01
-    H/model.body("upper arm").subtreemass
+    H = H/model.body("upper arm").subtreemass
 
     xvel, yvel, _ = J@data.qvel  # Get task velocity with jacobian
     Ji = weighted_pinv(J, H)  # Invert it so we can go from task space to joint space
 
     xe, ye = xt-x, yt-y  # Errors in task space
+    #xe, ye = xe-xvel*0.1, ye-yvel*0.1
     task_force = Kp * np.array([xe, ye, 0]) - Kd*np.array([xvel, yvel, 0])  # Stiffness and damping in task space!
     f = J.T @ task_force  # desired joint torque
     # Good practice to clip forces to reasonable values
-    qfrc_desired = np.clip(f/10, -10, 10)
+    qfrc_desired = np.clip(f, -1, 1)
 
     # Convert from joint-space to tendon space
     J_tendon = np.empty((model.ntendon, model.nv))
@@ -71,32 +75,36 @@ def arm_control(model, data):
     tendon_force = pinv(J_tendon.T) @ qfrc_desired
 
     # Muscles/cables should only pull
-    data.ctrl = np.minimum(0, tendon_force)
+    data.ctrl = -np.minimum(0, tendon_force)
+
 
     # We'll visualise the force applied on each tendon:
-    color = np.log(-data.ctrl+0.0001)
+    color = np.log(data.ctrl+0.0001)
     model.tendon_rgba = (color[:, None] * np.array([0.95, 0.3, 0.3, 1])[None, :]
                          + (1 - color[:, None]) * np.array([0.45, 0.15, 0.15, 1])[None, :])
 
+
 def load_callback(model=None, data=None):
-    # Clear the control callback before loading a new model
-    # or a Python exception is raised
     mujoco.set_mjcb_control(None)
 
-    # `model` contains static information about the modeled system
-    model = mujoco.MjModel.from_xml_path(filename=xml, assets=None)
+    # We can programmatically edit the XML! Instead of manually changing the file, you can configure it in script.
+    # We'll swap the ideal tendon actuators with muscle ones, and add user sensor objects in the scene that we can write
+    # data to visualise to.
+    spec = mujoco.MjSpec.from_file(filename=xml, assets=None)
+    for a in spec.actuators:
+        a.set_to_muscle(lmin=0.5, lmax=1.6, vmax=1.5, fpmax=1.3, fvmax=1.2, timeconst=0.01, tausmooth=0,
+                        force=-1, scale=200, range=0.75)
+        a.gainprm[1] = 1.05
+        a.dynprm[1] = 0.04
+        a.biasprm[1] = 1.05
+        a.ctrlrange = [0, 1]
 
-    # `data` contains the current dynamic state of the system
+    model = spec.compile()
     data = mujoco.MjData(model)
 
     if model is not None:
-        # Can set initial state
         data.joint('shoulder').qpos = 0
         data.joint('elbow').qpos =0
-
-        # The provided "callback" function will be called once per physics time step.
-        # (After forward kinematics, before forward dynamics and integration)
-        # see https://mujoco.readthedocs.io/en/stable/programming.html#simulation-loop for more info
         mujoco.set_mjcb_control(arm_control)
 
     return model, data

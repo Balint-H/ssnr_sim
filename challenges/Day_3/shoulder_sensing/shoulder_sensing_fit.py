@@ -39,6 +39,10 @@ def main():
         Z = np.reshape(sensor_data[:, 2+i], (resolution, resolution))
         surf = ax.plot_surface(X, Y, Z, cmap=cm.coolwarm,
                                linewidth=0, antialiased=False)
+        ax.set_xlabel("Shoulder Rotation")
+        ax.set_ylabel("Shoulder Elevation")
+        ax.set_title(f"Tendon {i} Length")
+    plt.subplots_adjust(wspace=0.4, hspace=0.6)
     plt.show()
 
     sv_z = NuSVR(kernel='rbf', C=1, nu=0.8).fit(sensor_data[:, 2:], sensor_data[:, 0])

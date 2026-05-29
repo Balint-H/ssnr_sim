@@ -8,8 +8,9 @@ import numpy as np
 from numpy.linalg import pinv, inv
 import os
 
-Kp = 100
-Kd = 3
+Kp = 10
+Kd = 0.3
+
 
 xml = os.path.dirname(__file__) + '/arm_model_tendon.xml'
 
@@ -39,6 +40,7 @@ def arm_control(model, data):
 
     rt = np.linalg.norm([xt, yt])
     xt, yt = np.array([xt, yt])/rt * np.clip(rt, 0, ls+le+lh+lw)
+    data.mocap_pos[0][:2] = [xt, yt]
 
     # Current position of arm end in comparison
     x, y, _ = data.body("tip").xpos
@@ -54,16 +56,17 @@ def arm_control(model, data):
 
     mujoco.mj_fullM(model,H, data.qM)
     H[[(x, x) for x in range(model.nv)]] += 0.01
-    H/model.body("upper arm").subtreemass
+    H = H/model.body("upper arm").subtreemass
 
     xvel, yvel, _ = J@data.qvel  # Get task velocity with jacobian
     Ji = weighted_pinv(J, H)  # Invert it so we can go from task space to joint space
 
     xe, ye = xt-x, yt-y  # Errors in task space
+    #xe, ye = xe-xvel*0.1, ye-yvel*0.1
     task_force = Kp * np.array([xe, ye, 0]) - Kd*np.array([xvel, yvel, 0])  # Stiffness and damping in task space!
     f = J.T @ task_force  # desired joint torque
     # Good practice to clip forces to reasonable values
-    qfrc_desired = np.clip(f/10, -10, 10)
+    qfrc_desired = np.clip(f, -1, 1)
 
     # Convert from joint-space to tendon space
     J_tendon = np.empty((model.ntendon, model.nv))
@@ -73,6 +76,7 @@ def arm_control(model, data):
 
     # Muscles/cables should only pull
     data.ctrl = -np.minimum(0, tendon_force)
+
 
     # We'll visualise the force applied on each tendon:
     color = np.log(data.ctrl+0.0001)

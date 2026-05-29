@@ -39,7 +39,8 @@ Things to note:
     
 Things to try:
   - Increase the mass of the forearm geom 3 fold. Observe how it effects
-    the dynamics of the system controlling the shoulder. Fully flex the elbow
+    the dynamics of the system controlling the shoulder. Try fully flexing the
+    elbow
     
   - In the left sidebar, under Rendering>Frame you can select different options
     to visualise reference frames. In particular try out the "Body" and "World"

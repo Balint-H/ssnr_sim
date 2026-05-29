@@ -42,6 +42,8 @@ estimate the joint angles.
 		  <joint name="shoulder_z_vis" range="-60 120" armature="0.01"/>
 		  <joint name="shoulder_y_vis" axis="0 1 0" range="-60 70" armature="0.01"/>
 		</body>
+		<site name="top_side_wrapping_site" pos="0 0 3"/>
+		<site name="bottom_side_wrapping_site" pos="0 0 -3"/>
 		<body name="upper arm" pos="0 0 0">
 		
 		  <!-- 
@@ -51,7 +53,7 @@ estimate the joint angles.
 		  <geom name="upper arm" mass="1" type="capsule" size="0.045" fromto="0 0 0  0.25 0 0" rgba=".5 .1 .1 1"/>
 		  <geom name="arm wrap" mass="0" type="cylinder" size="0.045" fromto="0 -0.05 0  0 0.05 0" group="5" contype="0" conaffinity="0" />
 
-		  <geom name="upper wrap" mass="0" type="sphere" size="0.045" group="5" />
+		  <geom name="upper wrap" mass="0" type="cylinder" size="0.045 0.045" group="5" contype="0" conaffinity="0" rgba="0.5 0.1 0.1 0.2" euler="90 0 0"/>
 		  
 		  <!-- 
 		  Joints define degrees of freedom in relation to the current rigid body's parent (the worldbody).
@@ -109,17 +111,17 @@ estimate the joint angles.
 	</spatial>
 	<spatial name="t_2">
 		<site site="c_2"/>
-		<geom geom="upper wrap"/>
+		<geom geom="upper wrap" sidesite="top_side_wrapping_site"/>
 		<site site="u_2"/>
 	</spatial>
 	<spatial name="t_3">
 		<site site="c_3"/>
-		<geom geom="upper wrap"/>
+		<geom geom="upper wrap" sidesite="bottom_side_wrapping_site"/>
 		<site site="u_3"/>
 	</spatial>
 	<spatial name="t_4">
 		<site site="c_4"/>
-		<geom geom="upper wrap"/>
+		<geom geom="upper wrap" sidesite="bottom_side_wrapping_site"/>
 		<site site="u_4"/>
 	</spatial>
 	

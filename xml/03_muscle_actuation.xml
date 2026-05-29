@@ -19,7 +19,7 @@ Things to note:
   - Muscle activation ranges from 0 to 1. You can't* push with a muscle, only
     pull.
     
-  - Pay attention to the path of the tendons. They are constricted by the
+  - Pay attention to the path of the tendons. They are constrained by the
     location of different sites. These always start at the origin, and end at
     the insertion, but may involve other constrictions, such as the blue sites,
     which represent retinacula (https://en.wikipedia.org/wiki/Retinaculum ).
