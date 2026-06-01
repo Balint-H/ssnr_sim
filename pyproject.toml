@@ -22,5 +22,5 @@ dependencies = [
 
 [dependency-groups]
 dev = [
-    "jupyter-book>=2.1.5",
+    "jupyter-book<2",
 ]
