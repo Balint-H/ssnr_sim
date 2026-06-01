@@ -1,0 +1,31 @@
+format: jb-book
+root: docs/intro
+
+parts:
+  - caption: "Setup"
+    chapters:
+      - file: docs/getting_started
+        title: "Getting Started"
+
+
+  - caption: "Day 1 — From Single LIF Neurons to Muscle Activation"
+    chapters:
+      - file: docs/neuron
+        title: "Tutorial 1: Intro"
+      - file: SSNR2026/0_lif_neuron_exercises
+        title: "Tutorial 1: The LIF Neuron"
+
+  - caption: "Day 2 — From PD control to a neural-driven musculoskeletal model"
+    chapters:
+      - file: docs/day2_intro
+        title: "Tutorial 2: Intro"
+      - file: docs/01_joint_space
+      - file: docs/02_task_space
+      - file: docs/03_tendon_space
+      - file: docs/04_muscle_space
+      - file: docs/05_neural_integration
+
+  - caption: "Day 3 — Reinforcement Learning for Motor Control"
+    chapters:
+      - file: docs/day3_intro
+        title: "Tutorial 3: Intro"

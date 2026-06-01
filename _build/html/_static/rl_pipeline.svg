@@ -1,0 +1,61 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 740 852" font-family="Segoe UI, Helvetica, Arial, sans-serif">
+
+<defs>
+  <marker id="ah" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="7" markerHeight="7"
+          orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 Z" fill="#9FB4BC"/></marker>
+  <filter id="sh" x="-20%" y="-20%" width="140%" height="140%">
+    <feDropShadow dx="0" dy="1.5" stdDeviation="2.2" flood-color="#1B2B33" flood-opacity="0.12"/>
+  </filter>
+  <linearGradient id="rail" x1="0" y1="0" x2="0" y2="1">
+    <stop offset="0%" stop-color="#0F7B82"/>
+    <stop offset="45%" stop-color="#6D5196"/>
+    <stop offset="100%" stop-color="#3D5663"/>
+  </linearGradient>
+</defs>
+<rect width="740" height="852" fill="#FFFFFF"/>
+<text x="44" y="44" font-size="22" font-weight="700" fill="#1B2B33">The RL pipeline</text>
+<line x1="356.0" y1="158" x2="356.0" y2="206" stroke="#9FB4BC" stroke-width="2" marker-end="url(#ah)"/>
+<line x1="356.0" y1="290" x2="356.0" y2="338" stroke="#9FB4BC" stroke-width="2" marker-end="url(#ah)"/>
+<line x1="356.0" y1="422" x2="356.0" y2="470" stroke="#9FB4BC" stroke-width="2" marker-end="url(#ah)"/>
+<line x1="356.0" y1="554" x2="356.0" y2="602" stroke="#9FB4BC" stroke-width="2" marker-end="url(#ah)"/>
+<line x1="356.0" y1="686" x2="356.0" y2="734" stroke="#9FB4BC" stroke-width="2" marker-end="url(#ah)"/>
+<rect x="44" y="78" width="624" height="76" rx="12" fill="#FFFFFF" stroke="#D6E0E4" stroke-width="1.4" filter="url(#sh)"/>
+<rect x="44" y="78" width="6.5" height="76" rx="3" fill="#0F7B82"/>
+<rect x="611.8" y="92" width="40.2" height="20" rx="10" fill="#0F7B82" opacity="0.12"/>
+<text x="631.9" y="106" text-anchor="middle" font-size="10.5" font-weight="700" letter-spacing="0.6" fill="#0F7B82">ENV</text>
+<text x="70" y="113.0" font-size="17.5" font-weight="700" fill="#1B2B33">Environment definition</text>
+<text x="70" y="133.0" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="13" fill="#5A7480">state space · action space · reward function</text>
+<rect x="44" y="210" width="624" height="76" rx="12" fill="#FFFFFF" stroke="#D6E0E4" stroke-width="1.4" filter="url(#sh)"/>
+<rect x="44" y="210" width="6.5" height="76" rx="3" fill="#2A6F97"/>
+<rect x="604.4" y="224" width="47.6" height="20" rx="10" fill="#2A6F97" opacity="0.12"/>
+<text x="628.2" y="238" text-anchor="middle" font-size="10.5" font-weight="700" letter-spacing="0.6" fill="#2A6F97">DATA</text>
+<text x="70" y="245.0" font-size="17.5" font-weight="700" fill="#1B2B33">Rollout collection</text>
+<text x="70" y="265.0" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="13" fill="#5A7480">N parallel envs  →  (s, a, r, s′) tuples</text>
+<rect x="44" y="342" width="624" height="76" rx="12" fill="#FFFFFF" stroke="#D6E0E4" stroke-width="1.4" filter="url(#sh)"/>
+<rect x="44" y="342" width="6.5" height="76" rx="3" fill="#B07D2B"/>
+<rect x="589.6" y="356" width="62.4" height="20" rx="10" fill="#B07D2B" opacity="0.12"/>
+<text x="620.8" y="370" text-anchor="middle" font-size="10.5" font-weight="700" letter-spacing="0.6" fill="#B07D2B">CREDIT</text>
+<text x="70" y="377.0" font-size="17.5" font-weight="700" fill="#1B2B33">Advantage estimation</text>
+<text x="70" y="397.0" font-family="ui-monospace, 'Cascadia Code', Consolas, 'Courier New', monospace" font-size="12.5" fill="#5A7480">GAE:  Âₜ = δₜ + γλ·δₜ₊₁ + …</text>
+<rect x="44" y="474" width="624" height="76" rx="12" fill="#FFFFFF" stroke="#D6E0E4" stroke-width="1.4" filter="url(#sh)"/>
+<rect x="44" y="474" width="6.5" height="76" rx="3" fill="#6D5196"/>
+<rect x="597.0" y="488" width="55.0" height="20" rx="10" fill="#6D5196" opacity="0.12"/>
+<text x="624.5" y="502" text-anchor="middle" font-size="10.5" font-weight="700" letter-spacing="0.6" fill="#6D5196">LEARN</text>
+<text x="70" y="509.0" font-size="17.5" font-weight="700" fill="#1B2B33">PPO update</text>
+<text x="70" y="529.0" font-family="ui-monospace, 'Cascadia Code', Consolas, 'Courier New', monospace" font-size="12.5" fill="#5A7480">clip(π_θ / π_old · Â)  →  gradient step on θ</text>
+<rect x="44" y="606" width="624" height="76" rx="12" fill="#FFFFFF" stroke="#D6E0E4" stroke-width="1.4" filter="url(#sh)"/>
+<rect x="44" y="606" width="6.5" height="76" rx="3" fill="#B14A3B"/>
+<rect x="604.4" y="620" width="47.6" height="20" rx="10" fill="#B14A3B" opacity="0.12"/>
+<text x="628.2" y="634" text-anchor="middle" font-size="10.5" font-weight="700" letter-spacing="0.6" fill="#B14A3B">EVAL</text>
+<text x="70" y="641.0" font-size="17.5" font-weight="700" fill="#1B2B33">Policy evaluation</text>
+<text x="70" y="661.0" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="13" fill="#5A7480">deterministic rollout in MuJoCo viewer</text>
+<rect x="44" y="738" width="624" height="76" rx="12" fill="#FFFFFF" stroke="#D6E0E4" stroke-width="1.4" filter="url(#sh)"/>
+<rect x="44" y="738" width="6.5" height="76" rx="3" fill="#3D5663"/>
+<rect x="597.0" y="752" width="55.0" height="20" rx="10" fill="#3D5663" opacity="0.12"/>
+<text x="624.5" y="766" text-anchor="middle" font-size="10.5" font-weight="700" letter-spacing="0.6" fill="#3D5663">SCALE</text>
+<text x="70" y="773.0" font-size="17.5" font-weight="700" fill="#1B2B33">Scale up</text>
+<text x="70" y="793.0" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="13" fill="#5A7480">MJX + Brax  →  GPU-vectorised training</text>
+<rect x="702" y="84" width="7" height="710" rx="3.5" fill="url(#rail)"/>
+<path d="M698.5,794 L712.5,794 L705.5,808 Z" fill="#3D5663"/>
+<text x="728" y="446.0" transform="rotate(90 728 446.0)" text-anchor="middle" font-size="12.5" font-weight="600" letter-spacing="0.5" fill="#5A7480">sample efficiency · engineering complexity</text>
+</svg>

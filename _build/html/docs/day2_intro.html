@@ -1,0 +1,721 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Tutorial 2: Controlling a Musculoskeletal Arm &#8212; SSNR 2026: Neural Control of Movement</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../_static/styles/bootstrap.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+
+  
+  <link href="../_static/vendor/fontawesome/6.5.2/css/all.min.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/sphinx-book-theme.css?v=eba8b062" />
+    <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css?v=9c3e77be" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../_static/mystnb.11b39860a7a0cbfd473a3ad8a317855267ff0bd372690045ca344a6b62be495e.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-thebe.css?v=4fa983c6" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-design.min.css?v=95c83b7e" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
+  <script src="../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+    <script src="../_static/documentation_options.js?v=9eb32ce0"></script>
+    <script src="../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../_static/copybutton.js?v=f281be69"></script>
+    <script src="../_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="../_static/togglebutton.js?v=b8b12719"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script src="../_static/design-tabs.js?v=f930bc37"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script async="async" src="../_static/sphinx-thebe.js?v=c100c467"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'docs/day2_intro';</script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="1. Joint-Space PD Control" href="01_joint_space.html" />
+    <link rel="prev" title="Tutorial 1: The Leaky Integrate-and-Fire (LIF) Neuron" href="../SSNR2026/0_lif_neuron_exercises.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-primary-sidebar-checkbox"/>
+  <label class="overlay overlay-primary" for="pst-primary-sidebar-checkbox"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-secondary-sidebar-checkbox"/>
+  <label class="overlay overlay-secondary" for="pst-secondary-sidebar-checkbox"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search this book..."
+         aria-label="Search this book..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="intro.html">
+  
+  
+  
+  
+  
+  
+    <p class="title logo__title">SSNR 2026: Neural Control of Movement</p>
+  
+</a></div>
+        <div class="sidebar-primary-item">
+
+ <script>
+ document.write(`
+   <button class="btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        
+        <ul class="nav bd-sidenav bd-sidenav__home-link">
+            <li class="toctree-l1">
+                <a class="reference internal" href="intro.html">
+                    SSNR 2026: WS4 – Dynamic Simulations of Neuromechanics
+                </a>
+            </li>
+        </ul>
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">Setup</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="getting_started.html">Getting Started</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Day 1 — From Single LIF Neurons to Muscle Activation</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="neuron.html">Tutorial 1: Intro</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../SSNR2026/0_lif_neuron_exercises.html">Tutorial 1: The LIF Neuron</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Day 2 — From PD control to a neural-driven musculoskeletal model</span></p>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Tutorial 2: Intro</a></li>
+<li class="toctree-l1"><a class="reference internal" href="01_joint_space.html">1. Joint-Space PD Control</a></li>
+<li class="toctree-l1"><a class="reference internal" href="02_task_space.html">2. Task-Space PD Control</a></li>
+<li class="toctree-l1"><a class="reference internal" href="03_tendon_space.html">3. Task-Space Control with Tendon Actuation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="04_muscle_space.html">4. Operational-Space Control with Muscle Actuation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="05_neural_integration.html">5. Closed-Loop Control through a Spiking Motoneuron Pool</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Day 3 — Reinforcement Learning for Motor Control</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="day3_intro.html">Tutorial 3: Intro</a></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><button class="sidebar-toggle primary-toggle btn btn-sm" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</button></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+<a href="https://github.com/Balint-H/ssnr_sim" target="_blank"
+   class="btn btn-sm btn-source-repository-button"
+   title="Source repository"
+   data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+
+</a>
+
+
+
+
+
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Download this page">
+    <i class="fas fa-download"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="../_sources/docs/day2_intro.md" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="Download source file"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="btn__text-container">.md</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="Print to PDF"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="btn__text-container">.pdf</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"></i>
+  </button>
+`);
+</script>
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm pst-navbar-icon search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+  </button>
+`);
+</script>
+<button class="sidebar-toggle secondary-toggle btn btn-sm" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</button>
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>Tutorial 2: Controlling a Musculoskeletal Arm</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#why-this-tutorial">Why this tutorial?</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#section-1-pd-control-in-joint-space">Section 1: PD control in joint space</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#the-idea">The idea</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#section-2-pd-control-in-task-space">Section 2: PD control in task space</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#the-problem">The problem</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#the-jacobian">The Jacobian</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#section-3-from-joints-to-tendons">Section 3: From joints to tendons</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">The problem</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#the-tendon-jacobian">The tendon Jacobian</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#section-4-muscle-model">Section 4: Muscle model</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#from-ideal-tendons-to-muscles">From ideal tendons to muscles</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#section-5-closing-the-loop-with-motoneurons">Section 5: Closing the loop with motoneurons</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#the-full-pipeline">The full pipeline</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#summary-the-control-hierarchy">Summary: the control hierarchy</a></li>
+</ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section class="tex2jax_ignore mathjax_ignore" id="tutorial-2-controlling-a-musculoskeletal-arm">
+<h1>Tutorial 2: Controlling a Musculoskeletal Arm<a class="headerlink" href="#tutorial-2-controlling-a-musculoskeletal-arm" title="Link to this heading">#</a></h1>
+<p><strong>Workshop Day 2 — From PD control to a neural-driven musculoskeletal model</strong></p>
+<hr class="docutils" />
+<div style="display:flex; justify-content:center; margin: 2rem 0;">
+  <video 
+    width="700" 
+    autoplay 
+    muted 
+    loop 
+    playsinline 
+    controls
+    preload="auto"
+  >
+    <source src="../_static/mujoco.mp4" type="video/mp4">
+  </video>
+</div>
+<section id="why-this-tutorial">
+<h2>Why this tutorial?<a class="headerlink" href="#why-this-tutorial" title="Link to this heading">#</a></h2>
+<p>In the previous tutorial, you built a single LIF neuron and scaled it to a pool that produces muscle
+excitation. Now, we close the loop: those excitation signals will drive <strong>muscles</strong>
+attached to a MuJoCo arm, and a <strong>PD controller</strong> will tell the neurons what to do.</p>
+<p>We walk through five scripts, each one closer to biology:</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>#</p></th>
+<th class="head"><p>Script</p></th>
+<th class="head"><p>What controls the arm</p></th>
+<th class="head"><p>What you learn</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>1</p></td>
+<td><p><a class="reference external" href="https://github.com/Balint-H/ssnr_sim/blob/main/SSNR2026/01_pd_joint_space.py"><code class="docutils literal notranslate"><span class="pre">01_pd_joint_space.py</span></code></a></p></td>
+<td><p>Joint torques</p></td>
+<td><p>PD control basics</p></td>
+</tr>
+<tr class="row-odd"><td><p>2</p></td>
+<td><p><a class="reference external" href="https://github.com/Balint-H/ssnr_sim/blob/main/SSNR2026/02_pd_task_space.py"><code class="docutils literal notranslate"><span class="pre">02_pd_task_space.py</span></code></a></p></td>
+<td><p>Task-space forces via Jacobian</p></td>
+<td><p>Coordinate transforms</p></td>
+</tr>
+<tr class="row-even"><td><p>3</p></td>
+<td><p><a class="reference external" href="https://github.com/Balint-H/ssnr_sim/blob/main/SSNR2026/03_pd_tendon_space.py"><code class="docutils literal notranslate"><span class="pre">03_pd_tendon_space.py</span></code></a></p></td>
+<td><p>Tendon forces</p></td>
+<td><p>Redundancy, pulling-only</p></td>
+</tr>
+<tr class="row-odd"><td><p>4</p></td>
+<td><p><a class="reference external" href="https://github.com/Balint-H/ssnr_sim/blob/main/SSNR2026/04_pd_muscle_space.py"><code class="docutils literal notranslate"><span class="pre">04_pd_muscle_space.py</span></code></a></p></td>
+<td><p>Muscle activations</p></td>
+<td><p>Hill-type muscle model</p></td>
+</tr>
+<tr class="row-even"><td><p>5</p></td>
+<td><p><a class="reference external" href="https://github.com/Balint-H/ssnr_sim/blob/main/SSNR2026/05_pd_neuron_integration.py"><code class="docutils literal notranslate"><span class="pre">05_pd_neuron_integration.py</span></code></a></p></td>
+<td><p>Motoneuron pool</p></td>
+<td><p>Full neural–musculoskeletal loop</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<hr class="docutils" />
+<section id="section-1-pd-control-in-joint-space">
+<h2>Section 1: PD control in joint space<a class="headerlink" href="#section-1-pd-control-in-joint-space" title="Link to this heading">#</a></h2>
+<section id="the-idea">
+<h3>The idea<a class="headerlink" href="#the-idea" title="Link to this heading">#</a></h3>
+<p>The simplest way to move a robot arm: apply a torque at each joint proportional to
+the <strong>position error</strong> and the <strong>velocity error</strong>:</p>
+<div class="math notranslate nohighlight">
+\[
+\boldsymbol{\tau} = K_p \, \mathbf{e} + K_d \, \dot{\mathbf{e}}
+\]</div>
+<p>where <span class="math notranslate nohighlight">\(\mathbf{e} = \mathbf{q}_{\text{target}} - \mathbf{q}\)</span> is the joint-angle error
+and <span class="math notranslate nohighlight">\(\dot{\mathbf{e}} = -\dot{\mathbf{q}}\)</span>.</p>
+<div style="text-align:center; margin: 2rem 0;">
+<img src="../_static/pd_loop.svg" width="640">
+</div>
+<ul class="simple">
+<li><p><span class="math notranslate nohighlight">\(K_p\)</span> too low → arm doesn’t reach</p></li>
+<li><p><span class="math notranslate nohighlight">\(K_p\)</span> too high → oscillations</p></li>
+<li><p><span class="math notranslate nohighlight">\(K_d\)</span> adds damping</p></li>
+</ul>
+<p>See also: <a class="reference internal" href="01_joint_space.html"><span class="std std-doc">detailed notes</span></a></p>
+</section>
+</section>
+<section id="section-2-pd-control-in-task-space">
+<h2>Section 2: PD control in task space<a class="headerlink" href="#section-2-pd-control-in-task-space" title="Link to this heading">#</a></h2>
+<section id="the-problem">
+<h3>The problem<a class="headerlink" href="#the-problem" title="Link to this heading">#</a></h3>
+<p>We usually care about where the <strong>fingertip</strong> is, not joint angles. How do we convert
+a desired fingertip position into joint torques?</p>
+<div style="text-align:center; margin: 2rem 0;">
+<img src="../_static/hand_joint.png" width="840">
+</div>
+</section>
+<section id="the-jacobian">
+<h3>The Jacobian<a class="headerlink" href="#the-jacobian" title="Link to this heading">#</a></h3>
+<p>The <strong>Jacobian</strong> <span class="math notranslate nohighlight">\(\mathbf{J}\)</span> maps joint velocities to end-effector velocities:</p>
+<div class="math notranslate nohighlight">
+\[
+\dot{\mathbf{x}} = \mathbf{J}(\mathbf{q}) \, \dot{\mathbf{q}}
+\]</div>
+<p>It depends on the current arm configuration, so we recompute it every timestep.
+To convert a task-space force into joint torques:</p>
+<div class="math notranslate nohighlight">
+\[
+\boldsymbol{\tau} = \mathbf{J}^T \, \mathbf{f}_{\text{task}}
+\]</div>
+<p>The PD controller now operates on errors in Cartesian (x, y) coordinates:</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\mathbf{f}_{\text{task}} = K_p
+\begin{pmatrix} x_t - x \\ y_t - y \\ 0 \end{pmatrix}
++ K_d
+\begin{pmatrix} -\dot{x} \\ -\dot{y} \\ 0 \end{pmatrix}
+\end{split}\]</div>
+<p>See also: <a class="reference internal" href="02_task_space.html"><span class="std std-doc">detailed notes</span></a></p>
+</section>
+</section>
+<section id="section-3-from-joints-to-tendons">
+<h2>Section 3: From joints to tendons<a class="headerlink" href="#section-3-from-joints-to-tendons" title="Link to this heading">#</a></h2>
+<section id="id1">
+<h3>The problem<a class="headerlink" href="#id1" title="Link to this heading">#</a></h3>
+<p>Real joints aren’t driven by torque motors, they are pulled by <strong>tendons</strong>. A tendon
+can only <strong>pull</strong>, never push. We need at least two tendons per joint
+(agonist / antagonist).</p>
+</section>
+<section id="the-tendon-jacobian">
+<h3>The tendon Jacobian<a class="headerlink" href="#the-tendon-jacobian" title="Link to this heading">#</a></h3>
+<p>The <strong>tendon Jacobian</strong> <span class="math notranslate nohighlight">\(\mathbf{J}_{\text{ten}}\)</span> maps joint velocities to tendon
+velocities. To go from desired joint torques to tendon forces:</p>
+<div class="math notranslate nohighlight">
+\[
+\mathbf{f}_{\text{tendon}} =
+\mathbf{J}_{\text{ten}}^{T\,+} \, \boldsymbol{\tau}_{\text{desired}}
+\]</div>
+<p>The <span class="math notranslate nohighlight">\(^+\)</span> is the <strong>pseudoinverse</strong>, because there are more tendons than joints (the
+system is <strong>redundant</strong>).</p>
+<p>See also: <a class="reference internal" href="03_tendon_space.html"><span class="std std-doc">detailed notes</span></a></p>
+</section>
+</section>
+<section id="section-4-muscle-model">
+<h2>Section 4: Muscle model<a class="headerlink" href="#section-4-muscle-model" title="Link to this heading">#</a></h2>
+<section id="from-ideal-tendons-to-muscles">
+<h3>From ideal tendons to muscles<a class="headerlink" href="#from-ideal-tendons-to-muscles" title="Link to this heading">#</a></h3>
+<p>Real muscles are not ideal force generators. MuJoCo provides a <strong>Hill-type muscle
+model</strong> with:</p>
+<ul class="simple">
+<li><p><strong>Force–length</strong> relationship — muscles have an optimal length</p></li>
+<li><p><strong>Force–velocity</strong> relationship — less force when contracting fast</p></li>
+<li><p><strong>Activation dynamics</strong> — force lags behind the neural command</p></li>
+</ul>
+<div style="text-align:center; margin: 2rem 0;">
+<img src="../_static/hill_curves.svg" width="840">
+</div>
+<p>The control input is now <strong>activation</strong> <span class="math notranslate nohighlight">\(a \in [0, 1]\)</span>, not force.</p>
+<p>See also: <a class="reference internal" href="04_muscle_space.html"><span class="std std-doc">detailed notes</span></a></p>
+</section>
+</section>
+<section id="section-5-closing-the-loop-with-motoneurons">
+<h2>Section 5: Closing the loop with motoneurons<a class="headerlink" href="#section-5-closing-the-loop-with-motoneurons" title="Link to this heading">#</a></h2>
+<section id="the-full-pipeline">
+<h3>The full pipeline<a class="headerlink" href="#the-full-pipeline" title="Link to this heading">#</a></h3>
+<p>This is where <strong>Tutorial 1</strong> meets <strong>Tutorial 2</strong>. Instead of sending activation
+values directly to muscles, we route the signal through a LIF neuron pool:</p>
+<div style="text-align:center; margin: 2rem 0;">
+<img src="../_static/neural_pipeline_h.svg" width="840">
+</div>
+<p>See also: <a class="reference internal" href="05_neural_integration.html"><span class="std std-doc">detailed notes</span></a></p>
+</section>
+</section>
+<section id="summary-the-control-hierarchy">
+<h2>Summary: the control hierarchy<a class="headerlink" href="#summary-the-control-hierarchy" title="Link to this heading">#</a></h2>
+<p>Each level adds <strong>biological realism</strong> but also <strong>complexity</strong> and <strong>delay</strong>.
+Understanding how the brain manages this cascade in real time is the central challenge
+in motor neuroscience.</p>
+<div style="text-align:center; margin: 2rem 0;">
+<img src="../_static/control_hierarchy.svg" width="640">
+</div>
+</section>
+</section>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "binder-examples/jupyter-stacks-datascience",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "python"
+        },
+        kernelOptions: {
+            name: "python3",
+            path: "./docs"
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'python3'</script>
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="../SSNR2026/0_lif_neuron_exercises.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Tutorial 1: The Leaky Integrate-and-Fire (LIF) Neuron</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="01_joint_space.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">1. Joint-Space PD Control</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#why-this-tutorial">Why this tutorial?</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#section-1-pd-control-in-joint-space">Section 1: PD control in joint space</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#the-idea">The idea</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#section-2-pd-control-in-task-space">Section 2: PD control in task space</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#the-problem">The problem</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#the-jacobian">The Jacobian</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#section-3-from-joints-to-tendons">Section 3: From joints to tendons</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">The problem</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#the-tendon-jacobian">The tendon Jacobian</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#section-4-muscle-model">Section 4: Muscle model</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#from-ideal-tendons-to-muscles">From ideal tendons to muscles</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#section-5-closing-the-loop-with-motoneurons">Section 5: Closing the loop with motoneurons</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#the-full-pipeline">The full pipeline</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#summary-the-control-hierarchy">Summary: the control hierarchy</a></li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By SSNR 2026 Workshop
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+
+  <p class="copyright">
+    
+      © Copyright 2023.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b"></script>
+<script src="../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>

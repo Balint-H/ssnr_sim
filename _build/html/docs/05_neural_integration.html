@@ -1,0 +1,880 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>5. Closed-Loop Control through a Spiking Motoneuron Pool &#8212; SSNR 2026: Neural Control of Movement</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../_static/styles/bootstrap.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+
+  
+  <link href="../_static/vendor/fontawesome/6.5.2/css/all.min.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/sphinx-book-theme.css?v=eba8b062" />
+    <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css?v=9c3e77be" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../_static/mystnb.11b39860a7a0cbfd473a3ad8a317855267ff0bd372690045ca344a6b62be495e.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-thebe.css?v=4fa983c6" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-design.min.css?v=95c83b7e" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
+  <script src="../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+    <script src="../_static/documentation_options.js?v=9eb32ce0"></script>
+    <script src="../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../_static/copybutton.js?v=f281be69"></script>
+    <script src="../_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="../_static/togglebutton.js?v=b8b12719"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script src="../_static/design-tabs.js?v=f930bc37"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script async="async" src="../_static/sphinx-thebe.js?v=c100c467"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'docs/05_neural_integration';</script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Tutorial 3: Reinforcement Learning for Motor Control" href="day3_intro.html" />
+    <link rel="prev" title="4. Operational-Space Control with Muscle Actuation" href="04_muscle_space.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-primary-sidebar-checkbox"/>
+  <label class="overlay overlay-primary" for="pst-primary-sidebar-checkbox"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-secondary-sidebar-checkbox"/>
+  <label class="overlay overlay-secondary" for="pst-secondary-sidebar-checkbox"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search this book..."
+         aria-label="Search this book..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="intro.html">
+  
+  
+  
+  
+  
+  
+    <p class="title logo__title">SSNR 2026: Neural Control of Movement</p>
+  
+</a></div>
+        <div class="sidebar-primary-item">
+
+ <script>
+ document.write(`
+   <button class="btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        
+        <ul class="nav bd-sidenav bd-sidenav__home-link">
+            <li class="toctree-l1">
+                <a class="reference internal" href="intro.html">
+                    SSNR 2026: WS4 – Dynamic Simulations of Neuromechanics
+                </a>
+            </li>
+        </ul>
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">Setup</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="getting_started.html">Getting Started</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Day 1 — From Single LIF Neurons to Muscle Activation</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="neuron.html">Tutorial 1: Intro</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../SSNR2026/0_lif_neuron_exercises.html">Tutorial 1: The LIF Neuron</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Day 2 — From PD control to a neural-driven musculoskeletal model</span></p>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="day2_intro.html">Tutorial 2: Intro</a></li>
+<li class="toctree-l1"><a class="reference internal" href="01_joint_space.html">1. Joint-Space PD Control</a></li>
+<li class="toctree-l1"><a class="reference internal" href="02_task_space.html">2. Task-Space PD Control</a></li>
+<li class="toctree-l1"><a class="reference internal" href="03_tendon_space.html">3. Task-Space Control with Tendon Actuation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="04_muscle_space.html">4. Operational-Space Control with Muscle Actuation</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">5. Closed-Loop Control through a Spiking Motoneuron Pool</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Day 3 — Reinforcement Learning for Motor Control</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="day3_intro.html">Tutorial 3: Intro</a></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><button class="sidebar-toggle primary-toggle btn btn-sm" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</button></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+<a href="https://github.com/Balint-H/ssnr_sim" target="_blank"
+   class="btn btn-sm btn-source-repository-button"
+   title="Source repository"
+   data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+
+</a>
+
+
+
+
+
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Download this page">
+    <i class="fas fa-download"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="../_sources/docs/05_neural_integration.md" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="Download source file"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="btn__text-container">.md</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="Print to PDF"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="btn__text-container">.pdf</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"></i>
+  </button>
+`);
+</script>
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm pst-navbar-icon search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+  </button>
+`);
+</script>
+<button class="sidebar-toggle secondary-toggle btn btn-sm" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</button>
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>5. Closed-Loop Control through a Spiking Motoneuron Pool</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#objective">Objective</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-shared-control-pipeline">The Shared Control Pipeline</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-neural-drive-layer">The Neural Drive Layer</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#signal-flow">Signal Flow</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pool-state-and-initialization">Pool State and Initialization</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#simulation-model">Simulation Model</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#simulation-loop">Simulation Loop</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#parameters">Parameters</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#system-variables">System Variables</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#implementation-notes">Implementation Notes</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#key-insights">Key Insights</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#source-code">Source Code</a></li>
+</ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section class="tex2jax_ignore mathjax_ignore" id="closed-loop-control-through-a-spiking-motoneuron-pool">
+<h1>5. Closed-Loop Control through a Spiking Motoneuron Pool<a class="headerlink" href="#closed-loop-control-through-a-spiking-motoneuron-pool" title="Link to this heading">#</a></h1>
+<p>This exercise adds a biologically grounded layer on top of the muscle-actuated controller. Instead of sending the desired muscle force directly to the actuators, the controller drives a <strong>pool of spiking motoneurons</strong> (leaky integrate-and-fire neurons). The pooled, low-pass-filtered spike activity becomes the muscle activation. This mirrors how the nervous system produces force: through populations of motor units firing at modulated rates.</p>
+<div style="text-align:center; margin: 2rem 0;">
+<img src="../_static/neural_pipeline_h.svg" width="840">
+</div>
+<hr class="docutils" />
+<section id="objective">
+<h2>Objective<a class="headerlink" href="#objective" title="Link to this heading">#</a></h2>
+<p>Drive the arm’s end-effector toward an interactive Cartesian target, but with the muscle commands generated by a <strong>motoneuron pool</strong> rather than computed analytically. Each muscle is driven by <code class="docutils literal notranslate"><span class="pre">N_PER_MUSCLE</span></code> motoneurons whose collective spiking, smoothed over time, sets that muscle’s activation.</p>
+<p>You implement the neural model in <code class="docutils literal notranslate"><span class="pre">neuron_functions.py</span></code>.</p>
+</section>
+<hr class="docutils" />
+<section id="the-shared-control-pipeline">
+<h2>The Shared Control Pipeline<a class="headerlink" href="#the-shared-control-pipeline" title="Link to this heading">#</a></h2>
+<p>The mechanical control front-end is identical to the previous exercise and produces a desired pulling force per muscle:</p>
+<ol class="arabic simple">
+<li><p>Read and <strong>clip the mocap target</strong> to the reachable workspace</p></li>
+<li><p>Compute the end-effector Jacobian <span class="math notranslate nohighlight">\(J\)</span> and task velocity <span class="math notranslate nohighlight">\(\dot{x} = J\dot{q}\)</span></p></li>
+<li><p>Apply the task-space PD law <span class="math notranslate nohighlight">\(F = K_p\,e_{pos} - K_d\,\dot{x}\)</span> (with <span class="math notranslate nohighlight">\(K_p = 10\)</span>, <span class="math notranslate nohighlight">\(K_d = 0.3\)</span>)</p></li>
+<li><p>Map to joint torque and clip: <span class="math notranslate nohighlight">\(\tau = \mathrm{clip}(J^\top F,\,-1,\,1)\)</span></p></li>
+<li><p>Resolve into tendon forces: <span class="math notranslate nohighlight">\(f_{tendon} = (J_{tendon}^\top)^{+}\tau\)</span></p></li>
+<li><p>Keep the pulling part: <span class="math notranslate nohighlight">\(F_{target} = -\min(0,\, f_{tendon})\)</span></p></li>
+</ol>
+<p>Up to <span class="math notranslate nohighlight">\(F_{target}\)</span> everything matches exercise 4. The new material is what happens <strong>after</strong> <span class="math notranslate nohighlight">\(F_{target}\)</span>.</p>
+</section>
+<hr class="docutils" />
+<section id="the-neural-drive-layer">
+<h2>The Neural Drive Layer<a class="headerlink" href="#the-neural-drive-layer" title="Link to this heading">#</a></h2>
+<p>Instead of writing <span class="math notranslate nohighlight">\(F_{target}\)</span> to <code class="docutils literal notranslate"><span class="pre">data.ctrl</span></code>, the controller routes it through a spiking pool in three stages.</p>
+<p><strong>1. Force → input current.</strong> <code class="docutils literal notranslate"><span class="pre">force_to_current</span></code> maps each muscle’s desired force to a synaptic input current, clamped between <code class="docutils literal notranslate"><span class="pre">I_MIN</span></code> and <code class="docutils literal notranslate"><span class="pre">I_MAX</span></code>:</p>
+<div class="math notranslate nohighlight">
+\[
+I_{muscle} = \mathrm{force\_to\_current}(F_{target};\; F_{max}, I_{min}, I_{max})
+\]</div>
+<p><strong>2. Current → motoneuron pool.</strong> The per-muscle current is distributed across that muscle’s motoneurons through the <code class="docutils literal notranslate"><span class="pre">assignment</span></code> matrix, then each neuron is integrated as a <strong>leaky integrate-and-fire (LIF)</strong> unit with a refractory period:</p>
+<div class="math notranslate nohighlight">
+\[
+I_{neuron} = \text{assignment} \cdot I_{muscle},
+\qquad
+\tau_m \frac{dv}{dt} = -(v - E_L) + R\,I_{neuron}
+\]</div>
+<p>When <span class="math notranslate nohighlight">\(v\)</span> crosses threshold the neuron emits a spike, resets, and is held inactive for the refractory window. <code class="docutils literal notranslate"><span class="pre">detect_spike_refractory_pool</span></code> performs this integration for the whole pool and returns the spike vector along with updated <code class="docutils literal notranslate"><span class="pre">v_state</span></code> and <code class="docutils literal notranslate"><span class="pre">last_spike</span></code>.</p>
+<p><strong>3. Spikes → excitation → activation.</strong> The spike trains are pooled back per muscle (<code class="docutils literal notranslate"><span class="pre">mu_mapping</span></code>) and low-pass filtered with time constant <code class="docutils literal notranslate"><span class="pre">TAU_EXC</span></code> to obtain a smooth excitation, which becomes the muscle activation command:</p>
+<div class="math notranslate nohighlight">
+\[
+E \leftarrow \mathrm{update\_excitation}(\text{spikes}, E, \text{mu\_mapping}, dt, \tau_{exc}),
+\qquad
+\text{ctrl} = \mathrm{clip}(E,\, 0,\, 1)
+\]</div>
+<p>Higher desired force raises the input current, which raises motoneuron <strong>firing rates</strong>, which raises the filtered excitation — a rate-coding scheme.</p>
+</section>
+<hr class="docutils" />
+<section id="signal-flow">
+<h2>Signal Flow<a class="headerlink" href="#signal-flow" title="Link to this heading">#</a></h2>
+<div class="math notranslate nohighlight">
+\[
+\text{target} \;\to\; F \;\to\; \tau \;\to\; f_{tendon} \;\to\; F_{target}
+\;\to\; I_{muscle} \;\to\; I_{neuron} \;\to\; \text{spikes} \;\to\; E \;\to\; \text{ctrl}
+\]</div>
+<p>The first half is deterministic biomechanics; the second half is a spiking population model.</p>
+</section>
+<hr class="docutils" />
+<section id="pool-state-and-initialization">
+<h2>Pool State and Initialization<a class="headerlink" href="#pool-state-and-initialization" title="Link to this heading">#</a></h2>
+<p>The pool’s state persists across timesteps and is set up once in <code class="docutils literal notranslate"><span class="pre">load_callback</span></code>:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">build_mu_mapping(n_muscles,</span> <span class="pre">N_PER_MUSCLE,</span> <span class="pre">drive_scale,</span> <span class="pre">seed)</span></code> builds <code class="docutils literal notranslate"><span class="pre">assignment</span></code> (distributes muscle drive to individual neurons, with <code class="docutils literal notranslate"><span class="pre">drive_scale</span></code> introducing per-neuron heterogeneity reminiscent of recruitment) and <code class="docutils literal notranslate"><span class="pre">mu_mapping</span></code> (pools neuron spikes back to muscles).</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">init_pool_state(n_neurons,</span> <span class="pre">n_muscles,</span> <span class="pre">el)</span></code> initializes the membrane potentials <code class="docutils literal notranslate"><span class="pre">v_state</span></code> (at the resting potential <code class="docutils literal notranslate"><span class="pre">el</span></code>), the <code class="docutils literal notranslate"><span class="pre">last_spike</span></code> times, and the excitation <code class="docutils literal notranslate"><span class="pre">E_state</span></code>.</p></li>
+</ul>
+<p>With <code class="docutils literal notranslate"><span class="pre">N_PER_MUSCLE</span> <span class="pre">=</span> <span class="pre">10</span></code>, a pool of <code class="docutils literal notranslate"><span class="pre">model.nu</span></code> muscles yields <code class="docutils literal notranslate"><span class="pre">10</span> <span class="pre">×</span> <span class="pre">nu</span></code> motoneurons. These states are module-level globals because the LIF dynamics are recurrent: each step depends on the previous membrane voltages and spike history.</p>
+</section>
+<hr class="docutils" />
+<section id="simulation-model">
+<h2>Simulation Model<a class="headerlink" href="#simulation-model" title="Link to this heading">#</a></h2>
+<p>The arm is a rigid-body dynamical system governed by:</p>
+<div class="math notranslate nohighlight">
+\[
+M(q)\ddot{q} + C(q,\dot{q}) + g(q) = \tau
+\]</div>
+<p>with <span class="math notranslate nohighlight">\(\tau\)</span> produced by the muscle forces. The muscle activations are now the output of the neural pool rather than the controller directly.</p>
+</section>
+<hr class="docutils" />
+<section id="simulation-loop">
+<h2>Simulation Loop<a class="headerlink" href="#simulation-loop" title="Link to this heading">#</a></h2>
+<p>At each timestep (~2 ms), MuJoCo:</p>
+<ol class="arabic simple">
+<li><p>Computes forward kinematics</p></li>
+<li><p>Calls the control function — which now also advances the LIF pool by <code class="docutils literal notranslate"><span class="pre">dt</span></code></p></li>
+<li><p>Computes forward dynamics, including muscle activation dynamics and forces</p></li>
+<li><p>Integrates the system state forward in time</p></li>
+</ol>
+<p>Because the neural pool is integrated inside the callback, its timestep is tied to the physics timestep <code class="docutils literal notranslate"><span class="pre">model.opt.timestep</span></code>.</p>
+</section>
+<hr class="docutils" />
+<section id="parameters">
+<h2>Parameters<a class="headerlink" href="#parameters" title="Link to this heading">#</a></h2>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Parameter</p></th>
+<th class="head"><p>Value</p></th>
+<th class="head"><p>Meaning</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">N_PER_MUSCLE</span></code></p></td>
+<td><p>10</p></td>
+<td><p>Motoneurons per muscle</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">F_MAX</span></code></p></td>
+<td><p>6.0</p></td>
+<td><p>Force scale used in the force→current map</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">I_MIN</span></code>,<code class="docutils literal notranslate"><span class="pre">I_MAX</span></code></p></td>
+<td><p>1e-10, 7e-10 A</p></td>
+<td><p>Input-current clamp range for the pool</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">DRIVE_SCALE</span></code></p></td>
+<td><p>0.14</p></td>
+<td><p>Per-neuron drive heterogeneity in <code class="docutils literal notranslate"><span class="pre">assignment</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">TAU_EXC</span></code></p></td>
+<td><p>20 ms</p></td>
+<td><p>Excitation (activation) low-pass time constant</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">Kp</span></code>, <code class="docutils literal notranslate"><span class="pre">Kd</span></code></p></td>
+<td><p>10, 0.3</p></td>
+<td><p>Task-space proportional and derivative gains</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">DEFAULT_LIF</span></code></p></td>
+<td><p>—</p></td>
+<td><p>LIF parameters (threshold, reset, <code class="docutils literal notranslate"><span class="pre">el</span></code>, refractory)</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<hr class="docutils" />
+<section id="system-variables">
+<h2>System Variables<a class="headerlink" href="#system-variables" title="Link to this heading">#</a></h2>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Variable</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">mocap_pos</span></code></p></td>
+<td><p>Interactive target position (dragged by the user)</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">J</span></code></p></td>
+<td><p>End-effector Jacobian, joint → task space</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">ten_J</span></code></p></td>
+<td><p>Tendon Jacobian (sparse), joint → tendon space</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">assignment</span></code></p></td>
+<td><p>Muscle → motoneuron current distribution matrix</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">mu_mapping</span></code></p></td>
+<td><p>Motoneuron → muscle pooling for spikes</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">v_state</span></code></p></td>
+<td><p>Per-neuron membrane potentials</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">last_spike</span></code></p></td>
+<td><p>Per-neuron last spike time (for the refractory period)</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">E_state</span></code></p></td>
+<td><p>Per-muscle excitation (the smoothed neural drive)</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">ctrl</span></code></p></td>
+<td><p>Muscle activation commands, range <code class="docutils literal notranslate"><span class="pre">[0,</span> <span class="pre">1]</span></code></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<hr class="docutils" />
+<section id="implementation-notes">
+<h2>Implementation Notes<a class="headerlink" href="#implementation-notes" title="Link to this heading">#</a></h2>
+<p>The neural model is already implemented in <a class="reference external" href="https://github.com/Balint-H/ssnr_sim/blob/main/SSNR2026/neuron_functions.py"><code class="docutils literal notranslate"><span class="pre">neuron_functions.py</span></code></a>. The provided functions are:</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://github.com/Balint-H/ssnr_sim/blob/main/SSNR2026/neuron_functions.py#L20"><code class="docutils literal notranslate"><span class="pre">build_mu_mapping</span></code></a> — construct the <code class="docutils literal notranslate"><span class="pre">assignment</span></code> and <code class="docutils literal notranslate"><span class="pre">mu_mapping</span></code> matrices</p></li>
+<li><p><a class="reference external" href="https://github.com/Balint-H/ssnr_sim/blob/main/SSNR2026/neuron_functions.py#L31"><code class="docutils literal notranslate"><span class="pre">init_pool_state</span></code></a> — initialize membrane potentials, spike times, and excitation</p></li>
+<li><p><a class="reference external" href="https://github.com/Balint-H/ssnr_sim/blob/main/SSNR2026/neuron_functions.py#L41"><code class="docutils literal notranslate"><span class="pre">force_to_current</span></code></a> — map desired muscle force to clamped input current</p></li>
+<li><p><a class="reference external" href="https://github.com/Balint-H/ssnr_sim/blob/main/SSNR2026/neuron_functions.py#L68"><code class="docutils literal notranslate"><span class="pre">detect_spike_refractory_pool</span></code></a> — LIF integration with threshold, reset, and refractory period</p></li>
+<li><p><a class="reference external" href="https://github.com/Balint-H/ssnr_sim/blob/main/SSNR2026/neuron_functions.py#L84"><code class="docutils literal notranslate"><span class="pre">update_excitation</span></code></a> — low-pass filter pooled spikes into per-muscle excitation</p></li>
+</ul>
+</section>
+<hr class="docutils" />
+<section id="key-insights">
+<h2>Key Insights<a class="headerlink" href="#key-insights" title="Link to this heading">#</a></h2>
+<ul class="simple">
+<li><p>Muscle activation is generated by a <strong>spiking motoneuron pool</strong>, not computed in closed form</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">TAU_EXC</span></code> sets the trade-off between <strong>smoothness</strong> (less tremor) and <strong>responsiveness</strong> (less lag)</p></li>
+<li><p>Pool state is <strong>recurrent</strong> and must persist across timesteps</p></li>
+<li><p>The deterministic biomechanics and the stochastic-looking neural drive are cleanly separated at <code class="docutils literal notranslate"><span class="pre">F_target</span></code></p></li>
+</ul>
+</section>
+<hr class="docutils" />
+<section id="source-code">
+<h2>Source Code<a class="headerlink" href="#source-code" title="Link to this heading">#</a></h2>
+<p><a class="reference external" href="https://github.com/Balint-H/ssnr_sim/blob/main/SSNR2026/05_pd_neuron_integration.py">View <code class="docutils literal notranslate"><span class="pre">05_pd_neuron_integration.py</span></code> on GitHub →</a><br />
+<a class="reference external" href="https://github.com/Balint-H/ssnr_sim/blob/main/SSNR2026/neuron_functions.py">View <code class="docutils literal notranslate"><span class="pre">neuron_functions.py</span></code> on GitHub →</a></p>
+<div class="literal-block-wrapper docutils container" id="id1">
+<div class="code-block-caption"><span class="caption-number">Listing 5 </span><span class="caption-text">Spiking motoneuron-pool control in MuJoCo</span><a class="headerlink" href="#id1" title="Link to this code">#</a></div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos">  1</span><span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="linenos">  2</span><span class="kn">import</span><span class="w"> </span><span class="nn">mujoco</span>
+<span class="linenos">  3</span><span class="kn">import</span><span class="w"> </span><span class="nn">mujoco.viewer</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">viewer</span>
+<span class="linenos">  4</span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="linenos">  5</span><span class="kn">from</span><span class="w"> </span><span class="nn">numpy.linalg</span><span class="w"> </span><span class="kn">import</span> <span class="n">pinv</span><span class="p">,</span> <span class="n">inv</span>
+<span class="linenos">  6</span>
+<span class="linenos">  7</span><span class="kn">from</span><span class="w"> </span><span class="nn">neuron_functions</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
+<span class="linenos">  8</span>    <span class="n">build_mu_mapping</span><span class="p">,</span>
+<span class="linenos">  9</span>    <span class="n">init_pool_state</span><span class="p">,</span>
+<span class="linenos"> 10</span>    <span class="n">force_to_current</span><span class="p">,</span>
+<span class="linenos"> 11</span>    <span class="n">detect_spike_refractory_pool</span><span class="p">,</span>
+<span class="linenos"> 12</span>    <span class="n">update_excitation</span><span class="p">,</span>
+<span class="linenos"> 13</span>    <span class="n">DEFAULT_LIF</span><span class="p">,</span>
+<span class="linenos"> 14</span><span class="p">)</span>
+<span class="linenos"> 15</span>
+<span class="linenos"> 16</span>
+<span class="linenos"> 17</span>
+<span class="linenos"> 18</span><span class="n">Kp</span> <span class="o">=</span> <span class="mi">10</span>
+<span class="linenos"> 19</span><span class="n">Kd</span> <span class="o">=</span> <span class="mf">0.3</span>
+<span class="linenos"> 20</span>
+<span class="linenos"> 21</span>
+<span class="linenos"> 22</span><span class="n">N_PER_MUSCLE</span> <span class="o">=</span> <span class="mi">10</span>        <span class="c1"># motoneurons per muscle        </span>
+<span class="linenos"> 23</span><span class="n">F_MAX</span>       <span class="o">=</span> <span class="mf">6.0</span>          
+<span class="linenos"> 24</span><span class="n">I_MIN</span>       <span class="o">=</span> <span class="mf">1.0e-10</span>    
+<span class="linenos"> 25</span><span class="n">DRIVE_SCALE</span> <span class="o">=</span> <span class="mf">0.14</span>
+<span class="linenos"> 26</span><span class="n">I_MAX</span>       <span class="o">=</span> <span class="mf">7e-10</span>
+<span class="linenos"> 27</span><span class="n">TAU_EXC</span>     <span class="o">=</span> <span class="mf">20e-3</span>
+<span class="linenos"> 28</span>
+<span class="linenos"> 29</span>
+<span class="linenos"> 30</span><span class="n">assignment</span>  <span class="o">=</span> <span class="kc">None</span>       
+<span class="linenos"> 31</span><span class="n">mu_mapping</span>  <span class="o">=</span> <span class="kc">None</span>       
+<span class="linenos"> 32</span><span class="n">v_state</span>     <span class="o">=</span> <span class="kc">None</span>       
+<span class="linenos"> 33</span><span class="n">last_spike</span>  <span class="o">=</span> <span class="kc">None</span>       
+<span class="linenos"> 34</span><span class="n">E_state</span>     <span class="o">=</span> <span class="kc">None</span>       
+<span class="linenos"> 35</span>
+<span class="linenos"> 36</span>
+<span class="linenos"> 37</span><span class="n">xml</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="vm">__file__</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;/arm_model_tendon.xml&#39;</span>
+<span class="linenos"> 38</span>
+<span class="linenos"> 39</span>
+<span class="linenos"> 40</span><span class="k">def</span><span class="w"> </span><span class="nf">weighted_pinv</span><span class="p">(</span><span class="n">J</span><span class="p">,</span> <span class="n">H</span><span class="p">):</span>
+<span class="linenos"> 41</span>    <span class="n">Hinv</span> <span class="o">=</span> <span class="n">inv</span><span class="p">(</span><span class="n">H</span><span class="p">)</span>
+<span class="linenos"> 42</span>    <span class="k">return</span> <span class="n">Hinv</span> <span class="o">@</span> <span class="n">J</span><span class="o">.</span><span class="n">T</span> <span class="o">@</span> <span class="n">pinv</span><span class="p">(</span><span class="n">J</span> <span class="o">@</span> <span class="n">Hinv</span> <span class="o">@</span> <span class="n">J</span><span class="o">.</span><span class="n">T</span><span class="p">)</span>
+<span class="linenos"> 43</span>
+<span class="linenos"> 44</span>
+<span class="linenos"> 45</span><span class="k">def</span><span class="w"> </span><span class="nf">arm_control</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+<span class="linenos"> 46</span><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="linenos"> 47</span><span class="sd">    :type model: mujoco.MjModel</span>
+<span class="linenos"> 48</span><span class="sd">    :type data: mujoco.MjData</span>
+<span class="linenos"> 49</span><span class="sd">    &quot;&quot;&quot;</span>
+<span class="linenos"> 50</span>    <span class="k">global</span> <span class="n">v_state</span><span class="p">,</span> <span class="n">last_spike</span><span class="p">,</span> <span class="n">E_state</span>
+<span class="linenos"> 51</span>
+<span class="linenos"> 52</span>
+<span class="linenos"> 53</span>    <span class="n">xt</span><span class="p">,</span> <span class="n">yt</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">mocap_pos</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+<span class="linenos"> 54</span>    <span class="n">data</span><span class="o">.</span><span class="n">mocap_pos</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="linenos"> 55</span>
+<span class="linenos"> 56</span>    <span class="n">ls</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">body</span><span class="p">(</span><span class="s2">&quot;forearm&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">pos</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+<span class="linenos"> 57</span>    <span class="n">lw</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">body</span><span class="p">(</span><span class="s2">&quot;wrist_body&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">pos</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+<span class="linenos"> 58</span>    <span class="n">le</span> <span class="o">=</span> <span class="o">-</span><span class="n">model</span><span class="o">.</span><span class="n">body</span><span class="p">(</span><span class="s2">&quot;hand&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">pos</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+<span class="linenos"> 59</span>    <span class="n">lh</span> <span class="o">=</span> <span class="o">-</span><span class="n">model</span><span class="o">.</span><span class="n">body</span><span class="p">(</span><span class="s2">&quot;tip&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">pos</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+<span class="linenos"> 60</span>    <span class="n">rt</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">([</span><span class="n">xt</span><span class="p">,</span> <span class="n">yt</span><span class="p">])</span>
+<span class="linenos"> 61</span>    <span class="n">xt</span><span class="p">,</span> <span class="n">yt</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">xt</span><span class="p">,</span> <span class="n">yt</span><span class="p">])</span> <span class="o">/</span> <span class="n">rt</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">clip</span><span class="p">(</span><span class="n">rt</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">ls</span> <span class="o">+</span> <span class="n">le</span> <span class="o">+</span> <span class="n">lh</span> <span class="o">+</span> <span class="n">lw</span><span class="p">)</span>
+<span class="linenos"> 62</span>    <span class="n">data</span><span class="o">.</span><span class="n">mocap_pos</span><span class="p">[</span><span class="mi">0</span><span class="p">][:</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">xt</span><span class="p">,</span> <span class="n">yt</span><span class="p">]</span>
+<span class="linenos"> 63</span>
+<span class="linenos"> 64</span>    <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">body</span><span class="p">(</span><span class="s2">&quot;tip&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">xpos</span>
+<span class="linenos"> 65</span>
+<span class="linenos"> 66</span>    <span class="n">J</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">((</span><span class="mi">3</span><span class="p">,</span> <span class="n">model</span><span class="o">.</span><span class="n">nv</span><span class="p">))</span>
+<span class="linenos"> 67</span>    <span class="n">mujoco</span><span class="o">.</span><span class="n">mj_jac</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">jacp</span><span class="o">=</span><span class="n">J</span><span class="p">,</span> <span class="n">jacr</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+<span class="linenos"> 68</span>                  <span class="n">point</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="n">x</span><span class="p">],</span> <span class="p">[</span><span class="n">y</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">]]),</span> <span class="n">body</span><span class="o">=</span><span class="n">model</span><span class="o">.</span><span class="n">body</span><span class="p">(</span><span class="s2">&quot;tip&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
+<span class="linenos"> 69</span>
+<span class="linenos"> 70</span>    <span class="n">H</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">((</span><span class="n">model</span><span class="o">.</span><span class="n">nv</span><span class="p">,</span> <span class="n">model</span><span class="o">.</span><span class="n">nv</span><span class="p">))</span>
+<span class="linenos"> 71</span>    <span class="n">mujoco</span><span class="o">.</span><span class="n">mj_fullM</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">H</span><span class="p">,</span> <span class="n">data</span><span class="o">.</span><span class="n">qM</span><span class="p">)</span>
+<span class="linenos"> 72</span>    <span class="n">H</span><span class="p">[[(</span><span class="n">i</span><span class="p">,</span> <span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">nv</span><span class="p">)]]</span> <span class="o">+=</span> <span class="mf">0.01</span>
+<span class="linenos"> 73</span>    <span class="n">H</span> <span class="o">=</span> <span class="n">H</span> <span class="o">/</span> <span class="n">model</span><span class="o">.</span><span class="n">body</span><span class="p">(</span><span class="s2">&quot;upper arm&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">subtreemass</span>
+<span class="linenos"> 74</span>
+<span class="linenos"> 75</span>    <span class="n">xvel</span><span class="p">,</span> <span class="n">yvel</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">J</span> <span class="o">@</span> <span class="n">data</span><span class="o">.</span><span class="n">qvel</span>
+<span class="linenos"> 76</span>    <span class="n">xe</span><span class="p">,</span> <span class="n">ye</span> <span class="o">=</span> <span class="n">xt</span> <span class="o">-</span> <span class="n">x</span><span class="p">,</span> <span class="n">yt</span> <span class="o">-</span> <span class="n">y</span>
+<span class="linenos"> 77</span>    <span class="n">task_force</span> <span class="o">=</span> <span class="n">Kp</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">xe</span><span class="p">,</span> <span class="n">ye</span><span class="p">,</span> <span class="mi">0</span><span class="p">])</span> <span class="o">-</span> <span class="n">Kd</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">xvel</span><span class="p">,</span> <span class="n">yvel</span><span class="p">,</span> <span class="mi">0</span><span class="p">])</span>
+<span class="linenos"> 78</span>    <span class="n">f</span> <span class="o">=</span> <span class="n">J</span><span class="o">.</span><span class="n">T</span> <span class="o">@</span> <span class="n">task_force</span>
+<span class="linenos"> 79</span>    <span class="n">qfrc_desired</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">clip</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+<span class="linenos"> 80</span>
+<span class="linenos"> 81</span>    <span class="n">J_tendon</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">((</span><span class="n">model</span><span class="o">.</span><span class="n">ntendon</span><span class="p">,</span> <span class="n">model</span><span class="o">.</span><span class="n">nv</span><span class="p">))</span>
+<span class="linenos"> 82</span>    <span class="n">mujoco</span><span class="o">.</span><span class="n">mju_sparse2dense</span><span class="p">(</span><span class="n">J_tendon</span><span class="p">,</span> <span class="n">data</span><span class="o">.</span><span class="n">ten_J</span><span class="p">,</span> <span class="n">model</span><span class="o">.</span><span class="n">ten_J_rownnz</span><span class="p">,</span>
+<span class="linenos"> 83</span>                            <span class="n">model</span><span class="o">.</span><span class="n">ten_J_rowadr</span><span class="p">,</span> <span class="n">model</span><span class="o">.</span><span class="n">ten_J_colind</span><span class="p">)</span>
+<span class="linenos"> 84</span>    <span class="n">tendon_force</span> <span class="o">=</span> <span class="n">pinv</span><span class="p">(</span><span class="n">J_tendon</span><span class="o">.</span><span class="n">T</span><span class="p">)</span> <span class="o">@</span> <span class="n">qfrc_desired</span>
+<span class="linenos"> 85</span>
+<span class="linenos"> 86</span>   
+<span class="linenos"> 87</span>    <span class="n">F_target</span> <span class="o">=</span> <span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">minimum</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">tendon_force</span><span class="p">)</span>            
+<span class="linenos"> 88</span>    
+<span class="linenos"> 89</span>   
+<span class="linenos"> 90</span>    
+<span class="linenos"> 91</span>    <span class="n">dt</span>    <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">opt</span><span class="o">.</span><span class="n">timestep</span>
+<span class="linenos"> 92</span>    <span class="n">t_now</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">time</span>
+<span class="linenos"> 93</span>
+<span class="linenos"> 94</span>        
+<span class="linenos"> 95</span>
+<span class="linenos"> 96</span>    <span class="n">I_per_muscle</span> <span class="o">=</span> <span class="n">force_to_current</span><span class="p">(</span><span class="n">F_target</span><span class="p">,</span> <span class="n">F_max</span><span class="o">=</span><span class="n">F_MAX</span><span class="p">,</span> <span class="n">I_min</span><span class="o">=</span><span class="n">I_MIN</span><span class="p">,</span> <span class="n">I_max</span><span class="o">=</span><span class="n">I_MAX</span><span class="p">)</span>
+<span class="linenos"> 97</span>    <span class="n">I_per_neuron</span> <span class="o">=</span> <span class="n">assignment</span> <span class="o">@</span> <span class="n">I_per_muscle</span>            
+<span class="linenos"> 98</span>
+<span class="linenos"> 99</span>    <span class="n">spikes</span><span class="p">,</span> <span class="n">v_state</span><span class="p">,</span> <span class="n">last_spike</span> <span class="o">=</span> <span class="n">detect_spike_refractory_pool</span><span class="p">(</span>
+<span class="linenos">100</span>        <span class="n">v_state</span><span class="p">,</span> <span class="n">last_spike</span><span class="p">,</span> <span class="n">t_now</span><span class="p">,</span> <span class="n">dt</span><span class="p">,</span> <span class="n">I_per_neuron</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="n">DEFAULT_LIF</span>
+<span class="linenos">101</span>    <span class="p">)</span>
+<span class="linenos">102</span>
+<span class="linenos">103</span>
+<span class="linenos">104</span>    <span class="n">E_state</span> <span class="o">=</span> <span class="n">update_excitation</span><span class="p">(</span><span class="n">spikes</span><span class="p">,</span> <span class="n">E_state</span><span class="p">,</span> <span class="n">mu_mapping</span><span class="p">,</span> <span class="n">dt</span><span class="p">,</span> <span class="n">tau_exc</span><span class="o">=</span><span class="n">TAU_EXC</span><span class="p">)</span>
+<span class="linenos">105</span>
+<span class="linenos">106</span>    <span class="n">data</span><span class="o">.</span><span class="n">ctrl</span><span class="p">[:]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">clip</span><span class="p">(</span><span class="n">E_state</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">)</span>   
+<span class="linenos">107</span>
+<span class="linenos">108</span>   
+<span class="linenos">109</span>    <span class="n">color</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">ctrl</span> <span class="o">+</span> <span class="mf">1e-4</span><span class="p">)</span>
+<span class="linenos">110</span>    <span class="n">model</span><span class="o">.</span><span class="n">tendon_rgba</span> <span class="o">=</span> <span class="p">(</span><span class="n">color</span><span class="p">[:,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.95</span><span class="p">,</span> <span class="mf">0.3</span><span class="p">,</span> <span class="mf">0.3</span><span class="p">,</span> <span class="mi">1</span><span class="p">])[</span><span class="kc">None</span><span class="p">,</span> <span class="p">:]</span>
+<span class="linenos">111</span>                         <span class="o">+</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">color</span><span class="p">[:,</span> <span class="kc">None</span><span class="p">])</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.45</span><span class="p">,</span> <span class="mf">0.15</span><span class="p">,</span> <span class="mf">0.15</span><span class="p">,</span> <span class="mi">1</span><span class="p">])[</span><span class="kc">None</span><span class="p">,</span> <span class="p">:])</span>
+<span class="linenos">112</span>
+<span class="linenos">113</span>
+<span class="linenos">114</span><span class="k">def</span><span class="w"> </span><span class="nf">load_callback</span><span class="p">(</span><span class="n">model</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="linenos">115</span>    <span class="n">mujoco</span><span class="o">.</span><span class="n">set_mjcb_control</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
+<span class="linenos">116</span>
+<span class="linenos">117</span>    <span class="n">spec</span> <span class="o">=</span> <span class="n">mujoco</span><span class="o">.</span><span class="n">MjSpec</span><span class="o">.</span><span class="n">from_file</span><span class="p">(</span><span class="n">filename</span><span class="o">=</span><span class="n">xml</span><span class="p">,</span> <span class="n">assets</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+<span class="linenos">118</span>    <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">spec</span><span class="o">.</span><span class="n">actuators</span><span class="p">:</span>
+<span class="linenos">119</span>        <span class="n">a</span><span class="o">.</span><span class="n">set_to_muscle</span><span class="p">(</span><span class="n">lmin</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">lmax</span><span class="o">=</span><span class="mf">1.6</span><span class="p">,</span> <span class="n">vmax</span><span class="o">=</span><span class="mf">1.5</span><span class="p">,</span> <span class="n">fpmax</span><span class="o">=</span><span class="mf">1.3</span><span class="p">,</span> <span class="n">fvmax</span><span class="o">=</span><span class="mf">1.2</span><span class="p">,</span>
+<span class="linenos">120</span>                        <span class="n">timeconst</span><span class="o">=</span><span class="mf">0.01</span><span class="p">,</span> <span class="n">tausmooth</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">force</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="mi">200</span><span class="p">,</span> <span class="nb">range</span><span class="o">=</span><span class="mf">0.75</span><span class="p">)</span>
+<span class="linenos">121</span>        <span class="n">a</span><span class="o">.</span><span class="n">gainprm</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="mf">1.05</span>
+<span class="linenos">122</span>        <span class="n">a</span><span class="o">.</span><span class="n">dynprm</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>  <span class="o">=</span> <span class="mf">0.04</span>
+<span class="linenos">123</span>        <span class="n">a</span><span class="o">.</span><span class="n">biasprm</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="mf">1.05</span>
+<span class="linenos">124</span>        <span class="n">a</span><span class="o">.</span><span class="n">ctrlrange</span>  <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
+<span class="linenos">125</span>
+<span class="linenos">126</span>    <span class="n">model</span> <span class="o">=</span> <span class="n">spec</span><span class="o">.</span><span class="n">compile</span><span class="p">()</span>
+<span class="linenos">127</span>    <span class="n">data</span>  <span class="o">=</span> <span class="n">mujoco</span><span class="o">.</span><span class="n">MjData</span><span class="p">(</span><span class="n">model</span><span class="p">)</span>
+<span class="linenos">128</span>
+<span class="linenos">129</span>    <span class="k">global</span> <span class="n">assignment</span><span class="p">,</span> <span class="n">mu_mapping</span><span class="p">,</span> <span class="n">v_state</span><span class="p">,</span> <span class="n">last_spike</span><span class="p">,</span> <span class="n">E_state</span>
+<span class="linenos">130</span>
+<span class="linenos">131</span>    <span class="n">n_muscles</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">nu</span>
+<span class="linenos">132</span>    <span class="n">n_neurons</span> <span class="o">=</span> <span class="n">n_muscles</span> <span class="o">*</span> <span class="n">N_PER_MUSCLE</span>
+<span class="linenos">133</span>
+<span class="linenos">134</span>    <span class="n">assignment</span><span class="p">,</span> <span class="n">mu_mapping</span> <span class="o">=</span> <span class="n">build_mu_mapping</span><span class="p">(</span><span class="n">n_muscles</span><span class="p">,</span> <span class="n">N_PER_MUSCLE</span><span class="p">,</span>
+<span class="linenos">135</span>                                              <span class="n">drive_scale</span><span class="o">=</span><span class="n">DRIVE_SCALE</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="mi">11</span><span class="p">)</span>
+<span class="linenos">136</span>    <span class="n">v_state</span><span class="p">,</span> <span class="n">last_spike</span><span class="p">,</span> <span class="n">E_state</span> <span class="o">=</span> <span class="n">init_pool_state</span><span class="p">(</span><span class="n">n_neurons</span><span class="p">,</span> <span class="n">n_muscles</span><span class="p">,</span>
+<span class="linenos">137</span>                                                   <span class="n">el</span><span class="o">=</span><span class="n">DEFAULT_LIF</span><span class="p">[</span><span class="s2">&quot;el&quot;</span><span class="p">])</span>
+<span class="linenos">138</span>
+<span class="linenos">139</span>    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;[pool] </span><span class="si">{</span><span class="n">n_muscles</span><span class="si">}</span><span class="s2"> muscles x </span><span class="si">{</span><span class="n">N_PER_MUSCLE</span><span class="si">}</span><span class="s2"> MN = </span><span class="si">{</span><span class="n">n_neurons</span><span class="si">}</span><span class="s2"> neurons&quot;</span><span class="p">)</span>
+<span class="linenos">140</span>    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;[pool] dt = </span><span class="si">{</span><span class="n">model</span><span class="o">.</span><span class="n">opt</span><span class="o">.</span><span class="n">timestep</span><span class="o">*</span><span class="mi">1000</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2"> ms, tau_exc = </span><span class="si">{</span><span class="n">TAU_EXC</span><span class="o">*</span><span class="mi">1000</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2"> ms&quot;</span><span class="p">)</span>
+<span class="linenos">141</span>    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;[pool] F_MAX = </span><span class="si">{</span><span class="n">F_MAX</span><span class="si">}</span><span class="s2">, I_MAX = </span><span class="si">{</span><span class="n">I_MAX</span><span class="si">:</span><span class="s2">.2e</span><span class="si">}</span><span class="s2"> A&quot;</span><span class="p">)</span>
+<span class="linenos">142</span>
+<span class="linenos">143</span>    <span class="k">if</span> <span class="n">model</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+<span class="linenos">144</span>        <span class="n">data</span><span class="o">.</span><span class="n">joint</span><span class="p">(</span><span class="s1">&#39;shoulder&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">qpos</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="linenos">145</span>        <span class="n">data</span><span class="o">.</span><span class="n">joint</span><span class="p">(</span><span class="s1">&#39;elbow&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">qpos</span>    <span class="o">=</span> <span class="mi">0</span>
+<span class="linenos">146</span>        <span class="n">mujoco</span><span class="o">.</span><span class="n">set_mjcb_control</span><span class="p">(</span><span class="n">arm_control</span><span class="p">)</span>
+<span class="linenos">147</span>
+<span class="linenos">148</span>    <span class="k">return</span> <span class="n">model</span><span class="p">,</span> <span class="n">data</span>
+<span class="linenos">149</span>
+<span class="linenos">150</span>
+<span class="linenos">151</span><span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+<span class="linenos">152</span>    <span class="n">viewer</span><span class="o">.</span><span class="n">launch</span><span class="p">(</span><span class="n">loader</span><span class="o">=</span><span class="n">load_callback</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</section>
+</section>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "binder-examples/jupyter-stacks-datascience",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "python"
+        },
+        kernelOptions: {
+            name: "python3",
+            path: "./docs"
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'python3'</script>
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="04_muscle_space.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">4. Operational-Space Control with Muscle Actuation</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="day3_intro.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Tutorial 3: Reinforcement Learning for Motor Control</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#objective">Objective</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-shared-control-pipeline">The Shared Control Pipeline</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-neural-drive-layer">The Neural Drive Layer</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#signal-flow">Signal Flow</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pool-state-and-initialization">Pool State and Initialization</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#simulation-model">Simulation Model</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#simulation-loop">Simulation Loop</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#parameters">Parameters</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#system-variables">System Variables</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#implementation-notes">Implementation Notes</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#key-insights">Key Insights</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#source-code">Source Code</a></li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By SSNR 2026 Workshop
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+
+  <p class="copyright">
+    
+      © Copyright 2023.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b"></script>
+<script src="../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>

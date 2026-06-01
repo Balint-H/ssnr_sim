@@ -1,8 +1,9 @@
-# Control of planar movements in an arm, using the example scene provided by MuJoCo. For more information on
-# the simulator and the key feature of the physics simulation see:
+# Joint-space PD control of a planar two-joint arm, using the example scene provided by MuJoCo.
+# For more information on the simulator see:
 # https://mujoco.readthedocs.io/en/stable/overview.html#introduction
 #
-# Planar arm control is a classic example to illustrate task-space goals achieved via body kinematics.
+# The target joint configuration is set via the GUI sliders. Your controller must compute
+# torques that drive the arm from its current configuration to the target.
 
 import mujoco
 import mujoco.viewer as viewer
@@ -10,8 +11,8 @@ import os
 
 import numpy as np
 
-from SSNR2026.common_scripts import launch_simulation
-from .student_functions import feedback_control
+from common_scripts import launch_simulation
+from student_functions import feedback_control
 
 
 xml = os.path.dirname(__file__) + '/arm_model.xml'

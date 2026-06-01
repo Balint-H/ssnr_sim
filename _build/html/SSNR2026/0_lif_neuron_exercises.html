@@ -1,0 +1,1331 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Tutorial 1: The Leaky Integrate-and-Fire (LIF) Neuron &#8212; SSNR 2026: Neural Control of Movement</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../_static/styles/bootstrap.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+
+  
+  <link href="../_static/vendor/fontawesome/6.5.2/css/all.min.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/sphinx-book-theme.css?v=eba8b062" />
+    <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css?v=9c3e77be" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../_static/mystnb.11b39860a7a0cbfd473a3ad8a317855267ff0bd372690045ca344a6b62be495e.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-thebe.css?v=4fa983c6" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-design.min.css?v=95c83b7e" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
+  <script src="../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+    <script src="../_static/documentation_options.js?v=9eb32ce0"></script>
+    <script src="../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../_static/copybutton.js?v=f281be69"></script>
+    <script src="../_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="../_static/togglebutton.js?v=b8b12719"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script src="../_static/design-tabs.js?v=f930bc37"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script async="async" src="../_static/sphinx-thebe.js?v=c100c467"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'SSNR2026/0_lif_neuron_exercises';</script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Tutorial 2: Controlling a Musculoskeletal Arm" href="../docs/day2_intro.html" />
+    <link rel="prev" title="LIF Model" href="../docs/neuron.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-primary-sidebar-checkbox"/>
+  <label class="overlay overlay-primary" for="pst-primary-sidebar-checkbox"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-secondary-sidebar-checkbox"/>
+  <label class="overlay overlay-secondary" for="pst-secondary-sidebar-checkbox"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search this book..."
+         aria-label="Search this book..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../docs/intro.html">
+  
+  
+  
+  
+  
+  
+    <p class="title logo__title">SSNR 2026: Neural Control of Movement</p>
+  
+</a></div>
+        <div class="sidebar-primary-item">
+
+ <script>
+ document.write(`
+   <button class="btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        
+        <ul class="nav bd-sidenav bd-sidenav__home-link">
+            <li class="toctree-l1">
+                <a class="reference internal" href="../docs/intro.html">
+                    SSNR 2026: WS4 – Dynamic Simulations of Neuromechanics
+                </a>
+            </li>
+        </ul>
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">Setup</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../docs/getting_started.html">Getting Started</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Day 1 — From Single LIF Neurons to Muscle Activation</span></p>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../docs/neuron.html">Tutorial 1: Intro</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Tutorial 1: The LIF Neuron</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Day 2 — From PD control to a neural-driven musculoskeletal model</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../docs/day2_intro.html">Tutorial 2: Intro</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../docs/01_joint_space.html">1. Joint-Space PD Control</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../docs/02_task_space.html">2. Task-Space PD Control</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../docs/03_tendon_space.html">3. Task-Space Control with Tendon Actuation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../docs/04_muscle_space.html">4. Operational-Space Control with Muscle Actuation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../docs/05_neural_integration.html">5. Closed-Loop Control through a Spiking Motoneuron Pool</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Day 3 — Reinforcement Learning for Motor Control</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../docs/day3_intro.html">Tutorial 3: Intro</a></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><button class="sidebar-toggle primary-toggle btn btn-sm" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</button></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+<a href="https://github.com/Balint-H/ssnr_sim" target="_blank"
+   class="btn btn-sm btn-source-repository-button"
+   title="Source repository"
+   data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+
+</a>
+
+
+
+
+
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Download this page">
+    <i class="fas fa-download"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="../_sources/SSNR2026/0_lif_neuron_exercises.ipynb" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="Download source file"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="btn__text-container">.ipynb</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="Print to PDF"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="btn__text-container">.pdf</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"></i>
+  </button>
+`);
+</script>
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm pst-navbar-icon search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+  </button>
+`);
+</script>
+<button class="sidebar-toggle secondary-toggle btn btn-sm" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</button>
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>Tutorial 1: The Leaky Integrate-and-Fire (LIF) Neuron</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#why-this-tutorial">Why this tutorial?</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#what-we-will-build">What we will build</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#prerequisites">Prerequisites</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#setup">Setup</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#section-1-the-lif-model">Section 1: The LIF model</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#the-membrane-equation">The membrane equation</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#the-reset-rule">The reset rule</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#parameters">Parameters</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#coding-exercise-1-defining-parameters">Coding Exercise 1: Defining parameters</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#section-2-simulating-an-input-current">Section 2: Simulating an input current</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#coding-exercise-2-generating-the-two-inputs">Coding Exercise 2: Generating the two inputs</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#section-3-discrete-time-integration">Section 3: Discrete-time integration</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#coding-exercise-3-simulating-membrane-potential">Coding Exercise 3: Simulating membrane potential</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#section-4-adding-spikes">Section 4: Adding spikes</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#coding-exercise-4-spike-detection">Coding Exercise 4: Spike detection</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#section-5-refractory-period">Section 5: Refractory period</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#coding-exercise-5-adding-a-refractory-period">Coding Exercise 5: Adding a refractory period</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#firing-rate">Firing rate</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#section-6-from-one-neuron-to-a-pool">Section 6: From one neuron to a pool</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#coding-exercise-6-simulating-a-pool">Coding Exercise 6: Simulating a pool</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#section-7-from-spikes-to-muscle-excitation">Section 7: From spikes to muscle excitation</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#coding-exercise-7-computing-muscle-excitation">Coding Exercise 7: Computing muscle excitation</a></li>
+</ul>
+</li>
+</ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section class="tex2jax_ignore mathjax_ignore" id="tutorial-1-the-leaky-integrate-and-fire-lif-neuron">
+<h1>Tutorial 1: The Leaky Integrate-and-Fire (LIF) Neuron<a class="headerlink" href="#tutorial-1-the-leaky-integrate-and-fire-lif-neuron" title="Link to this heading">#</a></h1>
+<p><strong>Workshop Day 1 — From single neurons to motor control signals</strong></p>
+<hr class="docutils" />
+<section id="why-this-tutorial">
+<h2>Why this tutorial?<a class="headerlink" href="#why-this-tutorial" title="Link to this heading">#</a></h2>
+<p>The goal of this workshop is to simulate a <strong>pool of motoneurons</strong> that
+converts a descending drive into <strong>muscle excitation signals</strong>. To get
+there we need a neuron model, the <strong>Leaky Integrate-and-Fire (LIF)</strong> model <a class="reference internal" href="../docs/neuron.html"><span class="doc">LIF Model</span></a>.</p>
+<p>In this notebook we will build one from scratch, scale it up to a small pool, and see how
+discrete spikes become smooth muscle excitation.</p>
+</section>
+<section id="what-we-will-build">
+<h2>What we will build<a class="headerlink" href="#what-we-will-build" title="Link to this heading">#</a></h2>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Section</p></th>
+<th class="head"><p>What you do</p></th>
+<th class="head"><p>Key concept</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>1</p></td>
+<td><p>Define the LIF parameters</p></td>
+<td><p>Membrane equation (ODE)</p></td>
+</tr>
+<tr class="row-odd"><td><p>2</p></td>
+<td><p>Generate an input current</p></td>
+<td><p>Synaptic drive <span class="math notranslate nohighlight">\(I(t)\)</span></p></td>
+</tr>
+<tr class="row-even"><td><p>3</p></td>
+<td><p>Integrate the membrane equation</p></td>
+<td><p>Forward Euler method</p></td>
+</tr>
+<tr class="row-odd"><td><p>4</p></td>
+<td><p>Add spike detection and reset</p></td>
+<td><p>Threshold mechanism</p></td>
+</tr>
+<tr class="row-even"><td><p>5</p></td>
+<td><p>Add a refractory period</p></td>
+<td><p>Biological realism</p></td>
+</tr>
+<tr class="row-odd"><td><p>6</p></td>
+<td><p>Wrap everything in <code class="docutils literal notranslate"><span class="pre">build_pool()</span></code></p></td>
+<td><p>From one neuron to many</p></td>
+</tr>
+<tr class="row-even"><td><p>7</p></td>
+<td><p>Map spikes to muscle excitation</p></td>
+<td><p>From discrete spikes to smooth drive</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="prerequisites">
+<h2>Prerequisites<a class="headerlink" href="#prerequisites" title="Link to this heading">#</a></h2>
+<ul class="simple">
+<li><p>Python basics (loops, functions, NumPy arrays)</p></li>
+<li><p>A vague memory of what a differential equation is (we’ll refresh it)</p></li>
+</ul>
+</section>
+<hr class="docutils" />
+<section id="setup">
+<h2>Setup<a class="headerlink" href="#setup" title="Link to this heading">#</a></h2>
+<p>Run the cell below to import the required packages.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">sys</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
+
+<span class="o">%</span><span class="n">config</span> <span class="n">InlineBackend</span><span class="o">.</span><span class="n">figure_format</span> <span class="o">=</span> <span class="s1">&#39;retina&#39;</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">rcParams</span><span class="p">[</span><span class="s2">&quot;figure.figsize&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">rcParams</span><span class="p">[</span><span class="s2">&quot;axes.spines.top&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">rcParams</span><span class="p">[</span><span class="s2">&quot;axes.spines.right&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;NumPy </span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">__version__</span><span class="si">}</span><span class="s2"> loaded.&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<hr class="docutils" />
+<section id="section-1-the-lif-model">
+<h2>Section 1: The LIF model<a class="headerlink" href="#section-1-the-lif-model" title="Link to this heading">#</a></h2>
+<section id="the-membrane-equation">
+<h3>The membrane equation<a class="headerlink" href="#the-membrane-equation" title="Link to this heading">#</a></h3>
+<p>A biological neuron’s membrane acts like an RC circuit: a capacitance
+<span class="math notranslate nohighlight">\(C\)</span> that stores charge, and a leak conductance <span class="math notranslate nohighlight">\(g_L\)</span> that lets it
+dissipate. The voltage across the membrane evolves as:</p>
+<div class="math notranslate nohighlight">
+\[
+C\,\frac{dV}{dt} = I(t) - g_L\,(V - E_L)
+\]</div>
+<p>Dividing both sides by <span class="math notranslate nohighlight">\(g_L\)</span> and defining <span class="math notranslate nohighlight">\(\tau_m = C / g_L\)</span> and
+<span class="math notranslate nohighlight">\(R = 1 / g_L\)</span>, we get the standard form used throughout this notebook:</p>
+<div class="math notranslate nohighlight">
+\[
+\tau_m\,\frac{dV}{dt} = E_L - V + R\,I(t)
+\]</div>
+</section>
+<section id="the-reset-rule">
+<h3>The reset rule<a class="headerlink" href="#the-reset-rule" title="Link to this heading">#</a></h3>
+<p>The LIF neuron fires a spike whenever <span class="math notranslate nohighlight">\(V\)</span> reaches a threshold <span class="math notranslate nohighlight">\(V_{th}\)</span>,
+and is immediately reset:</p>
+<div class="math notranslate nohighlight">
+\[
+V(t) \geq V_{th} \quad\Rightarrow\quad V(t) \leftarrow V_{reset}
+\]</div>
+</section>
+<section id="parameters">
+<h3>Parameters<a class="headerlink" href="#parameters" title="Link to this heading">#</a></h3>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Symbol</p></th>
+<th class="head"><p>Meaning</p></th>
+<th class="head"><p>Value</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><span class="math notranslate nohighlight">\(\tau_m\)</span></p></td>
+<td><p>membrane time constant</p></td>
+<td><p>20 ms</p></td>
+</tr>
+<tr class="row-odd"><td><p><span class="math notranslate nohighlight">\(E_L\)</span></p></td>
+<td><p>leak (resting) potential</p></td>
+<td><p>−60 mV</p></td>
+</tr>
+<tr class="row-even"><td><p><span class="math notranslate nohighlight">\(V_{th}\)</span></p></td>
+<td><p>spike threshold</p></td>
+<td><p>−50 mV</p></td>
+</tr>
+<tr class="row-odd"><td><p><span class="math notranslate nohighlight">\(V_{reset}\)</span></p></td>
+<td><p>reset potential</p></td>
+<td><p>−70 mV</p></td>
+</tr>
+<tr class="row-even"><td><p><span class="math notranslate nohighlight">\(R\)</span></p></td>
+<td><p>membrane resistance (<span class="math notranslate nohighlight">\(1/g_L\)</span>)</p></td>
+<td><p>100 MΩ</p></td>
+</tr>
+<tr class="row-odd"><td><p><span class="math notranslate nohighlight">\(I(t)\)</span></p></td>
+<td><p>input current</p></td>
+<td><p>variable</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="coding-exercise-1-defining-parameters">
+<h3>Coding Exercise 1: Defining parameters<a class="headerlink" href="#coding-exercise-1-defining-parameters" title="Link to this heading">#</a></h3>
+<p>Define the simulation settings (<span class="math notranslate nohighlight">\(\Delta t\)</span>, duration) and the LIF
+neuron parameters from the table above.</p>
+<p><strong>Fill in the values marked <code class="docutils literal notranslate"><span class="pre">...</span></code></strong></p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># --- simulation ---</span>
+<span class="n">t_max</span> <span class="o">=</span> <span class="o">...</span>     <span class="c1"># total duration (s)  → 150 ms</span>
+<span class="n">dt</span>    <span class="o">=</span> <span class="o">...</span>     <span class="c1"># timestep (s)        → 1 ms</span>
+
+<span class="c1"># --- LIF neuron ---</span>
+<span class="n">tau</span> <span class="o">=</span> <span class="o">...</span>       <span class="c1"># membrane time constant (s)</span>
+<span class="n">el</span>  <span class="o">=</span> <span class="o">...</span>       <span class="c1"># leak potential (V)</span>
+<span class="n">vr</span>  <span class="o">=</span> <span class="o">...</span>       <span class="c1"># reset potential (V)</span>
+<span class="n">vth</span> <span class="o">=</span> <span class="o">...</span>       <span class="c1"># spike threshold (V)</span>
+<span class="n">r</span>   <span class="o">=</span> <span class="o">...</span>       <span class="c1"># membrane resistance (Ω)</span>
+
+<span class="c1"># --- input current ---</span>
+<span class="n">i_0</span> <span class="o">=</span> <span class="mf">25e-11</span>    <span class="c1"># mean current (A)</span>
+<span class="n">T</span>   <span class="o">=</span> <span class="mf">0.05</span>      <span class="c1"># sinusoid period (s)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="n">t_max</span><span class="p">,</span> <span class="n">dt</span><span class="p">,</span> <span class="n">tau</span><span class="p">,</span> <span class="n">el</span><span class="p">,</span> <span class="n">vr</span><span class="p">,</span> <span class="n">vth</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">i_0</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+</section>
+<hr class="docutils" />
+<section id="section-2-simulating-an-input-current">
+<h2>Section 2: Simulating an input current<a class="headerlink" href="#section-2-simulating-an-input-current" title="Link to this heading">#</a></h2>
+<p>The neuron needs an input current <span class="math notranslate nohighlight">\(I(t)\)</span> to do anything interesting.
+We will define two versions and compare them throughout the notebook:</p>
+<ol class="arabic simple">
+<li><p><strong>Constant</strong> — a flat current <span class="math notranslate nohighlight">\(I(t) = I_0\)</span>, useful as a baseline</p></li>
+<li><p><strong>Sinusoidal</strong> — an oscillating drive that mimics a rhythmic
+descending command:</p></li>
+</ol>
+<div class="math notranslate nohighlight">
+\[
+I(t) = I_0\!\left(1+\sin\!\left(\frac{2\pi}{T}\,t\right)\right)
+\]</div>
+<p>Note that this is always <span class="math notranslate nohighlight">\(\geq 0\)</span> (it oscillates between <span class="math notranslate nohighlight">\(0\)</span> and
+<span class="math notranslate nohighlight">\(2I_0\)</span>), so we never inject negative current.</p>
+<section id="coding-exercise-2-generating-the-two-inputs">
+<h3>Coding Exercise 2: Generating the two inputs<a class="headerlink" href="#coding-exercise-2-generating-the-two-inputs" title="Link to this heading">#</a></h3>
+<p>Complete the two functions and generate the input traces.</p>
+<p><strong>Fill in the lines marked <code class="docutils literal notranslate"><span class="pre">#</span> <span class="pre">TODO</span></code>.</strong></p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">step_end</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">t_max</span> <span class="o">/</span> <span class="n">dt</span><span class="p">)</span>
+<span class="n">t_range</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">step_end</span><span class="p">)</span> <span class="o">*</span> <span class="n">dt</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">generate_sinusoidal_input</span><span class="p">(</span><span class="n">t_range</span><span class="p">,</span> <span class="n">i_0</span><span class="p">,</span> <span class="n">T</span><span class="p">):</span>
+    <span class="c1"># TODO: return i_0 * (1 + sin(...))</span>
+    <span class="k">raise</span> <span class="ne">NotImplementedError</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">generate_constant_input</span><span class="p">(</span><span class="n">t_range</span><span class="p">,</span> <span class="n">i_0</span><span class="p">):</span>
+    <span class="c1"># TODO: return an array of length len(t_range) filled with i_0</span>
+    <span class="k">raise</span> <span class="ne">NotImplementedError</span>
+
+<span class="n">i_trace</span>       <span class="o">=</span> <span class="n">generate_sinusoidal_input</span><span class="p">(</span><span class="n">t_range</span><span class="p">,</span> <span class="n">i_0</span><span class="p">,</span> <span class="n">T</span><span class="p">)</span>
+<span class="n">i_const_trace</span> <span class="o">=</span> <span class="n">generate_constant_input</span><span class="p">(</span><span class="n">t_range</span><span class="p">,</span> <span class="n">i_0</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>Plot both input traces to verify they look as expected before running the simulation.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;Input current $I(t)$&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;time (s)&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;$I$ (A)&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">t_range</span><span class="p">,</span> <span class="n">i_const_trace</span><span class="p">,</span> <span class="n">linestyle</span><span class="o">=</span><span class="s1">&#39;--&#39;</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mf">0.9</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;constant ($I_0$)&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">t_range</span><span class="p">,</span> <span class="n">i_trace</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;sinusoidal&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+</section>
+<hr class="docutils" />
+<section id="section-3-discrete-time-integration">
+<h2>Section 3: Discrete-time integration<a class="headerlink" href="#section-3-discrete-time-integration" title="Link to this heading">#</a></h2>
+<p>We now simulate the evolution of the membrane equation in discrete time
+steps. Starting from the ODE, we approximate the derivative with a
+finite difference:</p>
+<div class="math notranslate nohighlight">
+\[
+\tau_m\,\frac{V(t+\Delta t)-V(t)}{\Delta t} = E_{L} - V(t) + R\,I(t)
+\]</div>
+<p>Rearranging to isolate <span class="math notranslate nohighlight">\(V(t + \Delta t)\)</span>:</p>
+<div class="math notranslate nohighlight">
+\[
+V(t + \Delta t) = V(t) + \frac{\Delta t}{\tau_m}\left( E_L - V(t) + R\, I(t) \right)
+\]</div>
+<p>This is the <strong>forward Euler method</strong>, the simplest way to numerically
+integrate an ODE. We wrap it in a function that performs a <strong>single
+step</strong>, so we can reuse it later.</p>
+<section id="coding-exercise-3-simulating-membrane-potential">
+<h3>Coding Exercise 3: Simulating membrane potential<a class="headerlink" href="#coding-exercise-3-simulating-membrane-potential" title="Link to this heading">#</a></h3>
+<ol class="arabic simple">
+<li><p>Complete <code class="docutils literal notranslate"><span class="pre">simulate_membrane</span></code> — one Euler step.</p></li>
+</ol>
+<p><strong>Fill in the line marked <code class="docutils literal notranslate"><span class="pre">#</span> <span class="pre">TODO</span></code>.</strong></p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">simulate_membrane</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="n">el</span><span class="o">=-</span><span class="mf">60e-3</span><span class="p">,</span> <span class="n">tau</span><span class="o">=</span><span class="mf">20e-3</span><span class="p">,</span> <span class="n">r</span><span class="o">=</span><span class="mf">100e6</span><span class="p">,</span> <span class="n">dt</span><span class="o">=</span><span class="mf">1e-3</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Single forward-Euler step of the membrane equation.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    v  : current membrane potential (V)</span>
+<span class="sd">    i  : input current at this timestep (A)</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    v  : updated membrane potential (V)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># TODO: implement the Euler update from the equation above</span>
+    <span class="k">raise</span> <span class="ne">NotImplementedError</span>
+</pre></div>
+</div>
+</div>
+</div>
+<ol class="arabic simple" start="2">
+<li><p>Run the simulation loop for both inputs, starting from <span class="math notranslate nohighlight">\(V(0) = E_L\)</span>.</p></li>
+</ol>
+<p><strong>Fill in the lines marked <code class="docutils literal notranslate"><span class="pre">#</span> <span class="pre">TODO</span></code>.</strong></p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">v</span> <span class="o">=</span> <span class="n">el</span>
+<span class="n">v_trace</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">step_end</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">step</span><span class="p">,</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">i_trace</span><span class="p">):</span>
+    <span class="c1"># TODO: call simulate_membrane and store the result</span>
+    <span class="k">raise</span> <span class="ne">NotImplementedError</span>
+    <span class="n">v_trace</span><span class="p">[</span><span class="n">step</span><span class="p">]</span> <span class="o">=</span> <span class="n">v</span>
+
+<span class="n">v_const</span> <span class="o">=</span> <span class="n">el</span>
+<span class="n">v_const_trace</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">step_end</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">step</span><span class="p">,</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">i_const_trace</span><span class="p">):</span>
+    <span class="c1"># TODO: same as above for the constant input</span>
+    <span class="k">raise</span> <span class="ne">NotImplementedError</span>
+    <span class="n">v_const_trace</span><span class="p">[</span><span class="n">step</span><span class="p">]</span> <span class="o">=</span> <span class="n">v_const</span>
+</pre></div>
+</div>
+</div>
+</div>
+<ol class="arabic simple" start="3">
+<li><p>Plot <span class="math notranslate nohighlight">\(V_m\)</span> over time.</p></li>
+</ol>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;$V_m$: sinusoidal vs constant input (no spiking yet)&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;time (s)&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;$V_m$ (V)&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">t_range</span><span class="p">,</span> <span class="n">v_trace</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;sinusoidal&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">t_range</span><span class="p">,</span> <span class="n">v_const_trace</span><span class="p">,</span> <span class="n">linestyle</span><span class="o">=</span><span class="s1">&#39;--&#39;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;constant ($I_0$)&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">axhline</span><span class="p">(</span><span class="n">vth</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;red&#39;</span><span class="p">,</span> <span class="n">linestyle</span><span class="o">=</span><span class="s1">&#39;--&#39;</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mf">0.8</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;threshold (not active yet)&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+</section>
+<hr class="docutils" />
+<section id="section-4-adding-spikes">
+<h2>Section 4: Adding spikes<a class="headerlink" href="#section-4-adding-spikes" title="Link to this heading">#</a></h2>
+<p>Neurons fire an <strong>action potential</strong> when <span class="math notranslate nohighlight">\(V\)</span> reaches <span class="math notranslate nohighlight">\(V_{th}\)</span> and
+the membrane is immediately reset to <span class="math notranslate nohighlight">\(V_{reset}\)</span>.</p>
+<p>We add a <code class="docutils literal notranslate"><span class="pre">detect_spike</span></code> function that checks the threshold and returns
+the (possibly reset) voltage together with a binary spike flag.</p>
+<section id="coding-exercise-4-spike-detection">
+<h3>Coding Exercise 4: Spike detection<a class="headerlink" href="#coding-exercise-4-spike-detection" title="Link to this heading">#</a></h3>
+<ol class="arabic simple">
+<li><p>Complete <code class="docutils literal notranslate"><span class="pre">detect_spike</span></code>.</p></li>
+</ol>
+<p><strong>Fill in the lines marked <code class="docutils literal notranslate"><span class="pre">#</span> <span class="pre">TODO</span></code>.</strong></p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">detect_spike</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">vth</span><span class="o">=-</span><span class="mf">50e-3</span><span class="p">,</span> <span class="n">vr</span><span class="o">=-</span><span class="mf">70e-3</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Check if membrane potential crossed threshold.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    v      : reset to vr if spike, unchanged otherwise</span>
+<span class="sd">    spiked : 1 if spike occurred, 0 otherwise</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># TODO: if v &gt;= vth, return (vr, 1), otherwise return (v, 0)</span>
+    <span class="k">raise</span> <span class="ne">NotImplementedError</span>
+</pre></div>
+</div>
+</div>
+</div>
+<ol class="arabic simple" start="2">
+<li><p>Re-run the simulation for both inputs, this time recording spike times.</p></li>
+</ol>
+<p><strong>Fill in the lines marked <code class="docutils literal notranslate"><span class="pre">#</span> <span class="pre">TODO</span></code>.</strong></p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># --- sinusoidal input ---</span>
+<span class="n">v</span> <span class="o">=</span> <span class="n">el</span>
+<span class="n">v_trace</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">step_end</span><span class="p">)</span>
+<span class="n">spike_times</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="n">spike_train</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">step_end</span><span class="p">)</span>
+
+<span class="k">for</span> <span class="n">step</span><span class="p">,</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">i_trace</span><span class="p">):</span>
+    <span class="n">v</span> <span class="o">=</span> <span class="n">simulate_membrane</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">i</span><span class="p">)</span>
+    <span class="c1"># TODO: call detect_spike, update v, and if spiked append step*dt to spike_times</span>
+    <span class="k">raise</span> <span class="ne">NotImplementedError</span>
+    <span class="n">v_trace</span><span class="p">[</span><span class="n">step</span><span class="p">]</span> <span class="o">=</span> <span class="n">v</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Sinusoidal — spikes: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">spike_times</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># --- constant input ---</span>
+<span class="n">v_const</span> <span class="o">=</span> <span class="n">el</span>
+<span class="n">v_const_trace</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">step_end</span><span class="p">)</span>
+<span class="n">spike_times_const</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="n">spike_train_const</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">step_end</span><span class="p">)</span>
+
+<span class="k">for</span> <span class="n">step</span><span class="p">,</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">i_const_trace</span><span class="p">):</span>
+    <span class="n">v_const</span> <span class="o">=</span> <span class="n">simulate_membrane</span><span class="p">(</span><span class="n">v_const</span><span class="p">,</span> <span class="n">i</span><span class="p">)</span>
+    <span class="c1"># TODO: same as above for the constant input</span>
+    <span class="k">raise</span> <span class="ne">NotImplementedError</span>
+    <span class="n">v_const_trace</span><span class="p">[</span><span class="n">step</span><span class="p">]</span> <span class="o">=</span> <span class="n">v_const</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Constant — spikes: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">spike_times_const</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<ol class="arabic simple" start="3">
+<li><p>Plot <span class="math notranslate nohighlight">\(V_m\)</span> for both inputs with spiking active.</p></li>
+</ol>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;LIF with spiking: sinusoidal vs constant input&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;time (s)&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;$V_m$ (V)&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">t_range</span><span class="p">,</span> <span class="n">v_trace</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mf">1.2</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;sinusoidal&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">t_range</span><span class="p">,</span> <span class="n">v_const_trace</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mf">1.2</span><span class="p">,</span> <span class="n">linestyle</span><span class="o">=</span><span class="s1">&#39;--&#39;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;constant ($I_0$)&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">axhline</span><span class="p">(</span><span class="n">vth</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;red&#39;</span><span class="p">,</span> <span class="n">linestyle</span><span class="o">=</span><span class="s1">&#39;--&#39;</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mf">0.8</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;threshold&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">axhline</span><span class="p">(</span><span class="n">vr</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;gray&#39;</span><span class="p">,</span> <span class="n">linestyle</span><span class="o">=</span><span class="s1">&#39;:&#39;</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mf">0.8</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;reset&#39;</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">ts</span> <span class="ow">in</span> <span class="n">spike_times</span><span class="p">:</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">axvline</span><span class="p">(</span><span class="n">ts</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;C0&#39;</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.2</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mf">0.8</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">ts</span> <span class="ow">in</span> <span class="n">spike_times_const</span><span class="p">:</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">axvline</span><span class="p">(</span><span class="n">ts</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;C1&#39;</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.2</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mf">0.8</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">loc</span><span class="o">=</span><span class="s1">&#39;lower right&#39;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">8</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+</div>
+<ol class="arabic simple" start="4">
+<li><p>Plot a raster to compare the spike-time distributions of the two input conditions side by side.</p></li>
+</ol>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">fig</span><span class="p">,</span> <span class="n">axes</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="n">sharex</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+<span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">eventplot</span><span class="p">(</span><span class="n">spike_times</span><span class="p">,</span> <span class="n">linewidths</span><span class="o">=</span><span class="mf">1.2</span><span class="p">)</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s1">&#39;sinusoidal&#39;</span><span class="p">)</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_yticks</span><span class="p">([])</span>
+
+<span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">eventplot</span><span class="p">(</span><span class="n">spike_times_const</span><span class="p">,</span> <span class="n">linewidths</span><span class="o">=</span><span class="mf">1.2</span><span class="p">,</span> <span class="n">colors</span><span class="o">=</span><span class="s1">&#39;C1&#39;</span><span class="p">)</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s1">&#39;constant&#39;</span><span class="p">)</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_yticks</span><span class="p">([])</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s1">&#39;time (s)&#39;</span><span class="p">)</span>
+
+<span class="n">fig</span><span class="o">.</span><span class="n">suptitle</span><span class="p">(</span><span class="s1">&#39;Raster plot — single neuron, two inputs&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+</section>
+<hr class="docutils" />
+<section id="section-5-refractory-period">
+<h2>Section 5: Refractory period<a class="headerlink" href="#section-5-refractory-period" title="Link to this heading">#</a></h2>
+<p>After firing, real neurons enter a brief <strong>refractory period</strong>
+<span class="math notranslate nohighlight">\(t_{\mathrm{ref}}\)</span> during which the membrane is clamped at <span class="math notranslate nohighlight">\(V_{reset}\)</span>
+and no new spike can occur.</p>
+<p>We combine <code class="docutils literal notranslate"><span class="pre">simulate_membrane</span></code> and <code class="docutils literal notranslate"><span class="pre">detect_spike</span></code> into a single
+function <code class="docutils literal notranslate"><span class="pre">detect_spike_refractory</span></code> that handles the full timestep:
+refractory check → Euler step → threshold check.</p>
+<section id="coding-exercise-5-adding-a-refractory-period">
+<h3>Coding Exercise 5: Adding a refractory period<a class="headerlink" href="#coding-exercise-5-adding-a-refractory-period" title="Link to this heading">#</a></h3>
+<ol class="arabic simple">
+<li><p>Complete <code class="docutils literal notranslate"><span class="pre">detect_spike_refractory</span></code> and compare the output with and
+without the refractory period.</p></li>
+</ol>
+<p><strong>Hint:</strong> the neuron is refractory at time <span class="math notranslate nohighlight">\(t\)</span> if <code class="docutils literal notranslate"><span class="pre">t</span> <span class="pre">−</span> <span class="pre">last_spike_time</span> <span class="pre">&lt;</span> <span class="pre">t_ref</span></code>.
+During the refractory period, return <code class="docutils literal notranslate"><span class="pre">(vr,</span> <span class="pre">0,</span> <span class="pre">last_spike_time)</span></code> without
+integrating.</p>
+<p><strong>Fill in the lines marked <code class="docutils literal notranslate"><span class="pre">#</span> <span class="pre">TODO</span></code>.</strong></p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">detect_spike_refractory</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">last_spike_time</span><span class="p">,</span> <span class="n">t_ref</span><span class="o">=</span><span class="mf">10e-3</span><span class="p">,</span>
+                             <span class="n">vth</span><span class="o">=-</span><span class="mf">50e-3</span><span class="p">,</span> <span class="n">vr</span><span class="o">=-</span><span class="mf">70e-3</span><span class="p">,</span> <span class="n">el</span><span class="o">=-</span><span class="mf">60e-3</span><span class="p">,</span>
+                             <span class="n">tau</span><span class="o">=</span><span class="mf">20e-3</span><span class="p">,</span> <span class="n">r</span><span class="o">=</span><span class="mf">100e6</span><span class="p">,</span> <span class="n">dt</span><span class="o">=</span><span class="mf">1e-3</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Single timestep: refractory check + Euler step + spike detection.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    v               : updated membrane potential</span>
+<span class="sd">    spiked          : 1 if spike occurred, 0 otherwise</span>
+<span class="sd">    last_spike_time : updated if spike occurred, unchanged otherwise</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># TODO step 1: if still in refractory period, return (vr, 0, last_spike_time)</span>
+
+    <span class="c1"># TODO step 2: call simulate_membrane to get the new v</span>
+
+    <span class="c1"># TODO step 3: call detect_spike to check for threshold crossing</span>
+
+    <span class="c1"># TODO step 4: if spiked, update last_spike_time = t</span>
+
+    <span class="c1"># TODO step 5: return (v, spiked, last_spike_time)</span>
+    <span class="k">raise</span> <span class="ne">NotImplementedError</span>
+</pre></div>
+</div>
+</div>
+</div>
+<ol class="arabic simple" start="2">
+<li><p>Run the simulation with a 10 ms refractory period applied to the sinusoidal input.</p></li>
+</ol>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">t_ref</span> <span class="o">=</span> <span class="mf">10e-3</span>
+
+<span class="n">v</span> <span class="o">=</span> <span class="n">el</span>
+<span class="n">v_trace_ref</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">step_end</span><span class="p">)</span>
+<span class="n">spike_times_ref</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="n">spike_train_ref</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">step_end</span><span class="p">)</span>
+<span class="n">last_spike_time</span> <span class="o">=</span> <span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">inf</span>
+
+<span class="k">for</span> <span class="n">step</span><span class="p">,</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">i_trace</span><span class="p">):</span>
+    <span class="n">t</span> <span class="o">=</span> <span class="n">step</span> <span class="o">*</span> <span class="n">dt</span>
+    <span class="n">v</span><span class="p">,</span> <span class="n">spiked</span><span class="p">,</span> <span class="n">last_spike_time</span> <span class="o">=</span> <span class="n">detect_spike_refractory</span><span class="p">(</span>
+        <span class="n">v</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">last_spike_time</span><span class="p">,</span> <span class="n">t_ref</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">spiked</span><span class="p">:</span>
+        <span class="n">spike_times_ref</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
+        <span class="n">spike_train_ref</span><span class="p">[</span><span class="n">step</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="n">v_trace_ref</span><span class="p">[</span><span class="n">step</span><span class="p">]</span> <span class="o">=</span> <span class="n">v</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;With refractory — spikes: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">spike_times_ref</span><span class="p">)</span><span class="si">}</span><span class="s2"> &quot;</span>
+      <span class="sa">f</span><span class="s2">&quot;| rate: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">spike_times_ref</span><span class="p">)</span><span class="o">/</span><span class="n">t_max</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2"> Hz&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<ol class="arabic simple" start="3">
+<li><p>Plot <span class="math notranslate nohighlight">\(V_m\)</span> with and without the refractory period to see how the clamping suppresses extra spikes.</p></li>
+</ol>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;Effect of refractory period (sinusoidal input)&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;time (s)&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;$V_m$ (V)&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">t_range</span><span class="p">,</span> <span class="n">v_trace</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mf">1.2</span><span class="p">,</span> <span class="n">linestyle</span><span class="o">=</span><span class="s1">&#39;--&#39;</span><span class="p">,</span>
+         <span class="n">label</span><span class="o">=</span><span class="s1">&#39;without refractory&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">t_range</span><span class="p">,</span> <span class="n">v_trace_ref</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mf">1.2</span><span class="p">,</span>
+         <span class="n">label</span><span class="o">=</span><span class="s1">&#39;with refractory (10 ms)&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">loc</span><span class="o">=</span><span class="s1">&#39;lower right&#39;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">8</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="firing-rate">
+<h3>Firing rate<a class="headerlink" href="#firing-rate" title="Link to this heading">#</a></h3>
+<p>The <strong>firing rate</strong> is the number of spikes per unit time:</p>
+<div class="math notranslate nohighlight">
+\[
+r = \frac{\text{spike count}}{T} \quad \text{(Hz)}
+\]</div>
+<p>The refractory period caps it at <span class="math notranslate nohighlight">\(1 / t_{\mathrm{ref}}\)</span> — with
+<span class="math notranslate nohighlight">\(t_{\mathrm{ref}} = 10\)</span> ms, no neuron can exceed 100 Hz.</p>
+<ol class="arabic simple" start="4">
+<li><p>Compute the firing rates for both conditions to quantify the effect of the refractory period.</p></li>
+</ol>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">fr_no_ref</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">spike_times</span><span class="p">)</span> <span class="o">/</span> <span class="n">t_max</span>
+<span class="n">fr_ref</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">spike_times_ref</span><span class="p">)</span> <span class="o">/</span> <span class="n">t_max</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Firing rate (no refractory):   </span><span class="si">{</span><span class="n">fr_no_ref</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2"> Hz&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Firing rate (with refractory): </span><span class="si">{</span><span class="n">fr_ref</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2"> Hz&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+</section>
+<hr class="docutils" />
+<section id="section-6-from-one-neuron-to-a-pool">
+<h2>Section 6: From one neuron to a pool<a class="headerlink" href="#section-6-from-one-neuron-to-a-pool" title="Link to this heading">#</a></h2>
+<p>The neuromuscular system relies on
+a <strong>pool</strong> of motoneurons firing together. Each neuron in the pool
+receives the same common drive <span class="math notranslate nohighlight">\(I(t)\)</span> plus independent noise,
+which decorrelates their spike trains.</p>
+<p>We wrap everything into <code class="docutils literal notranslate"><span class="pre">build_pool()</span></code> — it runs the single-neuron
+loop from Section 5 once per neuron and returns a binary spike-train
+matrix of shape <code class="docutils literal notranslate"><span class="pre">(N,</span> <span class="pre">timesteps)</span></code>.</p>
+<section id="coding-exercise-6-simulating-a-pool">
+<h3>Coding Exercise 6: Simulating a pool<a class="headerlink" href="#coding-exercise-6-simulating-a-pool" title="Link to this heading">#</a></h3>
+<ol class="arabic simple">
+<li><p>Complete <code class="docutils literal notranslate"><span class="pre">build_pool</span></code> — the inner loop is the same as Section 5,
+but with noise added to the input.</p></li>
+</ol>
+<p><strong>Fill in the lines marked <code class="docutils literal notranslate"><span class="pre">#</span> <span class="pre">TODO</span></code>.</strong></p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">build_pool</span><span class="p">(</span><span class="n">i_trace</span><span class="p">,</span> <span class="n">N</span><span class="p">,</span> <span class="n">noise_std</span><span class="p">,</span> <span class="n">dt</span><span class="o">=</span><span class="mf">1e-3</span><span class="p">,</span> <span class="n">tau</span><span class="o">=</span><span class="mf">20e-3</span><span class="p">,</span>
+               <span class="n">el</span><span class="o">=-</span><span class="mf">60e-3</span><span class="p">,</span> <span class="n">vr</span><span class="o">=-</span><span class="mf">70e-3</span><span class="p">,</span> <span class="n">vth</span><span class="o">=-</span><span class="mf">50e-3</span><span class="p">,</span>
+               <span class="n">r</span><span class="o">=</span><span class="mf">100e6</span><span class="p">,</span> <span class="n">t_ref</span><span class="o">=</span><span class="mf">10e-3</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Simulate a pool of N LIF neurons.</span>
+
+<span class="sd">    Each neuron receives i_trace (common) + independent Gaussian noise.</span>
+<span class="sd">    Input is clipped to &gt;= 0 (no negative current).</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    spike_trains_pool : (N, step_end) binary array</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">step_end</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">i_trace</span><span class="p">)</span>
+    <span class="n">spike_trains_pool</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">N</span><span class="p">,</span> <span class="n">step_end</span><span class="p">))</span>
+
+    <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">N</span><span class="p">):</span>
+        <span class="n">v</span> <span class="o">=</span> <span class="n">el</span>
+        <span class="n">last_spike_time</span> <span class="o">=</span> <span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">inf</span>
+        <span class="k">for</span> <span class="n">step</span><span class="p">,</span> <span class="n">i_common</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">i_trace</span><span class="p">):</span>
+            <span class="n">t</span> <span class="o">=</span> <span class="n">step</span> <span class="o">*</span> <span class="n">dt</span>
+            <span class="c1"># TODO: add Gaussian noise to i_common and clip to &gt;= 0, use np.random.randn() * noise_std</span>
+            <span class="c1"># TODO: call detect_spike_refractory</span>
+            <span class="c1"># TODO: store spiked in spike_trains_pool[n, step]</span>
+            <span class="k">raise</span> <span class="ne">NotImplementedError</span>
+
+    <span class="k">return</span> <span class="n">spike_trains_pool</span>
+</pre></div>
+</div>
+</div>
+</div>
+<ol class="arabic simple" start="2">
+<li><p>Run it with <code class="docutils literal notranslate"><span class="pre">N</span> <span class="pre">=</span> <span class="pre">50</span></code> neurons.</p></li>
+</ol>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">N</span> <span class="o">=</span> <span class="mi">50</span>
+<span class="n">noise_std</span> <span class="o">=</span> <span class="mf">5e-11</span>
+
+<span class="n">spike_trains_pool</span> <span class="o">=</span> <span class="n">build_pool</span><span class="p">(</span><span class="n">i_trace</span><span class="p">,</span> <span class="n">N</span><span class="p">,</span> <span class="n">noise_std</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Pool of </span><span class="si">{</span><span class="n">N</span><span class="si">}</span><span class="s2"> neurons — mean firing rate: &quot;</span>
+      <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">spike_trains_pool</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="p">(</span><span class="n">N</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">t_max</span><span class="p">)</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2"> Hz&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<ol class="arabic simple" start="3">
+<li><p>The plot below shows what a single neuron actually receives: the common
+sinusoidal drive plus a sample of Gaussian noise.</p></li>
+</ol>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">i_noisy</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">clip</span><span class="p">(</span><span class="n">i_trace</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="n">step_end</span><span class="p">)</span> <span class="o">*</span> <span class="n">noise_std</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;Input to a single neuron&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;time (s)&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;$I$ (A)&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">t_range</span><span class="p">,</span> <span class="n">i_trace</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mf">1.2</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;common sinusoidal&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">t_range</span><span class="p">,</span> <span class="n">i_noisy</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mf">0.7</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.7</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;sinusoidal + noise&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+</div>
+<ol class="arabic simple" start="4">
+<li><p>Plot a raster for the full pool.</p></li>
+</ol>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="mi">4</span><span class="p">))</span>
+<span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">N</span><span class="p">):</span>
+    <span class="n">times</span> <span class="o">=</span> <span class="n">t_range</span><span class="p">[</span><span class="n">spike_trains_pool</span><span class="p">[</span><span class="n">n</span><span class="p">]</span> <span class="o">==</span> <span class="mi">1</span><span class="p">]</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">times</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">full_like</span><span class="p">(</span><span class="n">times</span><span class="p">,</span> <span class="n">n</span><span class="p">),</span>
+               <span class="n">marker</span><span class="o">=</span><span class="s1">&#39;|&#39;</span><span class="p">,</span> <span class="n">s</span><span class="o">=</span><span class="mi">15</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="s1">&#39;k&#39;</span><span class="p">,</span> <span class="n">linewidths</span><span class="o">=</span><span class="mf">0.8</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s1">&#39;time (s)&#39;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s1">&#39;neuron #&#39;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Raster plot — pool of </span><span class="si">{</span><span class="n">N</span><span class="si">}</span><span class="s1"> LIF neurons&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+</section>
+<hr class="docutils" />
+<section id="section-7-from-spikes-to-muscle-excitation">
+<h2>Section 7: From spikes to muscle excitation<a class="headerlink" href="#section-7-from-spikes-to-muscle-excitation" title="Link to this heading">#</a></h2>
+<p>In the neuromuscular system each motoneuron innervates a specific
+muscle. A <strong>mapping matrix</strong> <span class="math notranslate nohighlight">\(\mathbf{M}\)</span> (neurons × muscles) encodes
+which neuron drives which muscle, and the excitation signal <span class="math notranslate nohighlight">\(E_m(t)\)</span>
+for each muscle is obtained by smoothing the mapped spike counts with
+a first-order low-pass filter:</p>
+<div class="math notranslate nohighlight">
+\[
+E_m(t + \Delta t) = \left(1 - \frac{\Delta t}{\tau_{exc}}\right) E_m(t)
+\;+\; \frac{\Delta t}{\tau_{exc}} \sum_n M_{n,m}\, s_n(t)
+\]</div>
+<p>where <span class="math notranslate nohighlight">\(s_n(t) \in \{0,1\}\)</span> is the spike output of neuron <span class="math notranslate nohighlight">\(n\)</span> and
+<span class="math notranslate nohighlight">\(\tau_{exc}\)</span> controls how quickly excitation builds up and decays.</p>
+<p>This is the bridge between discrete neural spikes and the smooth
+signals that actually drive muscles.</p>
+<section id="coding-exercise-7-computing-muscle-excitation">
+<h3>Coding Exercise 7: Computing muscle excitation<a class="headerlink" href="#coding-exercise-7-computing-muscle-excitation" title="Link to this heading">#</a></h3>
+<ol class="arabic simple">
+<li><p>Complete <code class="docutils literal notranslate"><span class="pre">update_excitation</span></code> — a single-step filter, analogous to
+<code class="docutils literal notranslate"><span class="pre">simulate_membrane</span></code>.</p></li>
+</ol>
+<p><strong>Fill in the lines marked <code class="docutils literal notranslate"><span class="pre">#</span> <span class="pre">TODO</span></code>.</strong></p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">update_excitation</span><span class="p">(</span><span class="n">spikes</span><span class="p">,</span> <span class="n">E_prev</span><span class="p">,</span> <span class="n">mu_mapping</span><span class="p">,</span> <span class="n">dt</span><span class="p">,</span> <span class="n">tau_exc</span><span class="o">=</span><span class="mf">20e-3</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;One-step excitation update for all muscles.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    spikes     : (n_neurons,) binary spike vector at current timestep</span>
+<span class="sd">    E_prev     : (n_muscles,) excitation at previous timestep</span>
+<span class="sd">    mu_mapping : (n_neurons, n_muscles) which neuron drives which muscle</span>
+<span class="sd">    dt         : timestep (s)</span>
+<span class="sd">    tau_exc    : excitation time constant (s)</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    E_new : (n_muscles,) updated excitation, clipped &gt;= 0</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="c1"># TODO step 1: musc_input = mu_mapping.??? @ ???</span>
+    <span class="c1"># TODO step 2: compute alpha = dt / tau_exc</span>
+    <span class="c1"># TODO step 3: E_new = (1 - ...) * E_prev + ... * musc_input</span>
+    <span class="c1"># TODO step 4: return np.???(E_new, 0.0)</span>
+    <span class="k">raise</span> <span class="ne">NotImplementedError</span>
+
+</pre></div>
+</div>
+</div>
+</div>
+<ol class="arabic simple" start="2">
+<li><p>Define a mapping that splits the pool into 2 muscles.</p></li>
+</ol>
+<p><strong>Fill in the lines marked <code class="docutils literal notranslate"><span class="pre">#</span> <span class="pre">TODO</span></code>.</strong></p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">n_muscles</span> <span class="o">=</span> <span class="mi">2</span>
+<span class="n">mu_mapping</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">N</span><span class="p">,</span> <span class="n">n_muscles</span><span class="p">))</span>
+<span class="c1"># TODO: assign the first half of the pool to muscle 0</span>
+<span class="c1"># TODO: assign the second half to muscle 1</span>
+</pre></div>
+</div>
+</div>
+</div>
+<ol class="arabic simple" start="3">
+<li><p>Run the excitation loop and plot the result against the input.</p></li>
+</ol>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># --- run excitation step-by-step ---</span>
+<span class="n">E</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">n_muscles</span><span class="p">)</span>
+<span class="n">E_trace</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">step_end</span><span class="p">,</span> <span class="n">n_muscles</span><span class="p">))</span>
+
+<span class="k">for</span> <span class="n">step</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">step_end</span><span class="p">):</span>
+    <span class="n">spikes</span> <span class="o">=</span> <span class="n">spike_trains_pool</span><span class="p">[:,</span> <span class="n">step</span><span class="p">]</span>
+    <span class="n">E</span> <span class="o">=</span> <span class="n">update_excitation</span><span class="p">(</span><span class="n">spikes</span><span class="p">,</span> <span class="n">E</span><span class="p">,</span> <span class="n">mu_mapping</span><span class="p">,</span> <span class="n">dt</span><span class="p">)</span>
+    <span class="n">E_trace</span><span class="p">[</span><span class="n">step</span><span class="p">]</span> <span class="o">=</span> <span class="n">E</span>
+
+<span class="c1"># --- plot ---</span>
+<span class="n">fig</span><span class="p">,</span> <span class="n">axes</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="mi">5</span><span class="p">),</span> <span class="n">sharex</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+<span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s1">&#39;Input current&#39;</span><span class="p">)</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">t_range</span><span class="p">,</span> <span class="n">i_trace</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;C1&#39;</span><span class="p">)</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s1">&#39;$I$ (A)&#39;</span><span class="p">)</span>
+
+<span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s1">&#39;Muscle excitation from spike trains&#39;</span><span class="p">)</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">t_range</span><span class="p">,</span> <span class="n">E_trace</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;muscle 0&#39;</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mf">1.5</span><span class="p">)</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">t_range</span><span class="p">,</span> <span class="n">E_trace</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">],</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;muscle 1&#39;</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mf">1.5</span><span class="p">)</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s1">&#39;excitation (a.u.)&#39;</span><span class="p">)</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s1">&#39;time (s)&#39;</span><span class="p">)</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+</section>
+</section>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "binder-examples/jupyter-stacks-datascience",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "python"
+        },
+        kernelOptions: {
+            name: "python3",
+            path: "./SSNR2026"
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'python3'</script>
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="../docs/neuron.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">LIF Model</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="../docs/day2_intro.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Tutorial 2: Controlling a Musculoskeletal Arm</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#why-this-tutorial">Why this tutorial?</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#what-we-will-build">What we will build</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#prerequisites">Prerequisites</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#setup">Setup</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#section-1-the-lif-model">Section 1: The LIF model</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#the-membrane-equation">The membrane equation</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#the-reset-rule">The reset rule</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#parameters">Parameters</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#coding-exercise-1-defining-parameters">Coding Exercise 1: Defining parameters</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#section-2-simulating-an-input-current">Section 2: Simulating an input current</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#coding-exercise-2-generating-the-two-inputs">Coding Exercise 2: Generating the two inputs</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#section-3-discrete-time-integration">Section 3: Discrete-time integration</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#coding-exercise-3-simulating-membrane-potential">Coding Exercise 3: Simulating membrane potential</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#section-4-adding-spikes">Section 4: Adding spikes</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#coding-exercise-4-spike-detection">Coding Exercise 4: Spike detection</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#section-5-refractory-period">Section 5: Refractory period</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#coding-exercise-5-adding-a-refractory-period">Coding Exercise 5: Adding a refractory period</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#firing-rate">Firing rate</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#section-6-from-one-neuron-to-a-pool">Section 6: From one neuron to a pool</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#coding-exercise-6-simulating-a-pool">Coding Exercise 6: Simulating a pool</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#section-7-from-spikes-to-muscle-excitation">Section 7: From spikes to muscle excitation</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#coding-exercise-7-computing-muscle-excitation">Coding Exercise 7: Computing muscle excitation</a></li>
+</ul>
+</li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By SSNR 2026 Workshop
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+
+  <p class="copyright">
+    
+      © Copyright 2023.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b"></script>
+<script src="../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>

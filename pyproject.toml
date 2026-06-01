@@ -6,6 +6,7 @@ readme = "README.md"
 requires-python = ">=3.10"
 dependencies = [
     "dm-control>=1.0.38",
+    "jupyterlab>=4.5.7",
     "loop-rate-limiters>=1.2.0",
     "matplotlib>=3.10.9",
     "mujoco==3.8.0",
@@ -17,4 +18,9 @@ dependencies = [
     "shimmy[dm-control]>=2.0.1",
     "stable-baselines3[extra]>=2.8.0",
     "tensorboard>=2.20.0",
+]
+
+[dependency-groups]
+dev = [
+    "jupyter-book>=2.1.5",
 ]

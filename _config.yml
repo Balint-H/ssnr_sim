@@ -1,0 +1,54 @@
+title: "SSNR 2026: Neural Control of Movement"
+author: SSNR 2026 Workshop
+logo: ""
+
+execute:
+  execute_notebooks: "off"
+
+only_build_toc_files: true
+
+exclude_patterns:
+  - ".venv"
+  - ".venv/**"
+  - "_build"
+  - "**.ipynb_checkpoints"
+  - "**/__pycache__"
+  - "challenges"
+  - "RL"
+  - "slides"
+  - "welcome_scene"
+  - "xml"
+  - "solutions"
+  - "**/*.log"
+  - "**/*.txt"
+  - "**.pdf"
+
+parse:
+  myst_enable_extensions:
+    - dollarmath
+    - colon_fence
+    - html_admonition
+
+html:
+  use_issues_button: false
+  use_repository_button: true
+  home_page_in_navbar: true
+
+repository:
+  url: https://github.com/Balint-H/ssnr_sim
+  branch: main
+
+sphinx:
+  extra_extensions:
+    - sphinx.ext.autodoc
+    - sphinx.ext.napoleon
+    - sphinx.ext.viewcode
+  config:
+    autodoc_member_order: "bysource"
+    autodoc_typehints: "description"
+    napoleon_numpy_docstring: true
+    napoleon_google_docstring: false
+    # Tell autodoc where to find the package
+    autodoc_mock_imports:
+      - mujoco
+      - torch

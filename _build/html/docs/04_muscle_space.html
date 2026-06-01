@@ -1,0 +1,799 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>4. Operational-Space Control with Muscle Actuation &#8212; SSNR 2026: Neural Control of Movement</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../_static/styles/bootstrap.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+
+  
+  <link href="../_static/vendor/fontawesome/6.5.2/css/all.min.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/sphinx-book-theme.css?v=eba8b062" />
+    <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css?v=9c3e77be" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../_static/mystnb.11b39860a7a0cbfd473a3ad8a317855267ff0bd372690045ca344a6b62be495e.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-thebe.css?v=4fa983c6" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-design.min.css?v=95c83b7e" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
+  <script src="../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+    <script src="../_static/documentation_options.js?v=9eb32ce0"></script>
+    <script src="../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../_static/copybutton.js?v=f281be69"></script>
+    <script src="../_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="../_static/togglebutton.js?v=b8b12719"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script src="../_static/design-tabs.js?v=f930bc37"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script async="async" src="../_static/sphinx-thebe.js?v=c100c467"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'docs/04_muscle_space';</script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="5. Closed-Loop Control through a Spiking Motoneuron Pool" href="05_neural_integration.html" />
+    <link rel="prev" title="3. Task-Space Control with Tendon Actuation" href="03_tendon_space.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-primary-sidebar-checkbox"/>
+  <label class="overlay overlay-primary" for="pst-primary-sidebar-checkbox"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-secondary-sidebar-checkbox"/>
+  <label class="overlay overlay-secondary" for="pst-secondary-sidebar-checkbox"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search this book..."
+         aria-label="Search this book..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="intro.html">
+  
+  
+  
+  
+  
+  
+    <p class="title logo__title">SSNR 2026: Neural Control of Movement</p>
+  
+</a></div>
+        <div class="sidebar-primary-item">
+
+ <script>
+ document.write(`
+   <button class="btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        
+        <ul class="nav bd-sidenav bd-sidenav__home-link">
+            <li class="toctree-l1">
+                <a class="reference internal" href="intro.html">
+                    SSNR 2026: WS4 – Dynamic Simulations of Neuromechanics
+                </a>
+            </li>
+        </ul>
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">Setup</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="getting_started.html">Getting Started</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Day 1 — From Single LIF Neurons to Muscle Activation</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="neuron.html">Tutorial 1: Intro</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../SSNR2026/0_lif_neuron_exercises.html">Tutorial 1: The LIF Neuron</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Day 2 — From PD control to a neural-driven musculoskeletal model</span></p>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="day2_intro.html">Tutorial 2: Intro</a></li>
+<li class="toctree-l1"><a class="reference internal" href="01_joint_space.html">1. Joint-Space PD Control</a></li>
+<li class="toctree-l1"><a class="reference internal" href="02_task_space.html">2. Task-Space PD Control</a></li>
+<li class="toctree-l1"><a class="reference internal" href="03_tendon_space.html">3. Task-Space Control with Tendon Actuation</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">4. Operational-Space Control with Muscle Actuation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="05_neural_integration.html">5. Closed-Loop Control through a Spiking Motoneuron Pool</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Day 3 — Reinforcement Learning for Motor Control</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="day3_intro.html">Tutorial 3: Intro</a></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><button class="sidebar-toggle primary-toggle btn btn-sm" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</button></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+<a href="https://github.com/Balint-H/ssnr_sim" target="_blank"
+   class="btn btn-sm btn-source-repository-button"
+   title="Source repository"
+   data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+
+</a>
+
+
+
+
+
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Download this page">
+    <i class="fas fa-download"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="../_sources/docs/04_muscle_space.md" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="Download source file"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="btn__text-container">.md</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="Print to PDF"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="btn__text-container">.pdf</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"></i>
+  </button>
+`);
+</script>
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm pst-navbar-icon search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+  </button>
+`);
+</script>
+<button class="sidebar-toggle secondary-toggle btn btn-sm" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</button>
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>4. Operational-Space Control with Muscle Actuation</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#objective">Objective</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#control-law">Control Law</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-interactive-mocap-target">The Interactive Mocap Target</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#target-reachability-clipping">Target Reachability Clipping</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#inertia-weighted-jacobian-inverse">Inertia-Weighted Jacobian Inverse</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#muscle-actuators-programmatic-model-editing">Muscle Actuators (programmatic model editing)</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-pull-only-constraint">The Pull-Only Constraint</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#simulation-model">Simulation Model</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#simulation-loop">Simulation Loop</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#system-variables">System Variables</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#key-insights">Key Insights</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#source-code">Source Code</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#warning">Warning</a></li>
+</ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section class="tex2jax_ignore mathjax_ignore" id="operational-space-control-with-muscle-actuation">
+<h1>4. Operational-Space Control with Muscle Actuation<a class="headerlink" href="#operational-space-control-with-muscle-actuation" title="Link to this heading">#</a></h1>
+<p>This final exercise assembles the full pipeline: task-space PD control, mapped to joint torques, then to <strong>muscle</strong> (Hill-type tendon) activations on a planar arm. It also adds the practical machinery needed to make this work robustly: target reachability clipping, force limiting, and an inertia-weighted Jacobian inverse. Unlike the earlier exercises, the muscle actuators are built <strong>programmatically</strong> by editing the model specification at load time.</p>
+<hr class="docutils" />
+<section id="objective">
+<h2>Objective<a class="headerlink" href="#objective" title="Link to this heading">#</a></h2>
+<p>Drive the arm’s end-effector (the <code class="docutils literal notranslate"><span class="pre">tip</span></code> body) toward an <strong>interactive mocap target</strong> the user can drag in the plane, using only muscles that pull. The controller implements the complete chain from Cartesian error to muscle activation.</p>
+</section>
+<hr class="docutils" />
+<section id="control-law">
+<h2>Control Law<a class="headerlink" href="#control-law" title="Link to this heading">#</a></h2>
+<p>The task-space PD law is applied inline (this exercise contains the full reference implementation rather than a stub to fill in):</p>
+<div class="math notranslate nohighlight">
+\[
+F = K_p \, e_{pos} - K_d \, \dot{x}
+\]</div>
+<p>with <span class="math notranslate nohighlight">\(K_p = 10\)</span> and <span class="math notranslate nohighlight">\(K_d = 0.3\)</span> — note that, unlike the previous exercises, this one <strong>does include damping</strong>. The Cartesian force is mapped to joint torques and then clipped:</p>
+<div class="math notranslate nohighlight">
+\[
+\tau = \mathrm{clip}\!\left(J^\top F,\; -1,\; 1\right)
+\]</div>
+<p>and finally resolved into muscle forces through the tendon Jacobian pseudoinverse:</p>
+<div class="math notranslate nohighlight">
+\[
+f_{tendon} = \left(J_{tendon}^\top\right)^{+}\tau,
+\qquad
+\text{ctrl} = -\min(0,\, f_{tendon})
+\]</div>
+<p>The last step keeps only the <strong>pulling</strong> component of each tendon and writes it as a non-negative activation command.</p>
+</section>
+<hr class="docutils" />
+<section id="the-interactive-mocap-target">
+<h2>The Interactive Mocap Target<a class="headerlink" href="#the-interactive-mocap-target" title="Link to this heading">#</a></h2>
+<p>The target is a <strong>mocap body</strong>, read from <code class="docutils literal notranslate"><span class="pre">data.mocap_pos[0]</span></code>. Because of this, the gesture <strong>Ctrl (Cmd on Mac) + Shift + Right-click drag</strong> genuinely moves the target in the horizontal plane — the controller reads the dragged position every frame. The z-coordinate is forced to zero to keep motion planar.</p>
+</section>
+<hr class="docutils" />
+<section id="target-reachability-clipping">
+<h2>Target Reachability Clipping<a class="headerlink" href="#target-reachability-clipping" title="Link to this heading">#</a></h2>
+<p>If the requested target lies outside the arm’s reach, the inverse mappings produce erratic behavior. The code computes the total reach from the link offsets (<code class="docutils literal notranslate"><span class="pre">forearm</span></code>, <code class="docutils literal notranslate"><span class="pre">wrist_body</span></code>, <code class="docutils literal notranslate"><span class="pre">hand</span></code>, <code class="docutils literal notranslate"><span class="pre">tip</span></code>) and clips the target radius to that maximum while preserving direction:</p>
+<div class="math notranslate nohighlight">
+\[
+[x_t, y_t] \leftarrow \frac{[x_t, y_t]}{r_t}\,\mathrm{clip}\!\left(r_t,\, 0,\, \ell_s + \ell_e + \ell_h + \ell_w\right)
+\]</div>
+<p>This keeps the commanded target on or inside the reachable workspace.</p>
+</section>
+<hr class="docutils" />
+<section id="inertia-weighted-jacobian-inverse">
+<h2>Inertia-Weighted Jacobian Inverse<a class="headerlink" href="#inertia-weighted-jacobian-inverse" title="Link to this heading">#</a></h2>
+<p>The mass (inertia) matrix <span class="math notranslate nohighlight">\(H = M(q)\)</span> is obtained with <code class="docutils literal notranslate"><span class="pre">mujoco.mj_fullM</span></code>, lightly regularized on the diagonal (<code class="docutils literal notranslate"><span class="pre">+0.01</span></code>) for numerical conditioning, and normalized by the upper-arm subtree mass.</p>
+<p>It feeds a <strong>weighted pseudoinverse</strong>:</p>
+<div class="math notranslate nohighlight">
+\[
+J^{+}_H = H^{-1} J^\top \left(J H^{-1} J^\top\right)^{+}
+\]</div>
+<p>implemented in <a class="reference external" href="https://github.com/Balint-H/ssnr_sim/blob/main/SSNR2026/04_pd_muscle_space.py#L17"><code class="docutils literal notranslate"><span class="pre">weighted_pinv</span></code></a>. This is the operational-space inverse that respects the arm’s inertia, mapping task-space quantities into joint space in a dynamically consistent way.</p>
+</section>
+<hr class="docutils" />
+<section id="muscle-actuators-programmatic-model-editing">
+<h2>Muscle Actuators (programmatic model editing)<a class="headerlink" href="#muscle-actuators-programmatic-model-editing" title="Link to this heading">#</a></h2>
+<p>Rather than editing the XML by hand, the model is modified in <a class="reference external" href="https://github.com/Balint-H/ssnr_sim/blob/main/SSNR2026/04_pd_muscle_space.py#L87"><code class="docutils literal notranslate"><span class="pre">load_callback</span></code></a> using <code class="docutils literal notranslate"><span class="pre">mujoco.MjSpec</span></code>. Each ideal tendon actuator is converted into a <strong>muscle</strong> with <code class="docutils literal notranslate"><span class="pre">a.set_to_muscle(...)</span></code>, configuring the force-length and force-velocity curves (<code class="docutils literal notranslate"><span class="pre">lmin</span></code>, <code class="docutils literal notranslate"><span class="pre">lmax</span></code>, <code class="docutils literal notranslate"><span class="pre">vmax</span></code>, <code class="docutils literal notranslate"><span class="pre">fpmax</span></code>, <code class="docutils literal notranslate"><span class="pre">fvmax</span></code>), activation dynamics (<code class="docutils literal notranslate"><span class="pre">timeconst</span></code>), scaling, and a <code class="docutils literal notranslate"><span class="pre">ctrlrange</span></code> of <code class="docutils literal notranslate"><span class="pre">[0,</span> <span class="pre">1]</span></code>.</p>
+<p>This means the actuator command is a normalized <strong>muscle activation</strong>, not a raw force — the muscle model converts activation, length, and velocity into the actual contractile force.</p>
+</section>
+<hr class="docutils" />
+<section id="the-pull-only-constraint">
+<h2>The Pull-Only Constraint<a class="headerlink" href="#the-pull-only-constraint" title="Link to this heading">#</a></h2>
+<p>Muscles can only pull. The line</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">data</span><span class="o">.</span><span class="n">ctrl</span> <span class="o">=</span> <span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">minimum</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">tendon_force</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>keeps only the negative (pulling) part of each requested tendon force and flips its sign to a non-negative activation. Pushing components are discarded, so producing a net torque in a given direction relies on the appropriate <strong>antagonist</strong> muscles activating.</p>
+</section>
+<hr class="docutils" />
+<section id="simulation-model">
+<h2>Simulation Model<a class="headerlink" href="#simulation-model" title="Link to this heading">#</a></h2>
+<p>The robot is a rigid-body dynamical system governed by:</p>
+<div class="math notranslate nohighlight">
+\[
+M(q)\ddot{q} + C(q,\dot{q}) + g(q) = \tau
+\]</div>
+<p>with the torque <span class="math notranslate nohighlight">\(\tau\)</span> supplied by the muscle forces. MuJoCo solves these equations numerically each timestep.</p>
+</section>
+<hr class="docutils" />
+<section id="simulation-loop">
+<h2>Simulation Loop<a class="headerlink" href="#simulation-loop" title="Link to this heading">#</a></h2>
+<p>At each timestep, MuJoCo performs the following steps:</p>
+<ol class="arabic simple">
+<li><p>Compute forward kinematics (body positions from joint states)</p></li>
+<li><p>Call the control function (this is where your code runs)</p></li>
+<li><p>Compute forward dynamics, including muscle activation dynamics and forces</p></li>
+<li><p>Integrate system state forward in time</p></li>
+</ol>
+<p>The control callback is executed every physics step (~2 ms).</p>
+</section>
+<hr class="docutils" />
+<section id="system-variables">
+<h2>System Variables<a class="headerlink" href="#system-variables" title="Link to this heading">#</a></h2>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Variable</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">qpos</span></code> / <code class="docutils literal notranslate"><span class="pre">qvel</span></code></p></td>
+<td><p>Joint positions and velocities</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">mocap_pos</span></code></p></td>
+<td><p>Interactive target position (dragged by the user)</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">J</span></code></p></td>
+<td><p>End-effector Jacobian, joint → task space</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">qM</span></code> / <code class="docutils literal notranslate"><span class="pre">mj_fullM</span></code></p></td>
+<td><p>Mass (inertia) matrix in sparse / dense form</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">ten_J</span></code></p></td>
+<td><p>Tendon Jacobian (sparse), joint → tendon space</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">ctrl</span></code></p></td>
+<td><p>Muscle activation commands, range <code class="docutils literal notranslate"><span class="pre">[0,</span> <span class="pre">1]</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">tendon_rgba</span></code></p></td>
+<td><p>Per-tendon color, used to visualize applied force</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<hr class="docutils" />
+<section id="key-insights">
+<h2>Key Insights<a class="headerlink" href="#key-insights" title="Link to this heading">#</a></h2>
+<ul class="simple">
+<li><p>This is <strong>operational-space control</strong> delivered through a realistic <strong>muscle</strong> model</p></li>
+<li><p>Two configuration-dependent Jacobians are chained (end-effector and tendon)</p></li>
+<li><p>The <strong>inertia-weighted</strong> pseudoinverse gives dynamically consistent task-to-joint mapping (available but inactive by default here)</p></li>
+<li><p><strong>Reachability clipping</strong> prevents instability when the target is outside the workspace</p></li>
+<li><p><strong>Force clipping</strong> keeps joint torques within reasonable bounds</p></li>
+<li><p>Muscles only <strong>pull</strong>, and the command is an <strong>activation</strong> in <code class="docutils literal notranslate"><span class="pre">[0,</span> <span class="pre">1]</span></code>, not a raw force</p></li>
+<li><p>Models can be edited <strong>programmatically</strong> with <code class="docutils literal notranslate"><span class="pre">MjSpec</span></code>, avoiding manual XML changes</p></li>
+</ul>
+</section>
+<hr class="docutils" />
+<section id="source-code">
+<h2>Source Code<a class="headerlink" href="#source-code" title="Link to this heading">#</a></h2>
+<p><a class="reference external" href="https://github.com/Balint-H/ssnr_sim/blob/main/SSNR2026/04_pd_muscle_space.py">View <code class="docutils literal notranslate"><span class="pre">04_pd_muscle_space.py</span></code> on GitHub →</a></p>
+<div class="literal-block-wrapper docutils container" id="id1">
+<div class="code-block-caption"><span class="caption-number">Listing 4 </span><span class="caption-text">Muscle-actuated operational-space control in MuJoCo</span><a class="headerlink" href="#id1" title="Link to this code">#</a></div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos">  1</span><span class="c1"># Control of planar movements in an arm, using the example scene provided by MuJoCo. For more information on</span>
+<span class="linenos">  2</span><span class="c1"># the simulator and the key feature of the physics simulation see:</span>
+<span class="linenos">  3</span><span class="c1"># https://mujoco.readthedocs.io/en/stable/overview.html#introduction</span>
+<span class="linenos">  4</span>
+<span class="linenos">  5</span><span class="kn">import</span><span class="w"> </span><span class="nn">mujoco</span>
+<span class="linenos">  6</span><span class="kn">import</span><span class="w"> </span><span class="nn">mujoco.viewer</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">viewer</span>
+<span class="linenos">  7</span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="linenos">  8</span><span class="kn">from</span><span class="w"> </span><span class="nn">numpy.linalg</span><span class="w"> </span><span class="kn">import</span> <span class="n">pinv</span><span class="p">,</span> <span class="n">inv</span>
+<span class="linenos">  9</span><span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="linenos"> 10</span>
+<span class="linenos"> 11</span><span class="n">Kp</span> <span class="o">=</span> <span class="mi">10</span>
+<span class="linenos"> 12</span><span class="n">Kd</span> <span class="o">=</span> <span class="mf">0.3</span>
+<span class="linenos"> 13</span>
+<span class="linenos"> 14</span>
+<span class="linenos"> 15</span><span class="n">xml</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="vm">__file__</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;/arm_model_tendon.xml&#39;</span>
+<span class="linenos"> 16</span>
+<span class="linenos"> 17</span><span class="k">def</span><span class="w"> </span><span class="nf">weighted_pinv</span><span class="p">(</span><span class="n">J</span><span class="p">,</span> <span class="n">H</span><span class="p">):</span>
+<span class="linenos"> 18</span>    <span class="n">Hinv</span> <span class="o">=</span> <span class="n">inv</span><span class="p">(</span><span class="n">H</span><span class="p">)</span>
+<span class="linenos"> 19</span>    <span class="k">return</span> <span class="n">Hinv</span><span class="nd">@J</span><span class="o">.</span><span class="n">T</span><span class="nd">@pinv</span><span class="p">(</span><span class="n">J</span><span class="nd">@Hinv@J</span><span class="o">.</span><span class="n">T</span><span class="p">)</span>
+<span class="linenos"> 20</span>
+<span class="linenos"> 21</span>
+<span class="linenos"> 22</span><span class="k">def</span><span class="w"> </span><span class="nf">arm_control</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+<span class="linenos"> 23</span><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="linenos"> 24</span><span class="sd">    :type model: mujoco.MjModel</span>
+<span class="linenos"> 25</span><span class="sd">    :type data: mujoco.MjData</span>
+<span class="linenos"> 26</span><span class="sd">    &quot;&quot;&quot;</span>
+<span class="linenos"> 27</span>    <span class="c1"># `model` contains static information about the modeled system, e.g. their indices in dynamics matrices</span>
+<span class="linenos"> 28</span>    <span class="c1"># `data` contains the current dynamic state of the system</span>
+<span class="linenos"> 29</span>
+<span class="linenos"> 30</span>    <span class="c1"># Getting the current position of the interactive target. You can use Ctrl (Cmd on Mac) + Shift + Right click drag</span>
+<span class="linenos"> 31</span>    <span class="c1"># to move the target in the horizontal plane.</span>
+<span class="linenos"> 32</span>    <span class="n">xt</span><span class="p">,</span> <span class="n">yt</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">mocap_pos</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+<span class="linenos"> 33</span>    <span class="n">data</span><span class="o">.</span><span class="n">mocap_pos</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="linenos"> 34</span>
+<span class="linenos"> 35</span>    <span class="c1"># Clipping the target position&#39;s distance, otherwise weird behaviour occurs when out of reach</span>
+<span class="linenos"> 36</span>    <span class="n">ls</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">body</span><span class="p">(</span><span class="s2">&quot;forearm&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">pos</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+<span class="linenos"> 37</span>    <span class="n">lw</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">body</span><span class="p">(</span><span class="s2">&quot;wrist_body&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">pos</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+<span class="linenos"> 38</span>    <span class="n">le</span> <span class="o">=</span> <span class="o">-</span><span class="n">model</span><span class="o">.</span><span class="n">body</span><span class="p">(</span><span class="s2">&quot;hand&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">pos</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+<span class="linenos"> 39</span>    <span class="n">lh</span> <span class="o">=</span> <span class="o">-</span><span class="n">model</span><span class="o">.</span><span class="n">body</span><span class="p">(</span><span class="s2">&quot;tip&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">pos</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+<span class="linenos"> 40</span>
+<span class="linenos"> 41</span>    <span class="n">rt</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">([</span><span class="n">xt</span><span class="p">,</span> <span class="n">yt</span><span class="p">])</span>
+<span class="linenos"> 42</span>    <span class="n">xt</span><span class="p">,</span> <span class="n">yt</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">xt</span><span class="p">,</span> <span class="n">yt</span><span class="p">])</span><span class="o">/</span><span class="n">rt</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">clip</span><span class="p">(</span><span class="n">rt</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">ls</span><span class="o">+</span><span class="n">le</span><span class="o">+</span><span class="n">lh</span><span class="o">+</span><span class="n">lw</span><span class="p">)</span>
+<span class="linenos"> 43</span>    <span class="n">data</span><span class="o">.</span><span class="n">mocap_pos</span><span class="p">[</span><span class="mi">0</span><span class="p">][:</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">xt</span><span class="p">,</span> <span class="n">yt</span><span class="p">]</span>
+<span class="linenos"> 44</span>
+<span class="linenos"> 45</span>    <span class="c1"># Current position of arm end in comparison</span>
+<span class="linenos"> 46</span>    <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">body</span><span class="p">(</span><span class="s2">&quot;tip&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">xpos</span>
+<span class="linenos"> 47</span>
+<span class="linenos"> 48</span>    <span class="c1"># dx/dq</span>
+<span class="linenos"> 49</span>    <span class="c1"># Jacobian from engine. The jacobian converts differences (e.g. error, velocity) in joint space to differences in</span>
+<span class="linenos"> 50</span>    <span class="c1"># task space (Cartesian coords). It depends on the current configuration of the arm, therefore we need to calculate</span>
+<span class="linenos"> 51</span>    <span class="c1"># it every frame. We&#39;ll use MuJoCo&#39;s built in function for getting the matrix.</span>
+<span class="linenos"> 52</span>    <span class="n">J</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">((</span><span class="mi">3</span><span class="p">,</span> <span class="n">model</span><span class="o">.</span><span class="n">nv</span><span class="p">))</span>
+<span class="linenos"> 53</span>    <span class="n">mujoco</span><span class="o">.</span><span class="n">mj_jac</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">jacp</span><span class="o">=</span><span class="n">J</span><span class="p">,</span> <span class="n">jacr</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">point</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="n">x</span><span class="p">],</span> <span class="p">[</span><span class="n">y</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">]]),</span> <span class="n">body</span><span class="o">=</span><span class="n">model</span><span class="o">.</span><span class="n">body</span><span class="p">(</span><span class="s2">&quot;tip&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
+<span class="linenos"> 54</span>
+<span class="linenos"> 55</span>    <span class="n">H</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">((</span><span class="n">model</span><span class="o">.</span><span class="n">nv</span><span class="p">,</span> <span class="n">model</span><span class="o">.</span><span class="n">nv</span><span class="p">))</span>
+<span class="linenos"> 56</span>
+<span class="linenos"> 57</span>    <span class="n">mujoco</span><span class="o">.</span><span class="n">mj_fullM</span><span class="p">(</span><span class="n">model</span><span class="p">,</span><span class="n">H</span><span class="p">,</span> <span class="n">data</span><span class="o">.</span><span class="n">qM</span><span class="p">)</span>
+<span class="linenos"> 58</span>    <span class="n">H</span><span class="p">[[(</span><span class="n">x</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">nv</span><span class="p">)]]</span> <span class="o">+=</span> <span class="mf">0.01</span>
+<span class="linenos"> 59</span>    <span class="n">H</span> <span class="o">=</span> <span class="n">H</span><span class="o">/</span><span class="n">model</span><span class="o">.</span><span class="n">body</span><span class="p">(</span><span class="s2">&quot;upper arm&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">subtreemass</span>
+<span class="linenos"> 60</span>
+<span class="linenos"> 61</span>    <span class="n">xvel</span><span class="p">,</span> <span class="n">yvel</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">J</span><span class="nd">@data</span><span class="o">.</span><span class="n">qvel</span>  <span class="c1"># Get task velocity with jacobian</span>
+<span class="linenos"> 62</span>    <span class="n">Ji</span> <span class="o">=</span> <span class="n">weighted_pinv</span><span class="p">(</span><span class="n">J</span><span class="p">,</span> <span class="n">H</span><span class="p">)</span>  <span class="c1"># Invert it so we can go from task space to joint space</span>
+<span class="linenos"> 63</span>
+<span class="linenos"> 64</span>    <span class="n">xe</span><span class="p">,</span> <span class="n">ye</span> <span class="o">=</span> <span class="n">xt</span><span class="o">-</span><span class="n">x</span><span class="p">,</span> <span class="n">yt</span><span class="o">-</span><span class="n">y</span>  <span class="c1"># Errors in task space</span>
+<span class="linenos"> 65</span>    <span class="c1">#xe, ye = xe-xvel*0.1, ye-yvel*0.1</span>
+<span class="linenos"> 66</span>    <span class="n">task_force</span> <span class="o">=</span> <span class="n">Kp</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">xe</span><span class="p">,</span> <span class="n">ye</span><span class="p">,</span> <span class="mi">0</span><span class="p">])</span> <span class="o">-</span> <span class="n">Kd</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">xvel</span><span class="p">,</span> <span class="n">yvel</span><span class="p">,</span> <span class="mi">0</span><span class="p">])</span>  <span class="c1"># Stiffness and damping in task space!</span>
+<span class="linenos"> 67</span>    <span class="n">f</span> <span class="o">=</span> <span class="n">J</span><span class="o">.</span><span class="n">T</span> <span class="o">@</span> <span class="n">task_force</span>  <span class="c1"># desired joint torque</span>
+<span class="linenos"> 68</span>    <span class="c1"># Good practice to clip forces to reasonable values</span>
+<span class="linenos"> 69</span>    <span class="n">qfrc_desired</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">clip</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+<span class="linenos"> 70</span>
+<span class="linenos"> 71</span>    <span class="c1"># Convert from joint-space to tendon space</span>
+<span class="linenos"> 72</span>    <span class="n">J_tendon</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">((</span><span class="n">model</span><span class="o">.</span><span class="n">ntendon</span><span class="p">,</span> <span class="n">model</span><span class="o">.</span><span class="n">nv</span><span class="p">))</span>
+<span class="linenos"> 73</span>    <span class="n">mujoco</span><span class="o">.</span><span class="n">mju_sparse2dense</span><span class="p">(</span><span class="n">J_tendon</span><span class="p">,</span> <span class="n">data</span><span class="o">.</span><span class="n">ten_J</span><span class="p">,</span> <span class="n">model</span><span class="o">.</span><span class="n">ten_J_rownnz</span><span class="p">,</span> <span class="n">model</span><span class="o">.</span><span class="n">ten_J_rowadr</span><span class="p">,</span> <span class="n">model</span><span class="o">.</span><span class="n">ten_J_colind</span><span class="p">)</span>
+<span class="linenos"> 74</span>
+<span class="linenos"> 75</span>    <span class="n">tendon_force</span> <span class="o">=</span> <span class="n">pinv</span><span class="p">(</span><span class="n">J_tendon</span><span class="o">.</span><span class="n">T</span><span class="p">)</span> <span class="o">@</span> <span class="n">qfrc_desired</span>
+<span class="linenos"> 76</span>
+<span class="linenos"> 77</span>    <span class="c1"># Muscles/cables should only pull</span>
+<span class="linenos"> 78</span>    <span class="n">data</span><span class="o">.</span><span class="n">ctrl</span> <span class="o">=</span> <span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">minimum</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">tendon_force</span><span class="p">)</span>
+<span class="linenos"> 79</span>
+<span class="linenos"> 80</span>
+<span class="linenos"> 81</span>    <span class="c1"># We&#39;ll visualise the force applied on each tendon:</span>
+<span class="linenos"> 82</span>    <span class="n">color</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">ctrl</span><span class="o">+</span><span class="mf">0.0001</span><span class="p">)</span>
+<span class="linenos"> 83</span>    <span class="n">model</span><span class="o">.</span><span class="n">tendon_rgba</span> <span class="o">=</span> <span class="p">(</span><span class="n">color</span><span class="p">[:,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.95</span><span class="p">,</span> <span class="mf">0.3</span><span class="p">,</span> <span class="mf">0.3</span><span class="p">,</span> <span class="mi">1</span><span class="p">])[</span><span class="kc">None</span><span class="p">,</span> <span class="p">:]</span>
+<span class="linenos"> 84</span>                         <span class="o">+</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">color</span><span class="p">[:,</span> <span class="kc">None</span><span class="p">])</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.45</span><span class="p">,</span> <span class="mf">0.15</span><span class="p">,</span> <span class="mf">0.15</span><span class="p">,</span> <span class="mi">1</span><span class="p">])[</span><span class="kc">None</span><span class="p">,</span> <span class="p">:])</span>
+<span class="linenos"> 85</span>
+<span class="linenos"> 86</span>
+<span class="linenos"> 87</span><span class="k">def</span><span class="w"> </span><span class="nf">load_callback</span><span class="p">(</span><span class="n">model</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="linenos"> 88</span>    <span class="n">mujoco</span><span class="o">.</span><span class="n">set_mjcb_control</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
+<span class="linenos"> 89</span>
+<span class="linenos"> 90</span>    <span class="c1"># We can programmatically edit the XML! Instead of manually changing the file, you can configure it in script.</span>
+<span class="linenos"> 91</span>    <span class="c1"># We&#39;ll swap the ideal tendon actuators with muscle ones, and add user sensor objects in the scene that we can write</span>
+<span class="linenos"> 92</span>    <span class="c1"># data to visualise to.</span>
+<span class="linenos"> 93</span>    <span class="n">spec</span> <span class="o">=</span> <span class="n">mujoco</span><span class="o">.</span><span class="n">MjSpec</span><span class="o">.</span><span class="n">from_file</span><span class="p">(</span><span class="n">filename</span><span class="o">=</span><span class="n">xml</span><span class="p">,</span> <span class="n">assets</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+<span class="linenos"> 94</span>    <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">spec</span><span class="o">.</span><span class="n">actuators</span><span class="p">:</span>
+<span class="linenos"> 95</span>        <span class="n">a</span><span class="o">.</span><span class="n">set_to_muscle</span><span class="p">(</span><span class="n">lmin</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">lmax</span><span class="o">=</span><span class="mf">1.6</span><span class="p">,</span> <span class="n">vmax</span><span class="o">=</span><span class="mf">1.5</span><span class="p">,</span> <span class="n">fpmax</span><span class="o">=</span><span class="mf">1.3</span><span class="p">,</span> <span class="n">fvmax</span><span class="o">=</span><span class="mf">1.2</span><span class="p">,</span> <span class="n">timeconst</span><span class="o">=</span><span class="mf">0.01</span><span class="p">,</span> <span class="n">tausmooth</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+<span class="linenos"> 96</span>                        <span class="n">force</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="mi">200</span><span class="p">,</span> <span class="nb">range</span><span class="o">=</span><span class="mf">0.75</span><span class="p">)</span>
+<span class="linenos"> 97</span>        <span class="n">a</span><span class="o">.</span><span class="n">gainprm</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="mf">1.05</span>
+<span class="linenos"> 98</span>        <span class="n">a</span><span class="o">.</span><span class="n">dynprm</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.04</span>
+<span class="linenos"> 99</span>        <span class="n">a</span><span class="o">.</span><span class="n">biasprm</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="mf">1.05</span>
+<span class="linenos">100</span>        <span class="n">a</span><span class="o">.</span><span class="n">ctrlrange</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
+<span class="linenos">101</span>
+<span class="linenos">102</span>    <span class="n">model</span> <span class="o">=</span> <span class="n">spec</span><span class="o">.</span><span class="n">compile</span><span class="p">()</span>
+<span class="linenos">103</span>    <span class="n">data</span> <span class="o">=</span> <span class="n">mujoco</span><span class="o">.</span><span class="n">MjData</span><span class="p">(</span><span class="n">model</span><span class="p">)</span>
+<span class="linenos">104</span>
+<span class="linenos">105</span>    <span class="k">if</span> <span class="n">model</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+<span class="linenos">106</span>        <span class="n">data</span><span class="o">.</span><span class="n">joint</span><span class="p">(</span><span class="s1">&#39;shoulder&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">qpos</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="linenos">107</span>        <span class="n">data</span><span class="o">.</span><span class="n">joint</span><span class="p">(</span><span class="s1">&#39;elbow&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">qpos</span> <span class="o">=</span><span class="mi">0</span>
+<span class="linenos">108</span>        <span class="n">mujoco</span><span class="o">.</span><span class="n">set_mjcb_control</span><span class="p">(</span><span class="n">arm_control</span><span class="p">)</span>
+<span class="linenos">109</span>
+<span class="linenos">110</span>    <span class="k">return</span> <span class="n">model</span><span class="p">,</span> <span class="n">data</span>
+<span class="linenos">111</span>
+<span class="linenos">112</span>
+<span class="linenos">113</span><span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+<span class="linenos">114</span>    <span class="n">viewer</span><span class="o">.</span><span class="n">launch</span><span class="p">(</span><span class="n">loader</span><span class="o">=</span><span class="n">load_callback</span><span class="p">)</span>
+<span class="linenos">115</span>
+</pre></div>
+</div>
+</div>
+</section>
+<hr class="docutils" />
+<section id="warning">
+<h2>Warning<a class="headerlink" href="#warning" title="Link to this heading">#</a></h2>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>High proportional gains may lead to unstable or oscillatory behavior.
+Insufficient derivative damping may cause overshooting and persistent motion.
+Targets outside the reachable workspace cause erratic behavior unless clipped.
+Near kinematic singularities the Jacobians and the (weighted) pseudoinverse become
+ill-conditioned and can request very large forces.
+Because muscles can only pull, some task-space directions may be under-actuated in
+certain configurations.</p>
+</div>
+</section>
+</section>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "binder-examples/jupyter-stacks-datascience",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "python"
+        },
+        kernelOptions: {
+            name: "python3",
+            path: "./docs"
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'python3'</script>
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="03_tendon_space.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">3. Task-Space Control with Tendon Actuation</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="05_neural_integration.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">5. Closed-Loop Control through a Spiking Motoneuron Pool</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#objective">Objective</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#control-law">Control Law</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-interactive-mocap-target">The Interactive Mocap Target</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#target-reachability-clipping">Target Reachability Clipping</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#inertia-weighted-jacobian-inverse">Inertia-Weighted Jacobian Inverse</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#muscle-actuators-programmatic-model-editing">Muscle Actuators (programmatic model editing)</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-pull-only-constraint">The Pull-Only Constraint</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#simulation-model">Simulation Model</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#simulation-loop">Simulation Loop</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#system-variables">System Variables</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#key-insights">Key Insights</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#source-code">Source Code</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#warning">Warning</a></li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By SSNR 2026 Workshop
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+
+  <p class="copyright">
+    
+      © Copyright 2023.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b"></script>
+<script src="../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>
