@@ -1,5 +1,5 @@
 > [!NOTE]  
-> In SSNR 2026 we are experimenting with providing the tutorial instructions in website format.
+> For SSNR 2026, we are experimenting with providing the tutorial instructions in website format.
 > To view the repository website, visit [balint-h.github.io/ssnr_sim](https://balint-h.github.io/ssnr_sim).
 > 
 
