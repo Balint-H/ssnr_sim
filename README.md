@@ -1,3 +1,8 @@
+> [!NOTE]  
+> In SSNR 2026 we are experimenting with providing the tutorial instructions in website format.
+> To view the repository website, visit [balint-h.github.io/ssnr_sim](https://balint-h.github.io/ssnr_sim).
+> 
+
 # SSNR Simulation Workshop
 
 Clone the repository (if you have Git) or download the files directly by pressing the green button labelled `<> Code ▾`.
