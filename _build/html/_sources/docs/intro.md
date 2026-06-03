@@ -62,7 +62,7 @@ motoneuron pool.
 
 Instead of designing a controller by hand, you specify only a **reward
 signal** and let a PPO agent discover the behaviour through trial and
-error — from a cartpole swing-up on CPU to a musculoskeletal elbow arm,
+error, from a cartpole swing-up on CPU to a musculoskeletal elbow arm,
 up to GPU-accelerated training with MJX and Brax.
 
 → [Tutorial 3: RL for Motor Control](day3_intro)
@@ -81,9 +81,9 @@ up to GPU-accelerated training with MJX and Brax.
 
 | Day | Topic | Download |
 |-----|-------|----------|
-| Day 1 | Introduction & LIF Neuron | [01-Intro.pdf](../slides/01-Intro.pdf) |
-| Day 2 | MuJoCo & Control | [03-MuJoCo.pdf](../slides/03-MuJoCo.pdf) |
-| Day 3 | Reinforcement Learning | [04-RL.pdf](../slides/04-RL.pdf) |
+| Day 1 | Introduction & LIF Neuron | [DAY_1.pdf](../slides/DAY_1.pdf) |
+| Day 2 | MuJoCo & Control | [DAY_2.pdf](../slides/DAY_2.pdf) |
+| Day 3 | Reinforcement Learning | [RL.pdf](../slides/RL.pdf) |
 
 ### Further reading
 

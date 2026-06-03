@@ -38,7 +38,7 @@ The last step keeps only the **pulling** component of each tendon and writes it 
 
 ## The Interactive Mocap Target
 
-The target is a **mocap body**, read from `data.mocap_pos[0]`. Because of this, the gesture **Ctrl (Cmd on Mac) + Shift + Right-click drag** genuinely moves the target in the horizontal plane — the controller reads the dragged position every frame. The z-coordinate is forced to zero to keep motion planar.
+The target is a **mocap body**, read from `data.mocap_pos[0]`. Because of this, the gesture **Ctrl (Cmd on Mac) + Shift + Right-click drag** genuinely moves the target in the horizontal plane, the controller reads the dragged position every frame. The z-coordinate is forced to zero to keep motion planar.
 
 ---
 
@@ -73,7 +73,7 @@ implemented in [`weighted_pinv`](https://github.com/Balint-H/ssnr_sim/blob/main/
 
 Rather than editing the XML by hand, the model is modified in [`load_callback`](https://github.com/Balint-H/ssnr_sim/blob/main/SSNR2026/04_pd_muscle_space.py#L87) using `mujoco.MjSpec`. Each ideal tendon actuator is converted into a **muscle** with `a.set_to_muscle(...)`, configuring the force-length and force-velocity curves (`lmin`, `lmax`, `vmax`, `fpmax`, `fvmax`), activation dynamics (`timeconst`), scaling, and a `ctrlrange` of `[0, 1]`.
 
-This means the actuator command is a normalized **muscle activation**, not a raw force — the muscle model converts activation, length, and velocity into the actual contractile force.
+This means the actuator command is a normalized **muscle activation**, not a raw force, the muscle model converts activation, length, and velocity into the actual contractile force.
 
 ---
 
@@ -143,7 +143,7 @@ The control callback is executed every physics step (~2 ms).
 
 ## Source Code
 
-[View `04_pd_muscle_space.py` on GitHub →](https://github.com/Balint-H/ssnr_sim/blob/main/SSNR2026/04_pd_muscle_space.py)
+[View `04_pd_muscle_space.py` on GitHub](https://github.com/Balint-H/ssnr_sim/blob/main/SSNR2026/04_pd_muscle_space.py)
 
 ```{literalinclude} ../SSNR2026/04_pd_muscle_space.py
 :language: python

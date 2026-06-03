@@ -49,7 +49,7 @@ where $\gamma \in (0,1)$ is a discount factor that down-weights distant rewards.
 
 ### Reward shaping
 
-The reward in `cartpole.py` is intentionally incomplete:
+The reward in [`cartpole.py`](https://github.com/Balint-H/ssnr_sim/blob/main/RL/cartpole.py) is intentionally incomplete:
 
 ```python
 upright = (np.cos(physics.data.qpos[1]) + 1) / 2
@@ -60,7 +60,7 @@ This only rewards keeping the pole upright. The agent learns to balance, but dri
 - the cart moving away from centre
 - large control inputs
 
-See `cartpole_solution.py` for a shaped reward that also includes centering and small-control terms.
+See [`cartpole_solution.py`](https://github.com/Balint-H/ssnr_sim/blob/main/RL/cartpole_solution.py) for a shaped reward that also includes centering and small-control terms.
 
 
 ## Section 2: Training with PPO
@@ -87,12 +87,12 @@ where $r_t(\theta) = \pi_\theta(a_t \mid s_t) / \pi_{\theta_\text{old}}(a_t \mid
 
 ### Parallel environments
 
-A single simulation step takes ~2 ms; collecting 2048 steps sequentially would take ~4 s per update. `learn.py` uses `SubprocVecEnv` to run $N$ independent copies of the environment in parallel across CPU processes, so data collection takes $\sim 4/N$ seconds instead.
+A single simulation step takes ~2 ms; collecting 2048 steps sequentially would take ~4 s per update. [`learn.py`](https://github.com/Balint-H/ssnr_sim/blob/main/RL/learn.py) uses `SubprocVecEnv` to run $N$ independent copies of the environment in parallel across CPU processes, so data collection takes $\sim 4/N$ seconds instead.
 
 
 ## Section 3: Evaluating the learned policy
 
-Once trained, the policy is saved as a `.zip` file by Stable-Baselines3. `visualise_cartpole.py` loads it and injects it into the MuJoCo viewer via a **control callback** — a function MuJoCo calls every physics step to set `data.ctrl`:
+Once trained, the policy is saved as a `.zip` file by Stable-Baselines3. [`visualise_cartpole.py`](https://github.com/Balint-H/ssnr_sim/blob/main/RL/visualise_cartpole.py) loads it and injects it into the MuJoCo viewer via a **control callback** — a function MuJoCo calls every physics step to set `data.ctrl`:
 
 ```python
 def control_callback(model, data):
@@ -106,7 +106,7 @@ def control_callback(model, data):
 
 ## Section 4: From a toy to a musculoskeletal arm
 
-`learn_myosuite.py` trains the same PPO algorithm on `myoElbowPose1D6MRandom-v0`, a physiologically detailed elbow model. Two things change compared to cartpole:
+[`learn_myosuite.py`](https://github.com/Balint-H/ssnr_sim/blob/main/RL/learn_myosuite.py) trains the same PPO algorithm on `myoElbowPose1D6MRandom-v0`, a physiologically detailed elbow model. Two things change compared to cartpole:
 
 **Observation normalisation.** Raw joint angles, velocities, and muscle states span very different numeric ranges. `VecNormalize` tracks a running mean and variance and rescales observations to zero mean, unit variance. This is almost always necessary for RL on biomechanical models.
 
@@ -115,7 +115,7 @@ def control_callback(model, data):
 
 ## Section 5: GPU-accelerated training with MJX
 
-`train_with_mjx.ipynb` ports the cartpole environment to **MJX**, the JAX-based reimplementation of MuJoCo. The entire simulation runs on the GPU as a JIT-compiled function, enabling:
+[`train_with_mjx.ipynb`](https://github.com/Balint-H/ssnr_sim/blob/main/RL/train_with_mjx.ipynb) ports the cartpole environment to **MJX**, the JAX-based reimplementation of MuJoCo. The entire simulation runs on the GPU as a JIT-compiled function, enabling:
 
 - **Massive parallelism** — 4 096 environments in a single batch with no inter-process overhead
 - **Automatic differentiation** — gradients through the physics are available if needed

@@ -137,10 +137,6 @@ model** with:
 - **Force–velocity** relationship — less force when contracting fast
 - **Activation dynamics** — force lags behind the neural command
 
-<div style="text-align:center; margin: 2rem 0;">
-<img src="../_static/hill_curves.svg" width="840">
-</div>
-
 The control input is now **activation** $a \in [0, 1]$, not force.
 
 See also: [detailed notes](04_muscle_space.md)

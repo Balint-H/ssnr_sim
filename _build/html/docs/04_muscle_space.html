@@ -416,7 +416,7 @@ f_{tendon} = \left(J_{tendon}^\top\right)^{+}\tau,
 <hr class="docutils" />
 <section id="the-interactive-mocap-target">
 <h2>The Interactive Mocap Target<a class="headerlink" href="#the-interactive-mocap-target" title="Link to this heading">#</a></h2>
-<p>The target is a <strong>mocap body</strong>, read from <code class="docutils literal notranslate"><span class="pre">data.mocap_pos[0]</span></code>. Because of this, the gesture <strong>Ctrl (Cmd on Mac) + Shift + Right-click drag</strong> genuinely moves the target in the horizontal plane — the controller reads the dragged position every frame. The z-coordinate is forced to zero to keep motion planar.</p>
+<p>The target is a <strong>mocap body</strong>, read from <code class="docutils literal notranslate"><span class="pre">data.mocap_pos[0]</span></code>. Because of this, the gesture <strong>Ctrl (Cmd on Mac) + Shift + Right-click drag</strong> genuinely moves the target in the horizontal plane, the controller reads the dragged position every frame. The z-coordinate is forced to zero to keep motion planar.</p>
 </section>
 <hr class="docutils" />
 <section id="target-reachability-clipping">
@@ -443,7 +443,7 @@ J^{+}_H = H^{-1} J^\top \left(J H^{-1} J^\top\right)^{+}
 <section id="muscle-actuators-programmatic-model-editing">
 <h2>Muscle Actuators (programmatic model editing)<a class="headerlink" href="#muscle-actuators-programmatic-model-editing" title="Link to this heading">#</a></h2>
 <p>Rather than editing the XML by hand, the model is modified in <a class="reference external" href="https://github.com/Balint-H/ssnr_sim/blob/main/SSNR2026/04_pd_muscle_space.py#L87"><code class="docutils literal notranslate"><span class="pre">load_callback</span></code></a> using <code class="docutils literal notranslate"><span class="pre">mujoco.MjSpec</span></code>. Each ideal tendon actuator is converted into a <strong>muscle</strong> with <code class="docutils literal notranslate"><span class="pre">a.set_to_muscle(...)</span></code>, configuring the force-length and force-velocity curves (<code class="docutils literal notranslate"><span class="pre">lmin</span></code>, <code class="docutils literal notranslate"><span class="pre">lmax</span></code>, <code class="docutils literal notranslate"><span class="pre">vmax</span></code>, <code class="docutils literal notranslate"><span class="pre">fpmax</span></code>, <code class="docutils literal notranslate"><span class="pre">fvmax</span></code>), activation dynamics (<code class="docutils literal notranslate"><span class="pre">timeconst</span></code>), scaling, and a <code class="docutils literal notranslate"><span class="pre">ctrlrange</span></code> of <code class="docutils literal notranslate"><span class="pre">[0,</span> <span class="pre">1]</span></code>.</p>
-<p>This means the actuator command is a normalized <strong>muscle activation</strong>, not a raw force — the muscle model converts activation, length, and velocity into the actual contractile force.</p>
+<p>This means the actuator command is a normalized <strong>muscle activation</strong>, not a raw force, the muscle model converts activation, length, and velocity into the actual contractile force.</p>
 </section>
 <hr class="docutils" />
 <section id="the-pull-only-constraint">
@@ -527,7 +527,7 @@ M(q)\ddot{q} + C(q,\dot{q}) + g(q) = \tau
 <hr class="docutils" />
 <section id="source-code">
 <h2>Source Code<a class="headerlink" href="#source-code" title="Link to this heading">#</a></h2>
-<p><a class="reference external" href="https://github.com/Balint-H/ssnr_sim/blob/main/SSNR2026/04_pd_muscle_space.py">View <code class="docutils literal notranslate"><span class="pre">04_pd_muscle_space.py</span></code> on GitHub →</a></p>
+<p><a class="reference external" href="https://github.com/Balint-H/ssnr_sim/blob/main/SSNR2026/04_pd_muscle_space.py">View <code class="docutils literal notranslate"><span class="pre">04_pd_muscle_space.py</span></code> on GitHub</a></p>
 <div class="literal-block-wrapper docutils container" id="id1">
 <div class="code-block-caption"><span class="caption-number">Listing 4 </span><span class="caption-text">Muscle-actuated operational-space control in MuJoCo</span><a class="headerlink" href="#id1" title="Link to this code">#</a></div>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos">  1</span><span class="c1"># Control of planar movements in an arm, using the example scene provided by MuJoCo. For more information on</span>

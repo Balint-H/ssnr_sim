@@ -34,17 +34,6 @@ where:
 
 ---
 
-## Physical Interpretation
-
-This controller is equivalent to a **spring-damper system in joint space**:
-
-* The proportional term acts like a spring pulling the system toward the target
-* The derivative term acts like a damper removing kinetic energy
-
-Together, they stabilize the system and regulate motion.
-
----
-
 ## Simulation Model
 
 The robot is modeled as a rigid-body dynamical system governed by:
@@ -105,7 +94,7 @@ and must return a torque vector.
 
 ## Source Code
 
-[View `01_pd_joint_space.py` on GitHub →](https://github.com/Balint-H/ssnr_sim/blob/main/SSNR2026/01_pd_joint_space.py)
+[View `01_pd_joint_space.py` on GitHub](https://github.com/Balint-H/ssnr_sim/blob/main/SSNR2026/01_pd_joint_space.py)
 
 ```{literalinclude} ../SSNR2026/01_pd_joint_space.py
 :language: python

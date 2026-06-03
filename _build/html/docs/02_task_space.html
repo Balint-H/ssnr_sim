@@ -362,7 +362,6 @@ document.write(`
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#objective">Objective</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#control-law">Control Law</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-jacobian">The Jacobian</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#physical-interpretation">Physical Interpretation</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#simulation-model">Simulation Model</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#simulation-loop">Simulation Loop</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#system-variables">System Variables</a></li>
@@ -426,16 +425,6 @@ F = K_p \, e_{pos} + K_d \, e_{vel}
 <li><p><strong>Forward mapping</strong> (<span class="math notranslate nohighlight">\(\dot{x} = J\dot{q}\)</span>): to obtain the end-effector velocity from joint velocities, needed for the damping term.</p></li>
 <li><p><strong>Transpose mapping</strong> (<span class="math notranslate nohighlight">\(\tau = J^\top F\)</span>): to convert the desired Cartesian force into joint torques.</p></li>
 </ul>
-</section>
-<hr class="docutils" />
-<section id="physical-interpretation">
-<h2>Physical Interpretation<a class="headerlink" href="#physical-interpretation" title="Link to this heading">#</a></h2>
-<p>This controller behaves like a <strong>virtual spring-damper attached to the end-effector</strong>:</p>
-<ul class="simple">
-<li><p>The proportional term acts like a spring pulling the tip toward the Cartesian target</p></li>
-<li><p>The derivative term acts like a damper removing kinetic energy from the tip’s motion</p></li>
-</ul>
-<p>The Jacobian transpose is what makes this possible without explicit inverse kinematics: it relates the virtual Cartesian force to the joint torques that would produce it.</p>
 </section>
 <hr class="docutils" />
 <section id="simulation-model">
@@ -516,6 +505,7 @@ M(q)\ddot{q} + C(q,\dot{q}) + g(q) = \tau
 <hr class="docutils" />
 <section id="source-code">
 <h2>Source Code<a class="headerlink" href="#source-code" title="Link to this heading">#</a></h2>
+<p><a class="reference external" href="https://github.com/Balint-H/ssnr_sim/blob/main/SSNR2026/02_pd_task_space.py">View <code class="docutils literal notranslate"><span class="pre">02_pd_task_space.py</span></code> on GitHub</a></p>
 <div class="literal-block-wrapper docutils container" id="id1">
 <div class="code-block-caption"><span class="caption-number">Listing 2 </span><span class="caption-text">Task-space PD control implementation in MuJoCo</span><a class="headerlink" href="#id1" title="Link to this code">#</a></div>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="c1"># If you have a given position in task space you want to reach</span>
@@ -649,7 +639,6 @@ mapping between task forces and joint torques can produce large or erratic torqu
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#objective">Objective</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#control-law">Control Law</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-jacobian">The Jacobian</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#physical-interpretation">Physical Interpretation</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#simulation-model">Simulation Model</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#simulation-loop">Simulation Loop</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#system-variables">System Variables</a></li>

@@ -75,12 +75,6 @@ Enforcing this constraint changes the behavior: with antagonistic tendons, the c
 
 ---
 
-## Physical Interpretation
-
-The controller still behaves like a **virtual spring-damper attached to the end-effector**, but the virtual Cartesian force is now produced indirectly by a set of tendons wrapped around the joints, rather than by ideal joint motors. The two Jacobian transposes together translate "where I want the tip to go" into "how hard each cable should pull."
-
----
-
 ## Simulation Model
 
 The robot is modeled as a rigid-body dynamical system governed by:
@@ -150,7 +144,7 @@ The final block colors each tendon from red (pulling little / negative command) 
 
 ## Source Code
 
-[View `03_pd_tendon_space.py` on GitHub →](https://github.com/Balint-H/ssnr_sim/blob/main/SSNR2026/03_pd_tendon_space.py)
+[View `03_pd_tendon_space.py` on GitHub](https://github.com/Balint-H/ssnr_sim/blob/main/SSNR2026/03_pd_tendon_space.py)
 
 ```{literalinclude} ../SSNR2026/03_pd_tendon_space.py
 :language: python

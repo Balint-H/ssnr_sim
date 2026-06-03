@@ -477,7 +477,7 @@ J(\pi) = \mathbb{E}_{\pi} \left[ \sum_{t=0}^{T} \gamma^t \, r_t \right]
 </section>
 <section id="reward-shaping">
 <h3>Reward shaping<a class="headerlink" href="#reward-shaping" title="Link to this heading">#</a></h3>
-<p>The reward in <code class="docutils literal notranslate"><span class="pre">cartpole.py</span></code> is intentionally incomplete:</p>
+<p>The reward in <a class="reference external" href="https://github.com/Balint-H/ssnr_sim/blob/main/RL/cartpole.py"><code class="docutils literal notranslate"><span class="pre">cartpole.py</span></code></a> is intentionally incomplete:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">upright</span> <span class="o">=</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">physics</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">qpos</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span>
 <span class="k">return</span> <span class="n">upright</span>
 </pre></div>
@@ -487,7 +487,7 @@ J(\pi) = \mathbb{E}_{\pi} \left[ \sum_{t=0}^{T} \gamma^t \, r_t \right]
 <li><p>the cart moving away from centre</p></li>
 <li><p>large control inputs</p></li>
 </ul>
-<p>See <code class="docutils literal notranslate"><span class="pre">cartpole_solution.py</span></code> for a shaped reward that also includes centering and small-control terms.</p>
+<p>See <a class="reference external" href="https://github.com/Balint-H/ssnr_sim/blob/main/RL/cartpole_solution.py"><code class="docutils literal notranslate"><span class="pre">cartpole_solution.py</span></code></a> for a shaped reward that also includes centering and small-control terms.</p>
 </section>
 </section>
 <section id="section-2-training-with-ppo">
@@ -512,12 +512,12 @@ J(\pi) = \mathbb{E}_{\pi} \left[ \sum_{t=0}^{T} \gamma^t \, r_t \right]
 </section>
 <section id="parallel-environments">
 <h3>Parallel environments<a class="headerlink" href="#parallel-environments" title="Link to this heading">#</a></h3>
-<p>A single simulation step takes ~2 ms; collecting 2048 steps sequentially would take ~4 s per update. <code class="docutils literal notranslate"><span class="pre">learn.py</span></code> uses <code class="docutils literal notranslate"><span class="pre">SubprocVecEnv</span></code> to run <span class="math notranslate nohighlight">\(N\)</span> independent copies of the environment in parallel across CPU processes, so data collection takes <span class="math notranslate nohighlight">\(\sim 4/N\)</span> seconds instead.</p>
+<p>A single simulation step takes ~2 ms; collecting 2048 steps sequentially would take ~4 s per update. <a class="reference external" href="https://github.com/Balint-H/ssnr_sim/blob/main/RL/learn.py"><code class="docutils literal notranslate"><span class="pre">learn.py</span></code></a> uses <code class="docutils literal notranslate"><span class="pre">SubprocVecEnv</span></code> to run <span class="math notranslate nohighlight">\(N\)</span> independent copies of the environment in parallel across CPU processes, so data collection takes <span class="math notranslate nohighlight">\(\sim 4/N\)</span> seconds instead.</p>
 </section>
 </section>
 <section id="section-3-evaluating-the-learned-policy">
 <h2>Section 3: Evaluating the learned policy<a class="headerlink" href="#section-3-evaluating-the-learned-policy" title="Link to this heading">#</a></h2>
-<p>Once trained, the policy is saved as a <code class="docutils literal notranslate"><span class="pre">.zip</span></code> file by Stable-Baselines3. <code class="docutils literal notranslate"><span class="pre">visualise_cartpole.py</span></code> loads it and injects it into the MuJoCo viewer via a <strong>control callback</strong> — a function MuJoCo calls every physics step to set <code class="docutils literal notranslate"><span class="pre">data.ctrl</span></code>:</p>
+<p>Once trained, the policy is saved as a <code class="docutils literal notranslate"><span class="pre">.zip</span></code> file by Stable-Baselines3. <a class="reference external" href="https://github.com/Balint-H/ssnr_sim/blob/main/RL/visualise_cartpole.py"><code class="docutils literal notranslate"><span class="pre">visualise_cartpole.py</span></code></a> loads it and injects it into the MuJoCo viewer via a <strong>control callback</strong> — a function MuJoCo calls every physics step to set <code class="docutils literal notranslate"><span class="pre">data.ctrl</span></code>:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">control_callback</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
     <span class="n">obs</span> <span class="o">=</span> <span class="n">get_observation</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
     <span class="n">action</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">policy</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">obs</span><span class="p">,</span> <span class="n">deterministic</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
@@ -528,13 +528,13 @@ J(\pi) = \mathbb{E}_{\pi} \left[ \sum_{t=0}^{T} \gamma^t \, r_t \right]
 </section>
 <section id="section-4-from-a-toy-to-a-musculoskeletal-arm">
 <h2>Section 4: From a toy to a musculoskeletal arm<a class="headerlink" href="#section-4-from-a-toy-to-a-musculoskeletal-arm" title="Link to this heading">#</a></h2>
-<p><code class="docutils literal notranslate"><span class="pre">learn_myosuite.py</span></code> trains the same PPO algorithm on <code class="docutils literal notranslate"><span class="pre">myoElbowPose1D6MRandom-v0</span></code>, a physiologically detailed elbow model. Two things change compared to cartpole:</p>
+<p><a class="reference external" href="https://github.com/Balint-H/ssnr_sim/blob/main/RL/learn_myosuite.py"><code class="docutils literal notranslate"><span class="pre">learn_myosuite.py</span></code></a> trains the same PPO algorithm on <code class="docutils literal notranslate"><span class="pre">myoElbowPose1D6MRandom-v0</span></code>, a physiologically detailed elbow model. Two things change compared to cartpole:</p>
 <p><strong>Observation normalisation.</strong> Raw joint angles, velocities, and muscle states span very different numeric ranges. <code class="docutils literal notranslate"><span class="pre">VecNormalize</span></code> tracks a running mean and variance and rescales observations to zero mean, unit variance. This is almost always necessary for RL on biomechanical models.</p>
 <p><strong>Harder action space.</strong> The action <span class="math notranslate nohighlight">\(a \in [0,1]^6\)</span> is a vector of muscle activations. Muscles can only pull, are nonlinear (Hill model), and have dynamics — activation lags behind the neural command. The policy must learn to co-activate antagonistic pairs to achieve stiffness control, something a PD controller gets for free.</p>
 </section>
 <section id="section-5-gpu-accelerated-training-with-mjx">
 <h2>Section 5: GPU-accelerated training with MJX<a class="headerlink" href="#section-5-gpu-accelerated-training-with-mjx" title="Link to this heading">#</a></h2>
-<p><code class="docutils literal notranslate"><span class="pre">train_with_mjx.ipynb</span></code> ports the cartpole environment to <strong>MJX</strong>, the JAX-based reimplementation of MuJoCo. The entire simulation runs on the GPU as a JIT-compiled function, enabling:</p>
+<p><a class="reference external" href="https://github.com/Balint-H/ssnr_sim/blob/main/RL/train_with_mjx.ipynb"><code class="docutils literal notranslate"><span class="pre">train_with_mjx.ipynb</span></code></a> ports the cartpole environment to <strong>MJX</strong>, the JAX-based reimplementation of MuJoCo. The entire simulation runs on the GPU as a JIT-compiled function, enabling:</p>
 <ul class="simple">
 <li><p><strong>Massive parallelism</strong> — 4 096 environments in a single batch with no inter-process overhead</p></li>
 <li><p><strong>Automatic differentiation</strong> — gradients through the physics are available if needed</p></li>

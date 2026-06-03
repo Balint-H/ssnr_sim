@@ -361,7 +361,6 @@ document.write(`
                 <ul class="visible nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#objective">Objective</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#control-law">Control Law</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#physical-interpretation">Physical Interpretation</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#simulation-model">Simulation Model</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#simulation-loop">Simulation Loop</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#system-variables">System Variables</a></li>
@@ -408,16 +407,6 @@ document.write(`
 <li><p><span class="math notranslate nohighlight">\(K_d\)</span> is the derivative gain</p></li>
 <li><p><span class="math notranslate nohighlight">\(\tau\)</span> is the applied joint torque</p></li>
 </ul>
-</section>
-<hr class="docutils" />
-<section id="physical-interpretation">
-<h2>Physical Interpretation<a class="headerlink" href="#physical-interpretation" title="Link to this heading">#</a></h2>
-<p>This controller is equivalent to a <strong>spring-damper system in joint space</strong>:</p>
-<ul class="simple">
-<li><p>The proportional term acts like a spring pulling the system toward the target</p></li>
-<li><p>The derivative term acts like a damper removing kinetic energy</p></li>
-</ul>
-<p>Together, they stabilize the system and regulate motion.</p>
 </section>
 <hr class="docutils" />
 <section id="simulation-model">
@@ -491,7 +480,7 @@ M(q)\ddot{q} + C(q,\dot{q}) + g(q) = \tau
 <hr class="docutils" />
 <section id="source-code">
 <h2>Source Code<a class="headerlink" href="#source-code" title="Link to this heading">#</a></h2>
-<p><a class="reference external" href="https://github.com/Balint-H/ssnr_sim/blob/main/SSNR2026/01_pd_joint_space.py">View <code class="docutils literal notranslate"><span class="pre">01_pd_joint_space.py</span></code> on GitHub →</a></p>
+<p><a class="reference external" href="https://github.com/Balint-H/ssnr_sim/blob/main/SSNR2026/01_pd_joint_space.py">View <code class="docutils literal notranslate"><span class="pre">01_pd_joint_space.py</span></code> on GitHub</a></p>
 <div class="literal-block-wrapper docutils container" id="id1">
 <div class="code-block-caption"><span class="caption-number">Listing 1 </span><span class="caption-text">PD control implementation in MuJoCo</span><a class="headerlink" href="#id1" title="Link to this code">#</a></div>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="c1"># Joint-space PD control of a planar two-joint arm, using the example scene provided by MuJoCo.</span>
@@ -616,7 +605,6 @@ Insufficient derivative damping may cause overshooting and persistent motion.</p
     <ul class="visible nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#objective">Objective</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#control-law">Control Law</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#physical-interpretation">Physical Interpretation</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#simulation-model">Simulation Model</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#simulation-loop">Simulation Loop</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#system-variables">System Variables</a></li>

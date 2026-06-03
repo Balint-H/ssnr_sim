@@ -53,17 +53,6 @@ The Jacobian is used twice in this controller:
 
 ---
 
-## Physical Interpretation
-
-This controller behaves like a **virtual spring-damper attached to the end-effector**:
-
-* The proportional term acts like a spring pulling the tip toward the Cartesian target
-* The derivative term acts like a damper removing kinetic energy from the tip's motion
-
-The Jacobian transpose is what makes this possible without explicit inverse kinematics: it relates the virtual Cartesian force to the joint torques that would produce it.
-
----
-
 ## Simulation Model
 
 The robot is modeled as a rigid-body dynamical system governed by:
@@ -127,6 +116,8 @@ and must return a **task-space force vector**. The conversion to joint torques v
 ---
 
 ## Source Code
+
+[View `02_pd_task_space.py` on GitHub](https://github.com/Balint-H/ssnr_sim/blob/main/SSNR2026/02_pd_task_space.py)
 
 ```{literalinclude} ../SSNR2026/02_pd_task_space.py
 :language: python

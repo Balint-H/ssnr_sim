@@ -62,7 +62,7 @@ motoneuron pool.
 
 Instead of designing a controller by hand, you specify only a **reward
 signal** and let a PPO agent discover the behaviour through trial and
-error — from a cartpole swing-up on CPU to a musculoskeletal elbow arm,
+error, from a cartpole swing-up on CPU to a musculoskeletal elbow arm,
 up to GPU-accelerated training with MJX and Brax.
 
 → [Tutorial 3: RL for Motor Control](day3_intro)

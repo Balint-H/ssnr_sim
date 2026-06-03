@@ -363,7 +363,6 @@ document.write(`
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#control-law">Control Law</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#two-jacobians">Two Jacobians</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-pull-only-constraint">The Pull-Only Constraint</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#physical-interpretation">Physical Interpretation</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#simulation-model">Simulation Model</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#simulation-loop">Simulation Loop</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#system-variables">System Variables</a></li>
@@ -441,11 +440,6 @@ f_{tendon} = \left(J_{tendon}^\top\right)^{+} \tau
 </pre></div>
 </div>
 <p>Enforcing this constraint changes the behavior: with antagonistic tendons, the controller must coordinate which cables pull to produce a net torque in the desired direction.</p>
-</section>
-<hr class="docutils" />
-<section id="physical-interpretation">
-<h2>Physical Interpretation<a class="headerlink" href="#physical-interpretation" title="Link to this heading">#</a></h2>
-<p>The controller still behaves like a <strong>virtual spring-damper attached to the end-effector</strong>, but the virtual Cartesian force is now produced indirectly by a set of tendons wrapped around the joints, rather than by ideal joint motors. The two Jacobian transposes together translate “where I want the tip to go” into “how hard each cable should pull.”</p>
 </section>
 <hr class="docutils" />
 <section id="simulation-model">
@@ -534,7 +528,7 @@ M(q)\ddot{q} + C(q,\dot{q}) + g(q) = \tau
 <hr class="docutils" />
 <section id="source-code">
 <h2>Source Code<a class="headerlink" href="#source-code" title="Link to this heading">#</a></h2>
-<p><a class="reference external" href="https://github.com/Balint-H/ssnr_sim/blob/main/SSNR2026/03_pd_tendon_space.py">View <code class="docutils literal notranslate"><span class="pre">03_pd_tendon_space.py</span></code> on GitHub →</a></p>
+<p><a class="reference external" href="https://github.com/Balint-H/ssnr_sim/blob/main/SSNR2026/03_pd_tendon_space.py">View <code class="docutils literal notranslate"><span class="pre">03_pd_tendon_space.py</span></code> on GitHub</a></p>
 <div class="literal-block-wrapper docutils container" id="id1">
 <div class="code-block-caption"><span class="caption-number">Listing 3 </span><span class="caption-text">Tendon-actuated task-space control implementation in MuJoCo</span><a class="headerlink" href="#id1" title="Link to this code">#</a></div>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="c1"># If you have a given position in task space you want to reach</span>
@@ -683,7 +677,6 @@ under-actuated, so the arm may be unable to resist forces in some configurations
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#control-law">Control Law</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#two-jacobians">Two Jacobians</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-pull-only-constraint">The Pull-Only Constraint</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#physical-interpretation">Physical Interpretation</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#simulation-model">Simulation Model</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#simulation-loop">Simulation Loop</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#system-variables">System Variables</a></li>
