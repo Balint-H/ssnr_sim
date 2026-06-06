@@ -84,3 +84,5 @@ $$
 
 The exercises for this tutorial are in the notebook [`0_lif_neuron_exercises.ipynb`](https://github.com/Balint-H/ssnr_sim/blob/main/SSNR2026/0_lif_neuron_exercises.ipynb), available on GitHub.
 
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/Balint-H/ssnr_sim/blob/main/SSNR2026/0_lif_neuron_exercises.ipynb)
+

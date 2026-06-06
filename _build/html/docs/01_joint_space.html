@@ -367,7 +367,6 @@ document.write(`
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#implementation-notes">Implementation Notes</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#key-insights">Key Insights</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#source-code">Source Code</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#warning">Warning</a></li>
 </ul>
             </nav>
         </div>
@@ -476,8 +475,20 @@ M(q)\ddot{q} + C(q,\dot{q}) + g(q) = \tau
 <li><p>Too high gains may cause oscillations</p></li>
 <li><p>The velocity term is essential for damping</p></li>
 </ul>
-</section>
 <hr class="docutils" />
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p><a class="reference external" href="https://colab.research.google.com"><img alt="Open In Colab" src="https://colab.research.google.com/assets/colab-badge.svg" /></a></p>
+<p>To run this exercise, in a new Colab notebook run:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>!git clone https://github.com/Balint-H/ssnr_sim.git
+%cd ssnr_sim
+!pip install mujoco
+!python -m SSNR2026.01_pd_joint_space
+</pre></div>
+</div>
+<p>The interactive viewer requires a local display and will not open on Colab.</p>
+</div>
+</section>
 <section id="source-code">
 <h2>Source Code<a class="headerlink" href="#source-code" title="Link to this heading">#</a></h2>
 <p><a class="reference external" href="https://github.com/Balint-H/ssnr_sim/blob/main/SSNR2026/01_pd_joint_space.py">View <code class="docutils literal notranslate"><span class="pre">01_pd_joint_space.py</span></code> on GitHub</a></p>
@@ -526,15 +537,6 @@ M(q)\ddot{q} + C(q,\dot{q}) + g(q) = \tau
 <span class="linenos">41</span>
 </pre></div>
 </div>
-</div>
-</section>
-<hr class="docutils" />
-<section id="warning">
-<h2>Warning<a class="headerlink" href="#warning" title="Link to this heading">#</a></h2>
-<div class="admonition warning">
-<p class="admonition-title">Warning</p>
-<p>High proportional gains may lead to unstable or oscillatory behavior.
-Insufficient derivative damping may cause overshooting and persistent motion.</p>
 </div>
 </section>
 </section>
@@ -611,7 +613,6 @@ Insufficient derivative damping may cause overshooting and persistent motion.</p
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#implementation-notes">Implementation Notes</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#key-insights">Key Insights</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#source-code">Source Code</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#warning">Warning</a></li>
 </ul>
   </nav></div>
 

@@ -125,8 +125,6 @@ The controller receives:
 
 and must return a **task-space force vector**. Everything after that, the mapping to joint torques via $J^\top$, the conversion to tendon forces via the tendon Jacobian pseudoinverse, and writing to `data.ctrl`, is handled in the control callback.
 
-> **Note on gains:** as in the previous exercise `Kp = 100` and `Kd = 0`, so the controller is purely proportional in task space. With no damping, oscillation is expected, and the pull-only constraint can make it more pronounced.
-
 The final block colors each tendon from red (pulling little / negative command) to blue (pulling hard) using a logistic mapping of `data.ctrl`, purely for visualization.
 
 ---
@@ -142,9 +140,25 @@ The final block colors each tendon from red (pulling little / negative command) 
 
 ---
 
+```{note}
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com)
+
+To run this exercise, in a new Colab notebook run:
+
+    !git clone https://github.com/Balint-H/ssnr_sim.git
+    %cd ssnr_sim
+    !pip install mujoco
+    !python -m SSNR2026.03_pd_tendon_space
+
+The interactive viewer requires a local display and will not open on Colab.
+```
+
 ## Source Code
 
-[View `03_pd_tendon_space.py` on GitHub](https://github.com/Balint-H/ssnr_sim/blob/main/SSNR2026/03_pd_tendon_space.py)
+[View `03_pd_tendon_space.py` on GitHub](https://github.com/Balint-H/ssnr_sim/blob/main/SSNR2026/03_pd_tendon_space.py)  
+[View solution `04_pd_tendon_space.py` on GitHub](https://github.com/Balint-H/ssnr_sim/blob/main/SSNR2026/solutions/04_pd_tendon_space.py)  
+[View extended solution '05_pd_tendon_space_task_impedance.py' on GitHub](https://github.com/Balint-H/ssnr_sim/blob/main/SSNR2026/solutions/05_pd_tendon_space_task_impedance.py)  
+[View extended solution '05_pd_tendon_space_task_stiffness.py' on GitHub](https://github.com/Balint-H/ssnr_sim/blob/main/SSNR2026/solutions/05_pd_tendon_space_task_stiffness.py)
 
 ```{literalinclude} ../SSNR2026/03_pd_tendon_space.py
 :language: python
@@ -152,16 +166,4 @@ The final block colors each tendon from red (pulling little / negative command) 
 :caption: Tendon-actuated task-space control implementation in MuJoCo
 ```
 
----
-
-## Warning
-
-```{warning}
-High proportional gains may lead to unstable or oscillatory behavior.
-Insufficient derivative damping may cause overshooting and persistent motion.
-Near kinematic singularities the Jacobians become ill-conditioned, and the
-pseudoinverse can produce very large tendon forces.
-Enforcing the pull-only constraint can leave certain task-space directions
-under-actuated, so the arm may be unable to resist forces in some configurations.
-```
 

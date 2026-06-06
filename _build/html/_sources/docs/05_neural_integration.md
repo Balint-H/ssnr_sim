@@ -160,6 +160,19 @@ The neural model is already implemented in [`neuron_functions.py`](https://githu
 
 ---
 
+```{note}
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com)
+
+To run this exercise, in a new Colab notebook run:
+
+    !git clone https://github.com/Balint-H/ssnr_sim.git
+    %cd ssnr_sim
+    !pip install mujoco
+    !python -m SSNR2026.05_pd_neuron_integration
+
+The interactive viewer requires a local display and will not open on Colab.
+```
+
 ## Source Code
 
 [View `05_pd_neuron_integration.py` on GitHub](https://github.com/Balint-H/ssnr_sim/blob/main/SSNR2026/05_pd_neuron_integration.py)  

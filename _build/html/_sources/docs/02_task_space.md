@@ -101,7 +101,6 @@ The controller receives:
 
 and must return a **task-space force vector**. The conversion to joint torques via $J^\top$ is handled outside `feedback_control`, in the control callback.
 
-> **Note on gains:** in this example `Kp = 100` and `Kd = 0`, so the controller is purely proportional in task space. With no damping term the end-effector has nothing to dissipate kinetic energy, which is the first thing worth investigating if you observe overshoot or oscillation.
 
 ---
 
@@ -115,9 +114,23 @@ and must return a **task-space force vector**. The conversion to joint torques v
 
 ---
 
+```{note}
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com)
+
+To run this exercise, in a new Colab notebook run:
+
+    !git clone https://github.com/Balint-H/ssnr_sim.git
+    %cd ssnr_sim
+    !pip install mujoco
+    !python -m SSNR2026.02_pd_task_space
+
+The interactive viewer requires a local display and will not open on Colab.
+```
+
 ## Source Code
 
-[View `02_pd_task_space.py` on GitHub](https://github.com/Balint-H/ssnr_sim/blob/main/SSNR2026/02_pd_task_space.py)
+[View `02_pd_task_space.py` on GitHub](https://github.com/Balint-H/ssnr_sim/blob/main/SSNR2026/02_pd_task_space.py)  
+[View solution `02_pd_task_space.py` on GitHub](https://github.com/Balint-H/ssnr_sim/blob/main/SSNR2026/solutions/02_pd_task_space.py)
 
 ```{literalinclude} ../SSNR2026/02_pd_task_space.py
 :language: python
@@ -125,15 +138,10 @@ and must return a **task-space force vector**. The conversion to joint torques v
 :caption: Task-space PD control implementation in MuJoCo
 ```
 
----
 
-## Warning
 
-```{warning}
-High proportional gains may lead to unstable or oscillatory behavior.
-Insufficient derivative damping may cause overshooting and persistent motion.
-Near kinematic singularities the Jacobian becomes ill-conditioned, and the
-mapping between task forces and joint torques can produce large or erratic torques.
-```
+
+
+
 
 

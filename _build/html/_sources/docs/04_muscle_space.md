@@ -141,9 +141,23 @@ The control callback is executed every physics step (~2 ms).
 
 ---
 
+```{note}
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com)
+
+To run this exercise, in a new Colab notebook run:
+
+    !git clone https://github.com/Balint-H/ssnr_sim.git
+    %cd ssnr_sim
+    !pip install mujoco
+    !python -m SSNR2026.04_pd_muscle_space
+
+The interactive viewer requires a local display and will not open on Colab.
+```
+
 ## Source Code
 
-[View `04_pd_muscle_space.py` on GitHub](https://github.com/Balint-H/ssnr_sim/blob/main/SSNR2026/04_pd_muscle_space.py)
+[View `04_pd_muscle_space.py` on GitHub](https://github.com/Balint-H/ssnr_sim/blob/main/SSNR2026/04_pd_muscle_space.py)  
+[View solution `06_pd_muscle_space.py` on GitHub](https://github.com/Balint-H/ssnr_sim/blob/main/SSNR2026/solutions/06_pd_muscle_space.py)
 
 ```{literalinclude} ../SSNR2026/04_pd_muscle_space.py
 :language: python
@@ -151,19 +165,9 @@ The control callback is executed every physics step (~2 ms).
 :caption: Muscle-actuated operational-space control in MuJoCo
 ```
 
----
 
-## Warning
 
-```{warning}
-High proportional gains may lead to unstable or oscillatory behavior.
-Insufficient derivative damping may cause overshooting and persistent motion.
-Targets outside the reachable workspace cause erratic behavior unless clipped.
-Near kinematic singularities the Jacobians and the (weighted) pseudoinverse become
-ill-conditioned and can request very large forces.
-Because muscles can only pull, some task-space directions may be under-actuated in
-certain configurations.
-```
+
 
 
 

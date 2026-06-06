@@ -92,6 +92,19 @@ and must return a torque vector.
 
 ---
 
+```{note}
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com)
+
+To run this exercise, in a new Colab notebook run:
+
+    !git clone https://github.com/Balint-H/ssnr_sim.git
+    %cd ssnr_sim
+    !pip install mujoco
+    !python -m SSNR2026.01_pd_joint_space
+
+The interactive viewer requires a local display and will not open on Colab.
+```
+
 ## Source Code
 
 [View `01_pd_joint_space.py` on GitHub](https://github.com/Balint-H/ssnr_sim/blob/main/SSNR2026/01_pd_joint_space.py)
@@ -102,13 +115,8 @@ and must return a torque vector.
 :caption: PD control implementation in MuJoCo
 ```
 
----
 
-## Warning
 
-```{warning}
-High proportional gains may lead to unstable or oscillatory behavior.
-Insufficient derivative damping may cause overshooting and persistent motion.
-```
+
 
 

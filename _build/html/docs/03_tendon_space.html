@@ -369,7 +369,6 @@ document.write(`
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#implementation-notes">Implementation Notes</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#key-insights">Key Insights</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#source-code">Source Code</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#warning">Warning</a></li>
 </ul>
             </nav>
         </div>
@@ -508,9 +507,6 @@ M(q)\ddot{q} + C(q,\dot{q}) + g(q) = \tau
 <li><p>Cartesian velocity error</p></li>
 </ul>
 <p>and must return a <strong>task-space force vector</strong>. Everything after that, the mapping to joint torques via <span class="math notranslate nohighlight">\(J^\top\)</span>, the conversion to tendon forces via the tendon Jacobian pseudoinverse, and writing to <code class="docutils literal notranslate"><span class="pre">data.ctrl</span></code>, is handled in the control callback.</p>
-<blockquote>
-<div><p><strong>Note on gains:</strong> as in the previous exercise <code class="docutils literal notranslate"><span class="pre">Kp</span> <span class="pre">=</span> <span class="pre">100</span></code> and <code class="docutils literal notranslate"><span class="pre">Kd</span> <span class="pre">=</span> <span class="pre">0</span></code>, so the controller is purely proportional in task space. With no damping, oscillation is expected, and the pull-only constraint can make it more pronounced.</p>
-</div></blockquote>
 <p>The final block colors each tendon from red (pulling little / negative command) to blue (pulling hard) using a logistic mapping of <code class="docutils literal notranslate"><span class="pre">data.ctrl</span></code>, purely for visualization.</p>
 </section>
 <hr class="docutils" />
@@ -524,11 +520,26 @@ M(q)\ddot{q} + C(q,\dot{q}) + g(q) = \tau
 <li><p>Tendons can only <strong>pull</strong>: enforcing this is what makes the model physically realistic</p></li>
 <li><p>Near kinematic singularities either Jacobian can become ill-conditioned</p></li>
 </ul>
-</section>
 <hr class="docutils" />
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p><a class="reference external" href="https://colab.research.google.com"><img alt="Open In Colab" src="https://colab.research.google.com/assets/colab-badge.svg" /></a></p>
+<p>To run this exercise, in a new Colab notebook run:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>!git clone https://github.com/Balint-H/ssnr_sim.git
+%cd ssnr_sim
+!pip install mujoco
+!python -m SSNR2026.03_pd_tendon_space
+</pre></div>
+</div>
+<p>The interactive viewer requires a local display and will not open on Colab.</p>
+</div>
+</section>
 <section id="source-code">
 <h2>Source Code<a class="headerlink" href="#source-code" title="Link to this heading">#</a></h2>
-<p><a class="reference external" href="https://github.com/Balint-H/ssnr_sim/blob/main/SSNR2026/03_pd_tendon_space.py">View <code class="docutils literal notranslate"><span class="pre">03_pd_tendon_space.py</span></code> on GitHub</a></p>
+<p><a class="reference external" href="https://github.com/Balint-H/ssnr_sim/blob/main/SSNR2026/03_pd_tendon_space.py">View <code class="docutils literal notranslate"><span class="pre">03_pd_tendon_space.py</span></code> on GitHub</a><br />
+<a class="reference external" href="https://github.com/Balint-H/ssnr_sim/blob/main/SSNR2026/solutions/04_pd_tendon_space.py">View solution <code class="docutils literal notranslate"><span class="pre">04_pd_tendon_space.py</span></code> on GitHub</a><br />
+<a class="reference external" href="https://github.com/Balint-H/ssnr_sim/blob/main/SSNR2026/solutions/05_pd_tendon_space_task_impedance.py">View extended solution ‘05_pd_tendon_space_task_impedance.py’ on GitHub</a><br />
+<a class="reference external" href="https://github.com/Balint-H/ssnr_sim/blob/main/SSNR2026/solutions/05_pd_tendon_space_task_stiffness.py">View extended solution ‘05_pd_tendon_space_task_stiffness.py’ on GitHub</a></p>
 <div class="literal-block-wrapper docutils container" id="id1">
 <div class="code-block-caption"><span class="caption-number">Listing 3 </span><span class="caption-text">Tendon-actuated task-space control implementation in MuJoCo</span><a class="headerlink" href="#id1" title="Link to this code">#</a></div>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="c1"># If you have a given position in task space you want to reach</span>
@@ -592,19 +603,6 @@ M(q)\ddot{q} + C(q,\dot{q}) + g(q) = \tau
 <span class="linenos">59</span>
 </pre></div>
 </div>
-</div>
-</section>
-<hr class="docutils" />
-<section id="warning">
-<h2>Warning<a class="headerlink" href="#warning" title="Link to this heading">#</a></h2>
-<div class="admonition warning">
-<p class="admonition-title">Warning</p>
-<p>High proportional gains may lead to unstable or oscillatory behavior.
-Insufficient derivative damping may cause overshooting and persistent motion.
-Near kinematic singularities the Jacobians become ill-conditioned, and the
-pseudoinverse can produce very large tendon forces.
-Enforcing the pull-only constraint can leave certain task-space directions
-under-actuated, so the arm may be unable to resist forces in some configurations.</p>
 </div>
 </section>
 </section>
@@ -683,7 +681,6 @@ under-actuated, so the arm may be unable to resist forces in some configurations
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#implementation-notes">Implementation Notes</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#key-insights">Key Insights</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#source-code">Source Code</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#warning">Warning</a></li>
 </ul>
   </nav></div>
 
