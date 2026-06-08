@@ -72,7 +72,7 @@ The control callback is executed every physics step (~2 ms).
 
 ## Implementation Notes
 
-You only need to edit the function [`feedback_control`](https://github.com/Balint-H/ssnr_sim/blob/main/SSNR2026/student_functions.py#L6) in [`student_functions.py`](https://github.com/Balint-H/ssnr_sim/blob/main/SSNR2026/student_functions.py).
+You will need to edit the function [`feedback_control`](https://github.com/Balint-H/ssnr_sim/blob/main/SSNR2026/student_functions.py#L6) in [`student_functions.py`](https://github.com/Balint-H/ssnr_sim/blob/main/SSNR2026/student_functions.py).
 
 The controller receives:
 
@@ -80,6 +80,11 @@ The controller receives:
 * velocity error
 
 and must return a torque vector.
+
+Unsure what gains you should be using? The value of the sliders in the interactive viewer is accessible in the `feedback_control` function. Use their values (e.g. from `data.control[2]`) as the gains for the PD control, and explore their effect interactively!
+
+At a later point you will also need to edit the mujoco model files `arm_model.xml` and `arm_model_tendon.xml`.
+You may do this with the text editor of your choice.
 
 ---
 
@@ -93,16 +98,8 @@ and must return a torque vector.
 ---
 
 ```{note}
-[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com)
-
-To run this exercise, in a new Colab notebook run:
-
-    !git clone https://github.com/Balint-H/ssnr_sim.git
-    %cd ssnr_sim
-    !pip install mujoco
-    !python -m SSNR2026.01_pd_joint_space
-
-The interactive viewer requires a local display and will not open on Colab.
+This exercise is designed to be ran locally, to be able to use the interactive viewer of MuJoCo.
+Activate your virtual environment, then run each script separately e.g. `python 01_joint_space.py`  
 ```
 
 ## Source Code

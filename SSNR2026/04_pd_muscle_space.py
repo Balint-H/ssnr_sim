@@ -7,6 +7,7 @@ import mujoco.viewer as viewer
 import numpy as np
 from numpy.linalg import pinv, inv
 import os
+from common_functions import launch_simulation, get_current_and_target_kinematics
 
 Kp = 10
 Kd = 0.3
@@ -27,23 +28,7 @@ def arm_control(model, data):
     # `model` contains static information about the modeled system, e.g. their indices in dynamics matrices
     # `data` contains the current dynamic state of the system
 
-    # Getting the current position of the interactive target. You can use Ctrl (Cmd on Mac) + Shift + Right click drag
-    # to move the target in the horizontal plane.
-    xt, yt, _ = data.mocap_pos[0]
-    data.mocap_pos[0][2] = 0
-
-    # Clipping the target position's distance, otherwise weird behaviour occurs when out of reach
-    ls = model.body("forearm").pos[0]
-    lw = model.body("wrist_body").pos[0]
-    le = -model.body("hand").pos[1]
-    lh = -model.body("tip").pos[1]
-
-    rt = np.linalg.norm([xt, yt])
-    xt, yt = np.array([xt, yt])/rt * np.clip(rt, 0, ls+le+lh+lw)
-    data.mocap_pos[0][:2] = [xt, yt]
-
-    # Current position of arm end in comparison
-    x, y, _ = data.body("tip").xpos
+    x, y, xt, yt, xvt, yvt = get_current_and_target_kinematics(model, data)
 
     # dx/dq
     # Jacobian from engine. The jacobian converts differences (e.g. error, velocity) in joint space to differences in
@@ -61,12 +46,15 @@ def arm_control(model, data):
     xvel, yvel, _ = J@data.qvel  # Get task velocity with jacobian
     Ji = weighted_pinv(J, H)  # Invert it so we can go from task space to joint space
 
-    xe, ye = xt-x, yt-y  # Errors in task space
-    #xe, ye = xe-xvel*0.1, ye-yvel*0.1
-    task_force = Kp * np.array([xe, ye, 0]) - Kd*np.array([xvel, yvel, 0])  # Stiffness and damping in task space!
+    xe, ye = xt - x, yt - y  # Errors in task space
+    xve, yve = xvt - xvel, yvt - yvel
+    position_error = np.array([xe, ye, 0])
+    velocity_error = np.array([xve, yve, 0])
+
+    task_force = Kp * position_error + Kd*velocity_error  # Stiffness and damping in task space!
     f = J.T @ task_force  # desired joint torque
     # Good practice to clip forces to reasonable values
-    qfrc_desired = np.clip(f, -1, 1)
+    qfrc_desired = np.clip(f, -10, 10)
 
     # Convert from joint-space to tendon space
     J_tendon = np.empty((model.ntendon, model.nv))
@@ -76,7 +64,6 @@ def arm_control(model, data):
 
     # Muscles/cables should only pull
     data.ctrl = -np.minimum(0, tendon_force)
-
 
     # We'll visualise the force applied on each tendon:
     color = np.log(data.ctrl+0.0001)

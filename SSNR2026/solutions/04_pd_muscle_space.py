@@ -10,7 +10,7 @@ import os
 from common_functions import launch_simulation, get_current_and_target_kinematics
 
 Kp = 10
-Kd = 0.3
+Kd = 0.7
 
 
 xml = os.path.dirname(__file__) + '/arm_model_tendon.xml'
@@ -44,9 +44,8 @@ def arm_control(model, data):
     H = H/model.body("upper arm").subtreemass
 
     xvel, yvel, _ = J@data.qvel  # Get task velocity with jacobian
-    Ji = weighted_pinv(J, H)  # Invert it so we can go from task space to joint space
 
-    xe, ye = xt - x, yt - y  # Errors in task space
+    xe, ye = xt - (x+xvel*0.02), yt - (y+yvel*0.02)  # Errors in task space, with forecasting
     xve, yve = xvt - xvel, yvt - yvel
     position_error = np.array([xe, ye, 0])
     velocity_error = np.array([xve, yve, 0])

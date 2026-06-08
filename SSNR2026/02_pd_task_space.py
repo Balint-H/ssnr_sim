@@ -5,8 +5,8 @@ import mujoco.viewer as viewer
 import numpy as np
 from numpy.linalg import pinv, inv
 import os
-from .student_functions import *
-from .common_scripts import launch_simulation, get_current_and_target_position
+from student_functions import *
+from common_functions import launch_simulation, get_current_and_target_kinematics
 
 Kp = 100
 Kd = 0
@@ -22,8 +22,8 @@ def arm_control(model, data):
     # `model` contains static information about the modeled system, e.g. their indices in dynamics matrices
     # `data` contains the current dynamic state of the system
 
-    # Check out the definition of this function that reads the simulation state, available in the file common_scripts.py
-    x, y, xt, yt = get_current_and_target_position(model, data)
+    # Check out the definition of this function that reads the simulation state, available in the file common_functions.py
+    x, y, xt, yt, xvt, yvt = get_current_and_target_kinematics(model, data)
 
     # dx/dq
     # Jacobian from engine. The jacobian converts differences (e.g. error, velocity) in joint space to differences in
@@ -35,9 +35,10 @@ def arm_control(model, data):
     xvel, yvel, _ = J@data.qvel  # Get task velocity with jacobian
 
     xe, ye = xt-x, yt-y  # Errors in task space
+    xve, yve = xvt-xvel, yvt-yvel
     position_error = np.array([xe, ye, 0])
-    velocity_error = -np.array([xvel, yvel, 0])
-    task_force = feedback_control(position_error, velocity_error)
+    velocity_error = np.array([xve, yve, 0])
+    task_force = feedback_control(model, data, position_error, velocity_error)
     f = J.T @ task_force  # desired joint torque
     data.qfrc_applied = f
 

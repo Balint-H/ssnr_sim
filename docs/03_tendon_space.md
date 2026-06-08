@@ -1,14 +1,14 @@
 # 3. Task-Space Control with Tendon Actuation
 
-This exercise builds on task-space PD control and adds a layer of realism: the two-joint planar arm is no longer driven by torques applied directly at the joints, but by **tendons** (cables or muscles) that can only **pull**. The controller must therefore translate the desired Cartesian behavior all the way down to actuator (tendon) commands.
+This exercise builds on task-space PD control and adds another layer of complexity: the two-joint planar arm is no longer driven by torques applied directly at the joints, but by **tendons**. Based on the flavour of neuromechanics research you are doing you can think of this model as representing a simple cable-driven exo, or a simple muscle model. The controller must translate the desired Cartesian behavior all the way down to actuator (tendon) commands.
 
 ---
 
-## Objective
+## What is different?
 
-Your task is to implement a PD controller that drives the arm's end-effector (the `tip` body) toward a desired Cartesian target, where the only available actuators are tendons.
+This script implements a PD controller that drives the arm's end-effector (the `tip` body) toward a desired Cartesian target, where the only available actuators are tendons.
 
-The pipeline is: Cartesian force → joint torque → tendon force.
+The flow is: Cartesian force → joint torque → tendon force.
 
 ---
 
@@ -62,7 +62,7 @@ In MuJoCo the tendon Jacobian is stored in sparse form in `data.ten_J`; it is co
 
 ## The Pull-Only Constraint
 
-Real tendons, cables, and muscles can only **pull**, never push. This means valid tendon forces are sign-constrained.
+Real tendons, cables, and muscles can generally only **pull**, never push. This means valid tendon forces are sign-constrained.
 
 The unconstrained pseudoinverse solution may request negative (pushing) forces, which are physically impossible for a cable. The code includes a commented-out line showing how to clamp the result:
 
@@ -140,25 +140,11 @@ The final block colors each tendon from red (pulling little / negative command) 
 
 ---
 
-```{note}
-[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com)
-
-To run this exercise, in a new Colab notebook run:
-
-    !git clone https://github.com/Balint-H/ssnr_sim.git
-    %cd ssnr_sim
-    !pip install mujoco
-    !python -m SSNR2026.03_pd_tendon_space
-
-The interactive viewer requires a local display and will not open on Colab.
-```
-
 ## Source Code
 
 [View `03_pd_tendon_space.py` on GitHub](https://github.com/Balint-H/ssnr_sim/blob/main/SSNR2026/03_pd_tendon_space.py)  
 [View solution `04_pd_tendon_space.py` on GitHub](https://github.com/Balint-H/ssnr_sim/blob/main/SSNR2026/solutions/04_pd_tendon_space.py)  
-[View extended solution '05_pd_tendon_space_task_impedance.py' on GitHub](https://github.com/Balint-H/ssnr_sim/blob/main/SSNR2026/solutions/05_pd_tendon_space_task_impedance.py)  
-[View extended solution '05_pd_tendon_space_task_stiffness.py' on GitHub](https://github.com/Balint-H/ssnr_sim/blob/main/SSNR2026/solutions/05_pd_tendon_space_task_stiffness.py)
+[View extended solution '05_pd_tendon_space_task_impedance.py' on GitHub](https://github.com/Balint-H/ssnr_sim/blob/main/SSNR2026/solutions/05_pd_tendon_space_task_impedance.py) 
 
 ```{literalinclude} ../SSNR2026/03_pd_tendon_space.py
 :language: python

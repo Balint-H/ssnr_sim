@@ -4,17 +4,21 @@ This exercise extends feedback control from joint space to **task space** (opera
 
 ---
 
-## Objective
+## What is different now?
 
-Your task is to implement a PD controller that drives the arm's end-effector (the `tip` body) from its current Cartesian position to a desired target position in the plane.
+This script implement a PD controller that drives the arm's end-effector (the `tip` body) from its current Cartesian position to a desired target position in the plane.
 
-The controller computes a force in task space and maps it back to joint torques.
+The controller computes a force in task space and maps it back to joint torques. Instead of rotational springs at the joints, this task conceptualizes the control as linear springs connecting the tip of the fingers to the target.
+
+> [!Tip]
+> You can move the task-space target by Ctrl+Right-click dragging it around in the interactive window.
+> Alternatively you can add the `use_traj=True` arguement to the `get_current_and_target_kinematics` function's call on line 26 to automate the target movement.
 
 ---
 
 ## Control Law
 
-The task-space PD controller is defined as:
+The task-space PD controller is, familiarly, defined as:
 
 $$
 F = K_p \, e_{pos} + K_d \, e_{vel}
@@ -28,11 +32,14 @@ where:
 * $K_d$ is the derivative gain
 * $F$ is the desired force at the end-effector
 
-The Cartesian force is then converted into joint torques using the transpose of the Jacobian:
+The Cartesian force is converted into joint torques using the transpose of the Jacobian:
 
 $$
 \tau = J^\top F
 $$
+
+You might notice that in terms of forces applied this is very similar to the joint space control. However,
+since the inertia of the arm still varies based on joint configuration, this control will still not behave linearly in task space.
 
 ---
 
@@ -53,57 +60,6 @@ The Jacobian is used twice in this controller:
 
 ---
 
-## Simulation Model
-
-The robot is modeled as a rigid-body dynamical system governed by:
-
-$$
-M(q)\ddot{q} + C(q,\dot{q}) + g(q) = \tau
-$$
-
-MuJoCo solves these equations numerically at each timestep.
-
----
-
-## Simulation Loop
-
-At each timestep, MuJoCo performs the following steps:
-
-1. Compute forward kinematics (body positions from joint states)
-2. Call the control function (this is where your code runs)
-3. Compute forward dynamics using applied torques
-4. Integrate system state forward in time
-
-The control callback is executed every physics step (~2 ms).
-
----
-
-## System Variables
-
-| Variable       | Description                                          |
-| -------------- | ---------------------------------------------------- |
-| `qpos`         | Joint positions (angles in radians)                  |
-| `qvel`         | Joint velocities                                     |
-| `J`            | End-effector Jacobian, mapping joint to task space   |
-| `tip`          | Body whose Cartesian position is being controlled    |
-| `qfrc_applied` | Torques applied to the system                        |
-
----
-
-## Implementation Notes
-
-You only need to edit the function [`feedback_control`](https://github.com/Balint-H/ssnr_sim/blob/main/SSNR2026/student_functions.py#L6) in [`student_functions.py`](https://github.com/Balint-H/ssnr_sim/blob/main/SSNR2026/student_functions.py).
-
-The controller receives:
-
-* Cartesian position error
-* Cartesian velocity error
-
-and must return a **task-space force vector**. The conversion to joint torques via $J^\top$ is handled outside `feedback_control`, in the control callback.
-
-
----
-
 ## Key Insights
 
 * This is a **task-space controller**: errors and forces are expressed in Cartesian coordinates, not joint angles
@@ -112,20 +68,6 @@ and must return a **task-space force vector**. The conversion to joint torques v
 * Near **singular configurations** the Jacobian loses rank and the mapping degrades
 * A zero derivative gain removes all task-space damping and tends to produce oscillation
 
----
-
-```{note}
-[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com)
-
-To run this exercise, in a new Colab notebook run:
-
-    !git clone https://github.com/Balint-H/ssnr_sim.git
-    %cd ssnr_sim
-    !pip install mujoco
-    !python -m SSNR2026.02_pd_task_space
-
-The interactive viewer requires a local display and will not open on Colab.
-```
 
 ## Source Code
 

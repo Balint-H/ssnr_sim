@@ -2,10 +2,18 @@
 This is example highlights a system with kinematic redundancy; there are more 
 degrees of freedom than necessary to specify a task space state. That is,
 there are multiple wrist, elbow and shoulder angle combinations that result
-in the same position of the fingertips
+in the same position of the fingertips.
+
+However, we start the task with the wrist joint removed. Examine this file,
+and experiment a bit with the file 00_pd_ik.py, then return here and add
+a joint to the wrist at the highlighted location.
 
 You can double click the transparent sphere, then use Ctrl+right drag to move
 the target in the horizontal plane.
+
+There is a lot going on in this file, so feel free to ask questions! Also,
+the mujoco documentation is fairly comprehensive, and you can search it for
+detailed explanations: https://mujoco.readthedocs.io/en/latest/XMLreference.html
 -->
 
 <mujoco model="2-link arm joint torque control">
@@ -16,8 +24,11 @@ the target in the horizontal plane.
     <!-- 
     Values for attributes defined here are applied for all elements matching the kind of element. 
     So all joints defined will be hinge joints by default. This can simplify the XML text.
+
+    If a later element redefines an attribute, that will override the default. The axis, range,
+    stiffness, damping and armature attributes are the most important here. What happens if you change them?
     -->
-    <joint type="hinge" pos="0 0 0" axis="0 0 1" limited="true" range="-5 170" damping="2" armature="0.001"/>
+    <joint type="hinge" pos="0 0 0" axis="0 0 1" limited="true" range="-5 170" damping="0.1" stiffness="0" armature="0.001"/>
   </default>
 
   <!-- 
@@ -48,19 +59,21 @@ the target in the horizontal plane.
         <geom name="forearm" mass="2" type="capsule" size="0.035" fromto="0 0 0  0.25 0 0" rgba=".5 .1 .1 1"/>
         <joint name="elbow"/>
           <body  name="wrist_body" pos="0.25 0 0" euler="-90 0 90">
-              <geom density="1000" type="capsule" size="0.02000001 0.03" pos="1.880135E-09 -0.03 -3.279598E-08" quat="4.003268E-08 -4.391836E-08 -0.7071071 -0.7071071" priority="0" contype="0" conaffinity="0" group="2" condim="1" solmix="1" solref="0.015 1" rgba=".5 .1 .1 1" solimp="0.99 0.99 0.003" margin="0" gap="0" friction="0.7 0.005 0.0001" name="rwrist_91" />
+              <geom density="1000" type="capsule" size="0.02000001 0.03" pos="1.880135E-09 -0.03 -3.279598E-08" quat="4.003268E-08 -4.391836E-08 -0.7071071 -0.7071071" priority="0" contype="0" conaffinity="0" group="2" condim="1" solmix="1" solref="0.015 1" rgba=".5 .1 .1 1" solimp="0.99 0.99 0.003" margin="0" gap="0" friction="0.7 0.005 0.0001" name="rwrist" />
               <body pos="0 -0.09076759 0" quat="-1 0 0 0" name="hand">
-                <joint name="wrist" axis="-1 0 0"/>
-                <geom density="1000" type="ellipsoid" size="0.03500002 0.02000001 0.045" pos="3.469804E-09 -0.01675202 -3.877605E-08" quat="4.003268E-08 -4.391836E-08 -0.7071071 -0.7071071" priority="0" contype="0" conaffinity="0" group="2" rgba=".5 .1 .1 1" condim="3" solmix="1" solref="0.015 1" solimp="0.98 0.98 0.001" margin="0" gap="0" friction="1 0.005 0.0001" name="rhand_95" />
+                <!--
+                TODO: Add a joint here! Experiment with which direction its axis="x y z" should point to
+                -->
+                <geom density="1000" type="ellipsoid" size="0.03500002 0.02000001 0.045" pos="3.469804E-09 -0.01675202 -3.877605E-08" quat="4.003268E-08 -4.391836E-08 -0.7071071 -0.7071071" priority="0" contype="0" conaffinity="0" group="2" rgba=".5 .1 .1 1" condim="3" solmix="1" solref="0.015 1" solimp="0.98 0.98 0.001" margin="0" gap="0" friction="1 0.005 0.0001" name="rhand" />
                 <body name="tip" pos="0 -0.175 0"/>
-                <body pos="-6.475558E-09 -0.06500006 1.90359E-08" quat="-1 0 0 0" name="rfingers_96">
-                  <geom density="1000" type="capsule" size="0.006500002 0.04" pos="-0.02399999 -0.02500005 -4.555073E-08" quat="0.7071071 -0.7071071 4.391836E-08 4.003268E-08" priority="0" contype="0" conaffinity="0" group="2" condim="3" rgba=".5 .1 .1 1" solmix="1" solref="0.015 1" solimp="0.98 0.98 0.001" margin="0" gap="0" friction="1 0.005 0.0001" name="rfinger0_101" />
-                  <geom density="1000" type="capsule" size="0.006500002 0.04" pos="-0.00799998 -0.02999995 -3.565628E-10" quat="0.7071071 -0.7071071 4.391836E-08 4.003268E-08" priority="0" contype="0" conaffinity="0" group="2" condim="3" rgba=".5 .1 .1 1" solmix="1" solref="0.015 1" solimp="0.98 0.98 0.001" margin="0" gap="0" friction="1 0.005 0.0001" name="rfinger1_102" />
-                  <geom density="1000" type="capsule" size="0.006000001 0.04" pos="0.007999999 -0.03000007 -5.897357E-09" quat="0.7071071 -0.7071071 4.391836E-08 4.003268E-08" priority="0" contype="0" conaffinity="0" group="2" condim="3" rgba=".5 .1 .1 1" solmix="1" solref="0.015 1" solimp="0.98 0.98 0.001" margin="0" gap="0" friction="1 0.005 0.0001" name="rfinger2_103" />
-                  <geom density="1000" type="capsule" size="0.005500001 0.04" pos="0.02400001 -0.02500007 3.095344E-08" quat="0.7071071 -0.7071071 4.391836E-08 4.003268E-08" priority="0" contype="0" conaffinity="0" group="2" condim="3" rgba=".5 .1 .1 1" solmix="1" solref="0.015 1" solimp="0.98 0.98 0.001" margin="0" gap="0" friction="1 0.005 0.0001" name="rfinger3_104" />
+                <body pos="-6.475558E-09 -0.06500006 1.90359E-08" quat="-1 0 0 0" name="rfingers">
+                  <geom density="1000" type="capsule" size="0.006500002 0.04" pos="-0.02399999 -0.02500005 -4.555073E-08" quat="0.7071071 -0.7071071 4.391836E-08 4.003268E-08" priority="0" contype="0" conaffinity="0" group="2" condim="3" rgba=".5 .1 .1 1" solmix="1" solref="0.015 1" solimp="0.98 0.98 0.001" margin="0" gap="0" friction="1 0.005 0.0001" name="rfinger0" />
+                  <geom density="1000" type="capsule" size="0.006500002 0.04" pos="-0.00799998 -0.02999995 -3.565628E-10" quat="0.7071071 -0.7071071 4.391836E-08 4.003268E-08" priority="0" contype="0" conaffinity="0" group="2" condim="3" rgba=".5 .1 .1 1" solmix="1" solref="0.015 1" solimp="0.98 0.98 0.001" margin="0" gap="0" friction="1 0.005 0.0001" name="rfinger1" />
+                  <geom density="1000" type="capsule" size="0.006000001 0.04" pos="0.007999999 -0.03000007 -5.897357E-09" quat="0.7071071 -0.7071071 4.391836E-08 4.003268E-08" priority="0" contype="0" conaffinity="0" group="2" condim="3" rgba=".5 .1 .1 1" solmix="1" solref="0.015 1" solimp="0.98 0.98 0.001" margin="0" gap="0" friction="1 0.005 0.0001" name="rfinger2" />
+                  <geom density="1000" type="capsule" size="0.005500001 0.04" pos="0.02400001 -0.02500007 3.095344E-08" quat="0.7071071 -0.7071071 4.391836E-08 4.003268E-08" priority="0" contype="0" conaffinity="0" group="2" condim="3" rgba=".5 .1 .1 1" solmix="1" solref="0.015 1" solimp="0.98 0.98 0.001" margin="0" gap="0" friction="1 0.005 0.0001" name="rfinger3" />
                 </body>
-                <body pos="-0.025 6.70552E-09 -8.940694E-09" quat="0.92388 -4.930634E-08 6.000214E-08 -0.382683" name="rthumb_97">
-                  <geom density="1000" type="capsule" size="0.008000004 0.03" pos="2.888915E-08 -0.03000006 -2.920286E-08" quat="3.642271E-08 6.018672E-09 -0.707107 -0.707107" priority="0" contype="0" conaffinity="0" group="2" rgba=".5 .1 .1 1"  condim="3" solmix="1" solref="0.015 1" solimp="0.98 0.98 0.001" margin="0" gap="0" friction="1 0.005 0.0001" name="rthumb_105" />
+                <body pos="-0.025 6.70552E-09 -8.940694E-09" quat="0.92388 -4.930634E-08 6.000214E-08 -0.382683" name="rthumb">
+                  <geom density="1000" type="capsule" size="0.008000004 0.03" pos="2.888915E-08 -0.03000006 -2.920286E-08" quat="3.642271E-08 6.018672E-09 -0.707107 -0.707107" priority="0" contype="0" conaffinity="0" group="2" rgba=".5 .1 .1 1"  condim="3" solmix="1" solref="0.015 1" solimp="0.98 0.98 0.001" margin="0" gap="0" friction="1 0.005 0.0001" name="rthumb" />
                 </body>
               </body>
           </body>
@@ -79,11 +92,22 @@ the target in the horizontal plane.
   
   <!-- Actuators apply joint-space forces at specified degrees of freedom. We are using a gearing of 0; this means
   that setting data.ctrl either via the sliders or in code will not apply a force on the joints. This is a trick
-  to get sliders we can interact with, the values we can read and process with code.-->
+  to get sliders we can interact with, the values we can read and process with code. With gearing 0 no forces will be
+  applied by default, but we can still read their value and process it, then add the force in code.
+  You may want to try removing the gear attribute from one of these elements, and then launch this xml in the
+  interactive viewer, to examine how it behaves by default. Other than motors, elements for position, velocity, PD,
+  DC motor actuators etc. exist in mujoco. If interested, check out the actuator section in the documentation:
+  https://mujoco.readthedocs.io/en/latest/XMLreference.html
+  -->
+
   <actuator>
-    <motor name="shoulder" joint="shoulder" ctrllimited="true" ctrlrange="-2 2" gear="0 0 0 0 0 0 "/>
-    <motor name="elbow" joint="elbow" ctrllimited="true" ctrlrange="-2 2" gear="0 0 0 0 0 0 "/>
-    <motor name="wrist" joint="wrist" ctrllimited="true" ctrlrange="-2 2" gear="0 0 0 0 0 0 "/>
+    <motor name="data.ctrl[0]" joint="shoulder" ctrllimited="true" ctrlrange="-3 3" gear="0 0 0 0 0 0 "/>
+    <motor name="data.ctrl[1]" joint="elbow" ctrllimited="true" ctrlrange="-3 3" gear="0 0 0 0 0 0 "/>
+    <motor name="data.ctrl[2]" joint="shoulder" ctrllimited="true" ctrlrange="-3 3" gear="0 0 0 0 0 0 "/>
+    <motor name="data.ctrl[3]" joint="elbow" ctrllimited="true" ctrlrange="-3 3" gear="0 0 0 0 0 0 "/>
+    <!--
+    TODO: Add an actuator for your new wrist joint
+    -->
   </actuator>
 
 
@@ -95,6 +119,10 @@ the target in the horizontal plane.
   <!--
   The elements below are for visuals only, defining textures and postprocessing.
   -->
+
+  <equality>
+    <connect body1="IK" body2="tip" anchor="0 0 0" active="false" name="target"/>
+  </equality>
 
   <asset>
     <texture type="skybox" builtin="gradient" rgb1="0.6 0.6 0.6" rgb2="0 0 0" width="512" height="512"/>

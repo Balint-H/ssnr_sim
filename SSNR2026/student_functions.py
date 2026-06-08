@@ -3,7 +3,7 @@
 
 import numpy as np
 
-def feedback_control(error_in_position, error_in_velocity):
+def feedback_control(model, data, error_in_position, error_in_velocity):
   # This function should return forces that help reduce the error in joint angles and in angular velocity.
   # The signs of forces, accelerations velocities and joint angles are aligned: A positive force gives a positive
   # acceleration. A positive acceleration will increase velocity over time. A positive velocity increases position
@@ -11,6 +11,9 @@ def feedback_control(error_in_position, error_in_velocity):
   # increase position/velocity.
   # You might want to clip forces to reasonable values as well
 
+  # You can access the data in the sliders using e.g. data.ctrl[2]. Create a response based on the error in position and
+  # velocity to reduce that error, by outputting force!
   return np.zeros_like(error_in_velocity)
+
 
 

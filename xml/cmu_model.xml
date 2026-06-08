@@ -4,15 +4,6 @@ This model is only used as a visual reference to illustrate a humanoid body in s
 
 <mujoco>
   <worldbody>
-    <body pos="-0.2067787 -0.0002415101 0.1821983" quat="-8.659561E-17 0 0.7071068 0.7071068" mocap="true" name="Mocap_K_head_0" />
-    <body pos="-0.208 -0.004 -0.3789999" quat="-8.659561E-17 0 0.7071068 0.7071068" mocap="true" name="Mocap_K_lowerback_1" />
-    <body pos="0.5372286 0.00427828 0.00206387" quat="-0.7071068 -2.980232E-07 1.192093E-07 -0.7071068" mocap="true" name="Mocap_K_rhand_2" />
-    <body pos="-0.2085659 -0.012053 -0.2657869" quat="-8.659561E-17 0 0.7071068 0.7071068" mocap="true" name="Mocap_K_upperback_3" />
-    <body pos="-0.106063 0.04544622 -1.291445" quat="-6.123234E-17 6.123234E-17 0 1" mocap="true" name="Mocap_K_rfoot_4" />
-    <body pos="-0.309937 0.04544622 -1.291445" quat="-6.123234E-17 6.123234E-17 0 1" mocap="true" name="Mocap_K_lfoot_5" />
-    <body pos="-0.461662 0.004277938 -0.570159" quat="0.5230872 0.475794 -0.4757942 -0.5230867" mocap="true" name="Mocap_K_lhand_6" />
-    <body pos="-0.2090784 -0.01111618 -0.1522268" quat="-8.659561E-17 0 0.7071068 0.7071068" mocap="true" name="Mocap_K_thorax_7" />
-    <body pos="-0.208 -0.004 -0.3789999" quat="-1 0 0 0" mocap="true" name="Mocap_K_root_8" />
     <body pos="-0.208 -0.004 -0.379" quat="-1 0 0 0" name="K_root_9">
       <body pos="0 0 0" quat="0 0 0.7071068 0.7071068" name="K_lhipjoint_10">
         <geom density="10" type="capsule" size="0.008000004 0.02187361" pos="0.05096854 -0.04590372 0.02472301" quat="0.5708001 -0.5666021 -0.5942641 0" priority="0" contype="0" conaffinity="0" group="2" condim="1" solmix="1" solref="0.015 1" solimp="0.99 0.99 0.003" margin="0" gap="0" friction="0.7 0.005 0.0001" name="K_lhipjoint_15" />
@@ -120,14 +111,7 @@ This model is only used as a visual reference to illustrate a humanoid body in s
   </worldbody>
   <contact />
   <tendon />
-  <equality>
-    <weld body1="Mocap_K_head_0" body2="K_head_76" solref="0.02 1" solimp="0.9 0.95 0.001 0.5 2" name="weld_head_111" />
-    <weld body1="Mocap_K_upperback_3" body2="K_upperback_21" solref="0.02 1" solimp="0.9 0.95 0.001 0.5 2" name="weld_upperback_113" />
-    <weld body1="Mocap_K_lhand_6" body2="K_lhand_92" solref="0.02 1" solimp="0.9 0.95 0.001 0.5 2" name="weld_lhand_114" />
-    <weld body1="Mocap_K_lowerback_1" body2="K_lowerback_14" solref="0.02 1" solimp="0.9 0.95 0.001 0.5 2" name="weld_lowerback_115" />
-    <weld body1="Mocap_K_root_8" body2="K_root_9" solref="0.02 1" solimp="0.9 0.95 0.001 0.5 2" name="weld_root_116" />
-    <weld body1="Mocap_K_thorax_7" body2="K_thorax_33" solref="0.02 1" solimp="0.9 0.95 0.001 0.5 2" name="weld_thorax_117" />
-  </equality>
+
   <actuator />
   <sensor />
   <asset />

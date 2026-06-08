@@ -3,6 +3,8 @@ import mujoco
 import mujoco.viewer as viewer
 import numpy as np
 from numpy.linalg import pinv, inv
+from torch.ao.nn.intrinsic import qat
+
 from common_functions import launch_simulation, get_current_and_target_kinematics
 
 from neuron_functions import (
@@ -16,14 +18,14 @@ from neuron_functions import (
 
 
 
-Kp = 10
-Kd = 0.3
+Kp = 300
+Kd = 5
 
 
-N_PER_MUSCLE = 200        # motoneurons per muscle        
+N_PER_MUSCLE = 700        # motoneurons per muscle
 F_MAX       = 6.0          
 I_MIN       = 1.0e-10    
-DRIVE_SCALE = 0.01
+DRIVE_SCALE = 0.001
 I_MAX       = 7e-10
 TAU_EXC     = 20e-3
 
@@ -36,11 +38,6 @@ E_state     = None
 
 
 xml = os.path.dirname(__file__) + '/arm_model_tendon.xml'
-
-
-def weighted_pinv(J, H):
-    Hinv = inv(H)
-    return Hinv @ J.T @ pinv(J @ Hinv @ J.T)
 
 
 def arm_control(model, data):
@@ -68,13 +65,13 @@ def arm_control(model, data):
     H = H/model.body("upper arm").subtreemass
 
     xvel, yvel, _ = J@data.qvel  # Get task velocity with jacobian
-    Ji = weighted_pinv(J, H)  # Invert it so we can go from task space to joint space
+    xacc, yacc, _ = J@data.qacc_smooth
 
-    xe, ye = xt - x, yt - y  # Errors in task space
-    xve, yve = xvt - xvel, yvt - yvel
+    xe, ye = xt - (x + xvel * 0.07), yt - (y + yvel * 0.07)  # Errors in task space, with forecasting
+    xve, yve = xvt - (xvel + xacc*0), yvt - (yvel + yacc*0)
     position_error = np.array([xe, ye, 0])
     velocity_error = np.array([xve, yve, 0])
-    task_force = Kp * position_error - Kd * velocity_error
+    task_force = Kp * position_error + Kd * velocity_error
     f = J.T @ task_force
     qfrc_desired = np.clip(f, -1, 1)
 

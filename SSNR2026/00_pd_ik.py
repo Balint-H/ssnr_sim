@@ -1,19 +1,15 @@
-# Joint-space PD control of a planar two-joint arm, using the example scene provided by MuJoCo.
-# For more information on the simulator see:
-# https://mujoco.readthedocs.io/en/stable/overview.html#introduction
-#
-# The target joint configuration is set via the GUI sliders. Your controller must compute
-# torques that drive the arm from its current configuration to the target.
+# If you have a given position in task space you want to reach
 
 import mujoco
 import mujoco.viewer as viewer
-import os
-
 import numpy as np
+from numpy.linalg import pinv, inv
+import os
+from student_functions import *
+from common_functions import launch_simulation, get_current_and_target_kinematics
 
-from common_functions import launch_simulation
-from student_functions import feedback_control
-
+Kp = 100
+Kd = 0
 
 xml = os.path.dirname(__file__) + '/arm_model.xml'
 
@@ -26,14 +22,25 @@ def arm_control(model, data):
     # `model` contains static information about the modeled system, e.g. their indices in dynamics matrices
     # `data` contains the current dynamic state of the system
 
-    # Getting the current position of the interactive target. You can use Ctrl (Cmd on Mac) + Shift + Right click drag
-    # to move the target in the horizontal plane.
-    joint_target = data.ctrl
+    # Check out the definition of this function that reads the simulation state, available in the file common_functions.py
+    x, y, xt, yt, xvt, yvt = get_current_and_target_kinematics(model, data, use_traj=True)
 
-    error = joint_target - data.qpos
-    velocity_error = np.zeros_like(data.qvel) - data.qvel
+    # dx/dq
+    # Jacobian from engine. The jacobian converts differences (e.g. error, velocity) in joint space to differences in
+    # task space (Cartesian coords). It depends on the current configuration of the arm, therefore we need to calculate
+    # it every frame. We'll use MuJoCo's built in function for getting the matrix.
+    J = np.empty((3, model.nv))
+    mujoco.mj_jac(model, data, jacp=J, jacr=None, point=np.array([[x], [y], [0]]), body=model.body("tip").id)
 
-    data.qfrc_applied = feedback_control(error, velocity_error)
+    xvel, yvel, _ = J@data.qvel  # Get task velocity with jacobian
+
+    xe, ye = xt - x, yt - y  # Errors in task space
+    xve, yve = xvt - xvel, yvt - yvel
+    position_error = np.array([xe, ye, 0])
+    velocity_error = np.array([xve, yve, 0])
+    task_force = feedback_control(model, data, position_error, velocity_error)
+    f = J.T @ task_force  # desired joint torque
+    data.qfrc_applied = f
 
 
 if __name__ == '__main__':
