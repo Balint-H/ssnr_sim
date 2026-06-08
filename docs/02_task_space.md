@@ -10,7 +10,7 @@ This script implement a PD controller that drives the arm's end-effector (the `t
 
 The controller computes a force in task space and maps it back to joint torques. Instead of rotational springs at the joints, this task conceptualizes the control as linear springs connecting the tip of the fingers to the target.
 
-> [!Tip]
+> [!TIP]
 > You can move the task-space target by Ctrl+Right-click dragging it around in the interactive window.
 > Alternatively you can add the `use_traj=True` arguement to the `get_current_and_target_kinematics` function's call on line 26 to automate the target movement.
 

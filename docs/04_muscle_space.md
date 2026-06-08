@@ -8,7 +8,7 @@ This final exercise assembles the full pipeline: task-space PD control, mapped t
 
 The arm's end-effector (the `tip` body) is driven toward an **interactive mocap target** the user can drag in the plane, using only muscles that pull. The controller implements the complete chain from Cartesian error to muscle activation.
 
->[!Warning]
+>[!WARNING]
 > You will probably notice that the behaviour of the arm is unstable, and it oscillates without any changes to the model, or the control. What do you think causes this? Do you have ideas to resolve it? (The solution script has a couple suggestions).
 ---
 
