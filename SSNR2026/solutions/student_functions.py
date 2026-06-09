@@ -10,7 +10,7 @@ def feedback_control(model, data, error_in_position, error_in_velocity):
   # (angles in this case) over time. Let's define error in terms target-current; a positive error means you need to
   # increase position/velocity.
   # You might want to clip forces to reasonable values as well
-  return 500*error_in_position + 10*error_in_velocity
+  return 100*error_in_position + 0.1*error_in_velocity
   return np.zeros_like(error_in_velocity)
 
 

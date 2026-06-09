@@ -97,7 +97,7 @@ Things to try:
   <!-- 
   Add humanoid model, for spatial reference.
   -->
-  <include file="../xml/cmu_model.xml"/>
+  <include file="../../xml/cmu_model.xml"/>
 
   <!--
   The elements below are for visuals only, defining textures and postprocessing.
