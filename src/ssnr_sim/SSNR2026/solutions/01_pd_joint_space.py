@@ -27,7 +27,7 @@ def arm_control(model, data):
     # `data` contains the current dynamic state of the system
 
     #
-    joint_target = data.ctrl[:2]
+    joint_target = data.ctrl[:model.nv]
 
     error = joint_target - data.qpos
     velocity_error = np.zeros_like(data.qvel) - data.qvel

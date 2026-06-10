@@ -71,7 +71,7 @@ def arm_control(model, data):
 
     # Update Feedforward for the next iteration: FF_next = FF_current + FB_current
     # This acts as an integrator over iterations
-    raw_next_ff = ff_torques + (LEARNING_GAIN * current_fb_torques)
+    raw_next_ff = 0.95 * ff_torques + (LEARNING_GAIN * current_fb_torques)
     ff_torques = np.apply_along_axis(lambda x: filtfilt(*butter(2, 10.0 / (0.5 / DT), 'low'), x), 0, raw_next_ff)
     # Reset buffers and tracking metrics
     current_fb_torques = np.zeros((TOTAL_STEPS, 2))

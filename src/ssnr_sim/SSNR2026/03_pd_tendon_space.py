@@ -49,7 +49,7 @@ def arm_control(model, data):
 
     # Muscles/cables should only pull, experiment with disabling pushing: tendon_force = np.minimum(tendon_force, 0)
     data.ctrl = tendon_force
-    # data.ctrl = np.minimum(data.ctrl, 0)
+    data.ctrl = np.minimum(data.ctrl, 0)
 
     # We'll visualise the force applied on each tendon:
     color = 1/(1 + np.exp(-2*data.ctrl))

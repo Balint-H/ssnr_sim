@@ -22,10 +22,10 @@ Kp = 300
 Kd = 5
 
 
-N_PER_MUSCLE = 700        # motoneurons per muscle
+N_PER_MUSCLE = 5        # motoneurons per muscle
 F_MAX       = 6.0          
 I_MIN       = 1.0e-10    
-DRIVE_SCALE = 0.001
+DRIVE_SCALE = 0.1
 I_MAX       = 7e-10
 TAU_EXC     = 20e-3
 

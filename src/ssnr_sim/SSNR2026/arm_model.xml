@@ -61,9 +61,6 @@ detailed explanations: https://mujoco.readthedocs.io/en/latest/XMLreference.html
           <body  name="wrist_body" pos="0.25 0 0" euler="-90 0 90">
               <geom density="1000" type="capsule" size="0.02000001 0.03" pos="1.880135E-09 -0.03 -3.279598E-08" quat="4.003268E-08 -4.391836E-08 -0.7071071 -0.7071071" priority="0" contype="0" conaffinity="0" group="2" condim="1" solmix="1" solref="0.015 1" rgba=".5 .1 .1 1" solimp="0.99 0.99 0.003" margin="0" gap="0" friction="0.7 0.005 0.0001" name="rwrist" />
               <body pos="0 -0.09076759 0" quat="-1 0 0 0" name="hand">
-                <!--
-                TODO: Add a joint here! Experiment with which direction its axis="x y z" should point to
-                -->
                 <geom density="1000" type="ellipsoid" size="0.03500002 0.02000001 0.045" pos="3.469804E-09 -0.01675202 -3.877605E-08" quat="4.003268E-08 -4.391836E-08 -0.7071071 -0.7071071" priority="0" contype="0" conaffinity="0" group="2" rgba=".5 .1 .1 1" condim="3" solmix="1" solref="0.015 1" solimp="0.98 0.98 0.001" margin="0" gap="0" friction="1 0.005 0.0001" name="rhand" />
                 <body name="tip" pos="0 -0.175 0"/>
                 <body pos="-6.475558E-09 -0.06500006 1.90359E-08" quat="-1 0 0 0" name="rfingers">
