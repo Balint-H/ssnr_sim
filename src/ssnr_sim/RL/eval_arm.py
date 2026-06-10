@@ -35,8 +35,8 @@ def main():
   }
 
   network_params = {
-    "policy_hidden_layer_sizes": (128, 64),
-    "value_hidden_layer_sizes": (128, 64),
+    "policy_hidden_layer_sizes": (64, 64),
+    "value_hidden_layer_sizes": (64, 64),
   }
 
   network_factory = functools.partial(ppo_networks.make_ppo_networks, **network_params)
@@ -54,7 +54,7 @@ def main():
   )
 
   print("Loading saved weights and normalization statistics...")
-  with open('playground_params.pickle', 'rb') as handle:
+  with open('playground_params_new.pickle', 'rb') as handle:
     params = pickle.load(handle)
 
   # No longer need to explore, can be deterministic
@@ -101,6 +101,10 @@ def main():
 
       # Stream the reward value to the live visualizer chart (Press F4 in viewer to open)
       d.sensordata[0] = float(state.reward)
+
+      color = np.log(np.maximum(d.ctrl, 0) + 0.0001)
+      m.tendon_rgba = (color[:, None] * np.array([0.95, 0.3, 0.3, 1])[None, :]
+                       + (1 - color[:, None]) * np.array([0.45, 0.15, 0.15, 1])[None, :])
 
       viewer.sync()
       limiter.sleep()

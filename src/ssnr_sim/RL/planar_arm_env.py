@@ -14,8 +14,8 @@ default_config = config_dict.create(
   episode_length=400,
   reset_pos_range=[0.8, 0.8],
   reset_vel_range=0.8,
-  reward_falloff_scale=5,
-  reward_excitation_penalty=0.05
+  reward_falloff_scale=10,
+  reward_fatigue_penalty=0.005
 )
 
 
@@ -77,7 +77,7 @@ class PlanarArmTendon(mjx_env.MjxEnv):
     data = data.replace(mocap_pos=jp.array([[target_pos[0], target_pos[1], 0.]]))
     metrics = {
       "reward/tracking": jp.zeros(()),
-      "reward/excitation_penalty": jp.zeros(()),
+      "reward/fatigue_penalty": jp.zeros(()),
       "distance": jp.zeros(())
     }
 
@@ -104,9 +104,9 @@ class PlanarArmTendon(mjx_env.MjxEnv):
 
   def _get_done(self, data):
     done = jp.isnan(data.qpos).any() | jp.isnan(data.qvel).any()
-    at_low = data.qpos <= self._mjx_model.jnt_range[:, 0]
-    at_high = data.qpos >= self._mjx_model.jnt_range[:, 1]
-    done = done | jp.any(at_low | at_high)
+    # at_low = data.qpos <= self._mjx_model.jnt_range[:, 0]
+    # at_high = data.qpos >= self._mjx_model.jnt_range[:, 1]
+    # done = done | jp.any(at_low | at_high)
     done = done.astype(float)
     return done
 
@@ -120,12 +120,12 @@ class PlanarArmTendon(mjx_env.MjxEnv):
       data.qvel,
       tip_pos,
       target_pos,
-      target_pos - tip_pos
+      target_pos - tip_pos,
     ])
 
-  def _get_reward(self, data: mjx.Data, action: jax.Array, info: dict[str, Any], metrics: dict[str, Any]):
+  def _get_reward(self, data: mjx.Data, action: jax.Array, info: dict[str, Any], metrics: dict[str, Any]) -> jax.Array:
     tip_pos = data.xpos[self._tip_body_id][:2]
-    target_pos = info["target"]
+    target_pos = data.mocap_pos[0][:2]
 
     dist = jp.linalg.norm(tip_pos - target_pos)
     metrics["distance"] = dist
@@ -133,11 +133,11 @@ class PlanarArmTendon(mjx_env.MjxEnv):
     tracking = jp.exp(-self._config.reward_falloff_scale * dist)
     metrics["reward/tracking"] = tracking
 
-    excitation_penalty = -(self._config.reward_excitation_penalty
-                           * jp.sum(jp.square(action)))
-    metrics["reward/excitation_penalty"] = excitation_penalty
+    fatigue_penalty = -(self._config.reward_fatigue_penalty
+                        * jp.sum(jp.square(action)))
+    metrics["reward/fatigue_penalty"] = fatigue_penalty
 
-    return tracking + excitation_penalty, metrics
+    return tracking + fatigue_penalty, metrics
 
   @property
   def xml_path(self) -> str:
