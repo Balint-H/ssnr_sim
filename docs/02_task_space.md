@@ -10,7 +10,6 @@ This script implement a PD controller that drives the arm's end-effector (the `t
 
 The controller computes a force in task space and maps it back to joint torques. Instead of rotational springs at the joints, this task conceptualizes the control as linear springs connecting the tip of the fingers to the target.
 
-> [!TIP]
 > You can move the task-space target by Ctrl+Right-click dragging it around in the interactive window.
 > Alternatively you can add the `use_traj=True` arguement to the `get_current_and_target_kinematics` function's call on line 26 to automate the target movement.
 
@@ -71,10 +70,10 @@ The Jacobian is used twice in this controller:
 
 ## Source Code
 
-[View `02_pd_task_space.py` on GitHub](https://github.com/Balint-H/ssnr_sim/blob/main/SSNR2026/02_pd_task_space.py)  
-[View solution `02_pd_task_space.py` on GitHub](https://github.com/Balint-H/ssnr_sim/blob/main/SSNR2026/solutions/02_pd_task_space.py)
+[View `02_pd_task_space.py` on GitHub](https://github.com/Balint-H/ssnr_sim/blob/main/src/ssnr_sim/SSNR2026/02_pd_task_space.py)  
+[View solution `02_pd_task_space.py` on GitHub](https://github.com/Balint-H/ssnr_sim/blob/main/src/ssnr_sim/SSNR2026/solutions/02_pd_task_space.py)
 
-```{literalinclude} ../SSNR2026/02_pd_task_space.py
+```{literalinclude} ../src/ssnr_sim/SSNR2026/02_pd_task_space.py
 :language: python
 :linenos:
 :caption: Task-space PD control implementation in MuJoCo

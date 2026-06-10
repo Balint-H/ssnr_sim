@@ -116,7 +116,7 @@ The control callback is executed every physics step (~2 ms).
 
 ## Implementation Notes
 
-You only need to edit the function [`feedback_control`](https://github.com/Balint-H/ssnr_sim/blob/main/SSNR2026/student_functions.py#L6) in [`student_functions.py`](https://github.com/Balint-H/ssnr_sim/blob/main/SSNR2026/student_functions.py).
+You only need to edit the function [`feedback_control`](https://github.com/Balint-H/ssnr_sim/blob/main/src/ssnr_sim/SSNR2026/student_functions.py#L6) in [`student_functions.py`](https://github.com/Balint-H/ssnr_sim/blob/main/src/ssnr_sim/SSNR2026/student_functions.py).
 
 The controller receives:
 
@@ -142,11 +142,11 @@ The final block colors each tendon from red (pulling little / negative command) 
 
 ## Source Code
 
-[View `03_pd_tendon_space.py` on GitHub](https://github.com/Balint-H/ssnr_sim/blob/main/SSNR2026/03_pd_tendon_space.py)  
-[View solution `04_pd_tendon_space.py` on GitHub](https://github.com/Balint-H/ssnr_sim/blob/main/SSNR2026/solutions/04_pd_tendon_space.py)  
-[View extended solution '05_pd_tendon_space_task_impedance.py' on GitHub](https://github.com/Balint-H/ssnr_sim/blob/main/SSNR2026/solutions/05_pd_tendon_space_task_impedance.py) 
+[View `03_pd_tendon_space.py` on GitHub](https://github.com/Balint-H/ssnr_sim/blob/main/src/ssnr_sim/SSNR2026/03_pd_tendon_space.py)  
+[View solution `03_pd_tendon_space.py` on GitHub](https://github.com/Balint-H/ssnr_sim/blob/main/src/ssnr_sim/SSNR2026/solutions/03_pd_tendon_space.py)  
+[View extended solution '05_pd_tendon_space_task_impedance.py' on GitHub](https://github.com/Balint-H/ssnr_sim/blob/main/src/ssnr_sim/SSNR2026/solutions/05_pd_tendon_space_task_impedance.py) 
 
-```{literalinclude} ../SSNR2026/03_pd_tendon_space.py
+```{literalinclude} ../src/ssnr_sim/SSNR2026/03_pd_tendon_space.py
 :language: python
 :linenos:
 :caption: Tendon-actuated task-space control implementation in MuJoCo

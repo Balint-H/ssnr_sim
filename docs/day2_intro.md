@@ -27,11 +27,11 @@ We walk through five scripts, each one closer to biology:
 
 | # | Script | What controls the arm | What you learn |
 |---|---|---|---|
-| 1 | [`01_pd_joint_space.py`](https://github.com/Balint-H/ssnr_sim/blob/main/SSNR2026/01_pd_joint_space.py) | Joint torques | PD control basics |
-| 2 | [`02_pd_task_space.py`](https://github.com/Balint-H/ssnr_sim/blob/main/SSNR2026/02_pd_task_space.py) | Task-space forces via Jacobian | Coordinate transforms |
-| 3 | [`03_pd_tendon_space.py`](https://github.com/Balint-H/ssnr_sim/blob/main/SSNR2026/03_pd_tendon_space.py) | Tendon forces | Redundancy, pulling-only |
-| 4 | [`04_pd_muscle_space.py`](https://github.com/Balint-H/ssnr_sim/blob/main/SSNR2026/04_pd_muscle_space.py) | Muscle activations | Hill-type muscle model |
-| 5 | [`05_pd_neuron_integration.py`](https://github.com/Balint-H/ssnr_sim/blob/main/SSNR2026/05_pd_neuron_integration.py) | Motoneuron pool | Full neural–musculoskeletal loop |
+| 1 | [`01_pd_joint_space.py`](https://github.com/Balint-H/ssnr_sim/blob/main/src/ssnr_sim/SSNR2026/01_pd_joint_space.py) | Joint torques | PD control basics |
+| 2 | [`02_pd_task_space.py`](https://github.com/Balint-H/ssnr_sim/blob/main/src/ssnr_sim/SSNR2026/02_pd_task_space.py) | Task-space forces via Jacobian | Coordinate transforms |
+| 3 | [`03_pd_tendon_space.py`](https://github.com/Balint-H/ssnr_sim/blob/main/src/ssnr_sim/SSNR2026/03_pd_tendon_space.py) | Tendon forces | Redundancy, pulling-only |
+| 4 | [`04_pd_muscle_space.py`](https://github.com/Balint-H/ssnr_sim/blob/main/src/ssnr_sim/SSNR2026/04_pd_muscle_space.py) | Muscle activations | Hill-type muscle model |
+| 5 | [`05_pd_neuron_integration.py`](https://github.com/Balint-H/ssnr_sim/blob/main/src/ssnr_sim/SSNR2026/05_pd_neuron_integration.py) | Motoneuron pool | Full neural–musculoskeletal loop |
 
 ---
 

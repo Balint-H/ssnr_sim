@@ -66,14 +66,14 @@ $$
 J^{+}_H = H^{-1} J^\top \left(J H^{-1} J^\top\right)^{+}
 $$
 
-implemented in [`weighted_pinv`](https://github.com/Balint-H/ssnr_sim/blob/main/SSNR2026/04_pd_muscle_space.py#L17). This is the operational-space inverse that respects the arm's inertia, mapping task-space quantities into joint space in a dynamically consistent way.
+implemented in [`weighted_pinv`](https://github.com/Balint-H/ssnr_sim/blob/main/src/ssnr_sim/SSNR2026/04_pd_muscle_space.py#L17). This is the operational-space inverse that respects the arm's inertia, mapping task-space quantities into joint space in a dynamically consistent way.
 
 
 ---
 
 ## Muscle Actuators (programmatic model editing)
 
-Rather than editing the XML by hand, the model is modified in [`load_callback`](https://github.com/Balint-H/ssnr_sim/blob/main/SSNR2026/04_pd_muscle_space.py#L87) using `mujoco.MjSpec`. Each ideal tendon actuator is converted into a **muscle** with `a.set_to_muscle(...)`, configuring the force-length and force-velocity curves (`lmin`, `lmax`, `vmax`, `fpmax`, `fvmax`), activation dynamics (`timeconst`), scaling, and a `ctrlrange` of `[0, 1]`.
+Rather than editing the XML by hand, the model is modified in [`load_callback`](https://github.com/Balint-H/ssnr_sim/blob/main/src/ssnr_sim/SSNR2026/04_pd_muscle_space.py#L87) using `mujoco.MjSpec`. Each ideal tendon actuator is converted into a **muscle** with `a.set_to_muscle(...)`, configuring the force-length and force-velocity curves (`lmin`, `lmax`, `vmax`, `fpmax`, `fvmax`), activation dynamics (`timeconst`), scaling, and a `ctrlrange` of `[0, 1]`.
 
 This means the actuator command is a normalized **muscle activation**, not a raw force, the muscle model converts activation, length, and velocity into the actual contractile force.
 
@@ -143,25 +143,13 @@ The control callback is executed every physics step (~2 ms).
 
 ---
 
-```{note}
-[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com)
-
-To run this exercise, in a new Colab notebook run:
-
-    !git clone https://github.com/Balint-H/ssnr_sim.git
-    %cd ssnr_sim
-    !pip install mujoco
-    !python -m SSNR2026.04_pd_muscle_space
-
-The interactive viewer requires a local display and will not open on Colab.
-```
 
 ## Source Code
 
-[View `04_pd_muscle_space.py` on GitHub](https://github.com/Balint-H/ssnr_sim/blob/main/SSNR2026/04_pd_muscle_space.py)  
-[View solution `06_pd_muscle_space.py` on GitHub](https://github.com/Balint-H/ssnr_sim/blob/main/SSNR2026/solutions/06_pd_muscle_space.py)
+[View `04_pd_muscle_space.py` on GitHub](https://github.com/Balint-H/ssnr_sim/blob/main/src/ssnr_sim/SSNR2026/04_pd_muscle_space.py)  
+[View solution `04_pd_muscle_space.py` on GitHub](https://github.com/Balint-H/ssnr_sim/blob/main/src/ssnr_sim/SSNR2026/solutions/04_pd_muscle_space.py)
 
-```{literalinclude} ../SSNR2026/04_pd_muscle_space.py
+```{literalinclude} ../src/ssnr_sim/SSNR2026/04_pd_muscle_space.py
 :language: python
 :linenos:
 :caption: Muscle-actuated operational-space control in MuJoCo

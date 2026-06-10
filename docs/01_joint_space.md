@@ -72,7 +72,7 @@ The control callback is executed every physics step (~2 ms).
 
 ## Implementation Notes
 
-You will need to edit the function [`feedback_control`](https://github.com/Balint-H/ssnr_sim/blob/main/SSNR2026/student_functions.py#L6) in [`student_functions.py`](https://github.com/Balint-H/ssnr_sim/blob/main/SSNR2026/student_functions.py).
+You will need to edit the function [`feedback_control`](https://github.com/Balint-H/ssnr_sim/blob/main/src/ssnr_sim/SSNR2026/student_functions.py#L6) in [`student_functions.py`](https://github.com/Balint-H/ssnr_sim/blob/main/src/ssnr_sim/SSNR2026/student_functions.py).
 
 The controller receives:
 
@@ -104,9 +104,9 @@ Activate your virtual environment, then run each script separately e.g. `python 
 
 ## Source Code
 
-[View `01_pd_joint_space.py` on GitHub](https://github.com/Balint-H/ssnr_sim/blob/main/SSNR2026/01_pd_joint_space.py)
+[View `01_pd_joint_space.py` on GitHub](https://github.com/Balint-H/ssnr_sim/blob/main/src/ssnr_sim/SSNR2026/01_pd_joint_space.py)
 
-```{literalinclude} ../SSNR2026/01_pd_joint_space.py
+```{literalinclude} ../src/ssnr_sim/SSNR2026/01_pd_joint_space.py
 :language: python
 :linenos:
 :caption: PD control implementation in MuJoCo
