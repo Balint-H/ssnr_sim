@@ -17,7 +17,6 @@ We work through five steps, from a toy problem on a single CPU to a musculoskele
 | 1 | [`cartpole.py`](https://github.com/Balint-H/ssnr_sim/blob/main/RL/cartpole.py) | Cartpole (env definition) | MDP formulation, reward shaping |
 | 2 | [`learn.py`](https://github.com/Balint-H/ssnr_sim/blob/main/RL/learn.py) | Cartpole swing-up | PPO training, parallel environments |
 | 3 | [`visualise_cartpole.py`](https://github.com/Balint-H/ssnr_sim/blob/main/RL/visualise_cartpole.py) | Cartpole (loaded policy) | Policy evaluation, MuJoCo viewer callback |
-| 4 | [`learn_myosuite.py`](https://github.com/Balint-H/ssnr_sim/blob/main/RL/learn_myosuite.py) | MyoSuite elbow arm | RL on a musculoskeletal system |
 | 5 | [`train_with_mjx.ipynb`](https://github.com/Balint-H/ssnr_sim/blob/main/RL/train_with_mjx.ipynb) | Cartpole on GPU | MJX, JAX-vectorized training, Brax PPO |
 
 ---
@@ -104,22 +103,22 @@ def control_callback(model, data):
 `deterministic=True` removes the sampling noise used during training so the policy runs its best estimated action.
 
 
-## Section 4: From a toy to a musculoskeletal arm
+## Section 4: From a toy to a musculoskeletal arm + GPU-accelerated training with MJX
 
-[`learn_myosuite.py`](https://github.com/Balint-H/ssnr_sim/blob/main/RL/learn_myosuite.py) trains the same PPO algorithm on `myoElbowPose1D6MRandom-v0`, a physiologically detailed elbow model. Two things change compared to cartpole:
-
-**Observation normalisation.** Raw joint angles, velocities, and muscle states span very different numeric ranges. `VecNormalize` tracks a running mean and variance and rescales observations to zero mean, unit variance. This is almost always necessary for RL on biomechanical models.
+[`learn_myosuite.py`](https://github.com/Balint-H/ssnr_sim/blob/main/RL/learn_myosuite.py) implements the planar arm control scene you explored in days 1 and 2 as a RL env, a Two things change compared to cartpole:
 
 **Harder action space.** The action $a \in [0,1]^6$ is a vector of muscle activations. Muscles can only pull, are nonlinear (Hill model), and have dynamics — activation lags behind the neural command. The policy must learn to co-activate antagonistic pairs to achieve stiffness control, something a PD controller gets for free.
 
+**Multiple degrees of freedom.** The extra DoFs also make exploration harder.
 
-## Section 5: GPU-accelerated training with MJX
+This tutorial is meant to be ran on Colab: [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/Balint-H/ssnr_sim/blob/main/src/ssnr_sim/RL/train_muscle_arm.ipynb)
 
-[`train_with_mjx.ipynb`](https://github.com/Balint-H/ssnr_sim/blob/main/RL/train_with_mjx.ipynb) ports the cartpole environment to **MJX**, the JAX-based reimplementation of MuJoCo. The entire simulation runs on the GPU as a JIT-compiled function, enabling:
+[`train_muscle_arm.ipynb`](https://github.com/Balint-H/ssnr_sim/blob/main/RL/train_muscle_arm.ipynb) ports the cartpole environment to **MJX**, the JAX-based reimplementation of MuJoCo. The entire simulation runs on the GPU as a JIT-compiled function, enabling:
 
-- **Massive parallelism** — 4 096 environments in a single batch with no inter-process overhead
-- **Automatic differentiation** — gradients through the physics are available if needed
-- **Brax PPO** — a fully vectorised, JAX-native PPO implementation that pipelines rollout collection and gradient updates
+- **Massive parallelism**: 4 096 environments in a single batch with no inter-process overhead
+- **Observation normalisation**: Raw joint angles, velocities, and muscle states span very different numeric ranges. The observations tracks a running mean and variance and rescales observations to zero mean, unit variance. This is almost always necessary for RL on biomechanical models.
+- **Automatic differentiation**: gradients through the physics are available if needed
+- **Brax PPO**: a fully vectorised, JAX-native PPO implementation that pipelines rollout collection and gradient updates
 
 The training loop processes $\sim 30 \times 10^6$ environment steps in minutes on a GPU, compared to hours on CPU.
 
